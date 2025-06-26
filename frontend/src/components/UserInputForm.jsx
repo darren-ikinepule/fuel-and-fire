@@ -1,38 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import "../stylesheets/user-input-form.css";
-function UserInputForm({ user, onChange }) {
+
+function UserInputForm({ user, onChange, onSubmit }) {
+  const [localWeight, setLocalWeight] = useState(user.weight || "");
+
   const handleChange = e => {
-    const { name, value } = e.target;
-    onChange({ ...user, [name]: value });
+    setLocalWeight(e.target.value);
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    onChange({ weight: localWeight });
+    if (onSubmit) onSubmit();
   };
 
   return (
-    <div className="user-input-form">
-      <label>
-        Age:{" "}
+    <form className="user-input-form" onSubmit={handleSubmit}>
+      <div className="input-group">
+        <label htmlFor="weight-input" className="input-label">
+          Enter Weight (kg):
+        </label>
         <input
-          type="number"
-          name="age"
-          min="5"
-          max="120"
-          value={user.age}
-          onChange={handleChange}
-          style={{ width: 60, marginRight: 10 }}
-        />
-      </label>
-      <label>
-        Weight (kg):{" "}
-        <input
+          id="weight-input"
           type="number"
           name="weight"
           min="20"
           max="300"
-          value={user.weight}
+          value={localWeight}
           onChange={handleChange}
-          style={{ width: 80 }}
+          className="input-field"
+          required
         />
-      </label>
-    </div>
+      </div>
+      <button type="submit" className="submit-btn">Submit</button>
+    </form>
   );
 }
 

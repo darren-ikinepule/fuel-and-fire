@@ -23,6 +23,7 @@ export function calculateExercises(calories, weightKg) {
   };
 
   const results = [];
+  
   Object.entries(metValues).forEach(([name, { met, img }]) => {
     const calPerMin = (met * weightKg * 3.5) / 200;
     const minutes = (calories / calPerMin).toFixed(1);
@@ -33,6 +34,9 @@ export function calculateExercises(calories, weightKg) {
       results.push({ name, value: minutes, unit: "minutes", img });
     }
   });
+
+  //For Men: BMR=(10×weight in kg)+(6.25×height in cm)−(5×age in years)+5
+  //For Women: BMR=(10×weight in kg)+(6.25×height in cm)−(5×age in years)−161
 
   return results;
 }
