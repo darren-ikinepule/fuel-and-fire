@@ -1,36 +1,6 @@
-// import React, {useEffect} from "react";
-// import fastFoodInfo from "../scripts/food-info";
-// import logo from "/images/fuel&fire-logo.jpeg";
-// import "../stylesheets/food-selector.css";
-
-// function FoodSelector() {
-//   const foodOptions = fastFoodInfo;
-  
-//   useEffect(() => {
-   
-//   }, []);
-//   return (
-//     <>
-//       <div className="heading">
-//         <img className="logo-img" src={logo} alt="mc logo"></img>
-//       </div>
-//       <div className="body-box">
-//         {foodOptions.map((food) => (
-//           <div className="burger-container" key={food.name}>
-//             <img src={food.img} alt="food pic"></img>
-//             <h2>{food.name}</h2>
-//             <h4>Calories: {food.calories}</h4>
-//           </div>
-//         ))}
-//       </div>
-//     </>
-//   );
-// }
-// export default FoodSelector;
-
 import React, { useState } from "react";
 import fastFoodInfo from "../scripts/food-info";
-import logo from "/images/fuel&fire-logo.jpeg";
+
 import "../stylesheets/food-selector.css";
 
 function FoodSelector({ onSelect }) {
@@ -51,8 +21,9 @@ function FoodSelector({ onSelect }) {
 
   return (
     <>
-      <div className="heading">
-        <img className="logo-img" src={logo} alt="mc logo" />
+      <div className="heading-section">
+        
+        <h1 className="main-heading">Fuel & Fire</h1>
       </div>
       <div className="food-selector">
         <div className="food-list">
@@ -62,6 +33,7 @@ function FoodSelector({ onSelect }) {
               className={`food-item${selectedIndices.includes(index) ? " selected" : ""}`}
               onClick={() => handleSelect(index)}
               tabIndex={0}
+              role="button" // Improve accessibility for custom clickables
               aria-label={food.name}
             >
               <img

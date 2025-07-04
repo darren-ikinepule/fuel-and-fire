@@ -1,0 +1,39 @@
+/* src/index.css or src/App.css */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap'); /* A good sporty/techy font */
+
+:root {
+  --color-black-gloss-start: #1a1a1a;
+  --color-black-gloss-end: #000000;
+  --color-orange-fluorescent: #FF6600; /* Fluorescent Orange */
+  --color-text-light: #f0f0f0;
+  --color-text-medium: #b0b0b0;
+  --color-dark-element: #222;
+  --color-dark-border: #444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Chakra Petch', sans-serif; /* Applied globally */
+}
+
+body {
+  background: radial-gradient(circle at center, var(--color-black-gloss-start) 0%, var(--color-black-gloss-end) 100%);
+  color: var(--color-text-light);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* General Link/Button Reset */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Chakra Petch', sans-serif;
+}

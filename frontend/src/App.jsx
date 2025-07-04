@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import FoodSelector from "./components/FoodSelector";
 import ResultsDisplay from "./components/ResultsDisplay";
 import UserInputForm from "./components/UserInputForm";
+import "./index.css"; // Ensure your global styles are imported here or in index.js
+import IntroFuelAndFire from "./components/IntroFuelAndFire";
 
 function App() {
   const [user, setUser] = useState({ weight: "" });
@@ -15,6 +17,7 @@ function App() {
 
   return (
     <>
+      <IntroFuelAndFire/>
       <FoodSelector onSelect={setSelectedFood} />
       <UserInputForm
         user={user}

@@ -29,10 +29,11 @@ function UserInputForm({ user, onChange, onSubmit }) {
           value={localWeight}
           onChange={handleChange}
           className="input-field"
+          placeholder="e.g., 70" /* Add placeholder */
           required
         />
       </div>
-      <button type="submit" className="submit-btn">Submit</button>
+      <button type="submit" className="submit-btn">Calculate Fuel Burn</button>
     </form>
   );
 }

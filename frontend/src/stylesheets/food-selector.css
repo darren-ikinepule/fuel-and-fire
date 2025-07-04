@@ -1,57 +1,45 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+/* src/stylesheets/food-selector.css */
+
+.heading-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px 0 40px; /* More padding for separation */
+  position: relative; /* For glow effect */
 }
 
 .logo-img {
-  width: 200px;
+  width: 180px; /* Slightly smaller logo */
   height: auto;
+  margin-bottom: 15px;
+  filter: drop-shadow(0 0 8px rgba(255, 102, 0, 0.6)); /* Subtle orange glow for logo */
 }
 
-.heading {
-  display: flex;
-  flex-flow: wrap;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 30%;
-  padding: 20px;
+.main-heading {
+  font-size: 3.5em; /* Larger heading */
+  color: var(--color-orange-fluorescent);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 0 0 15px rgba(255, 102, 0, 0.7); /* Stronger glow for heading */
+  margin-top: 10px;
 }
-
-
-
-img {
-  width: 80%;
-  height: auto;
-  border-radius: 5px;
-}
-
-.body-box {
-  display: flex;
-  flex-flow: wrap;
-  justify-content: center; 
-  /* /* align-items: center; */
-  gap: 20px;
-  /* width: 100vw;
-  height: 100vh; */
-}
-
-/* ...existing code... */
 
 .food-selector {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100vw;
+  width: 100%;
+  max-width: 1200px; /* Limit width for better layout on large screens */
+  margin-bottom: 40px; /* Space before user input */
 }
 
 .food-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 25px; /* Slightly increased gap */
   width: 100%;
 }
 
@@ -59,44 +47,107 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 220px;
-  height: 200px;
-  box-shadow: 1px 1px 3px grey;
-  border-radius: 10px;
-  padding: 20px;
-  transition: all 0.4s ease-in-out;
+  width: 200px; /* Fixed width */
+  min-height: 220px; /* Ensure consistent height */
+  background: var(--color-dark-element); /* Dark background for items */
+  border: 2px solid var(--color-dark-border); /* Subtle dark border */
+  border-radius: 12px; /* Slightly more rounded corners */
+  padding: 15px;
+  transition: all 0.3s ease-in-out;
   cursor: pointer;
-  background: #fff;
-  outline: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
+
+.food-item::before { /* Edgy/sporty underline effect on hover */
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: var(--color-orange-fluorescent);
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.food-item:hover::before,
+.food-item:focus::before {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
 
 .food-item:hover,
 .food-item:focus {
-  transform: scale(1.1);
-  box-shadow: 2px 2px 8px #aaa;
+  transform: translateY(-5px) scale(1.02); /* Slight lift and scale */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 102, 0, 0.7); /* Stronger glow on hover */
+  border-color: var(--color-orange-fluorescent); /* Orange border on hover */
+  outline: none; /* Remove default focus outline */
 }
 
 .food-item.selected {
-  border: 2px solid #ff9800;
-  background: #fff3e0;
+  border: 2px solid var(--color-orange-fluorescent); /* Fluorescent orange border when selected */
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.15), rgba(255, 102, 0, 0.05)); /* Subtle orange tint */
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.8), inset 0 0 10px rgba(255, 102, 0, 0.5); /* Stronger glow and inner glow */
 }
 
 .food-img {
-  width: 80%;
-  height: auto;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  width: 90%; /* Larger image */
+  height: 100px; /* Fixed height for consistency */
+  object-fit: cover; /* Ensures images fill space without distortion */
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border for image */
 }
 
 .food-name {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 5px;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--color-text-light); /* White text for names */
+  margin-bottom: 6px;
   text-align: center;
 }
 
 .food-calories {
-  font-size: 1em;
-  color: #666;
+  font-size: 0.95em;
+  color: var(--color-orange-fluorescent); /* Orange for calories */
+  font-weight: bold;
   text-align: center;
+  text-shadow: 0 0 5px rgba(255, 102, 0, 0.4); /* Small glow for calories */
+}
+
+@media (max-width: 768px) {
+  .main-heading {
+    font-size: 2.5em;
+  }
+  .food-item {
+    width: 160px;
+    min-height: 180px;
+  }
+  .food-img {
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-heading {
+    font-size: 2em;
+  }
+  .logo-img {
+    width: 150px;
+  }
+  .food-item {
+    width: 140px;
+    min-height: 160px;
+    padding: 10px;
+  }
+  .food-name {
+    font-size: 1em;
+  }
+  .food-calories {
+    font-size: 0.85em;
+  }
 }
