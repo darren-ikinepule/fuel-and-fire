@@ -17,7 +17,7 @@ export function calculateExercises(calories, weightKg) {
       img: "/images/walking.jpeg",
     },
     "Swimming (moderate)": {
-      met: 5.8, // updated to a more accurate value
+      met: 5.8, 
       img: "/images/swimming.jpeg",
     },
   };

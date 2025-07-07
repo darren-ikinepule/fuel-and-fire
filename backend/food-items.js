@@ -17,13 +17,19 @@ const FoodSchema = new mongoose.Schema({
   company: { type: String, required: true }
 });
 
-const Food = mongoose.model("food", FoodSchema);
+const Food = mongoose.model("Food", FoodSchema);
 
 // Get all food items
-app.get("/food-items", async (req, res) => {
-  const items = await Food.find();
-  res.json(items);
+app.get("/food", async (req, res) => {
+  const food = await Food.find();
+  res.json(food);
 });
+
+// app.get("/fighters", async (req, res) => {
+//   const fighters = await Fighter.find();
+//   res.json(fighters);
+  
+// });
 app.get("/food-items", async (req, res) => {
   const items = await Food.find();
   res.json(items);
