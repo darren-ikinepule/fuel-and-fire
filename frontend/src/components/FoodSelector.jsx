@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import fastFoodInfo from "../scripts/food-info";
-
 import "../stylesheets/food-selector.css";
 
 function FoodSelector({ onSelect }) {
-  const [selectedIndices, setSelectedIndices] = useState([]);
+  const [foodSelector, setFoodSelector] = useState([]);
 
   const handleSelect = (index) => {
     let newSelected;
-    if (selectedIndices.includes(index)) {
-      newSelected = selectedIndices.filter(i => i !== index);
+    if (foodSelector.includes(index)) {
+      newSelected = foodSelector.filter(i => i !== index);
     } else {
-      newSelected = [...selectedIndices, index];
+      newSelected = [...foodSelector, index];
     }
-    setSelectedIndices(newSelected);
+    setFoodSelector(newSelected);
     if (onSelect) {
       onSelect(newSelected.map(i => fastFoodInfo[i]));
     }
@@ -22,7 +21,6 @@ function FoodSelector({ onSelect }) {
   return (
     <>
       <div className="heading-section">
-        
         <h1 className="main-heading">Fuel & Fire</h1>
       </div>
       <div className="food-selector">
@@ -30,10 +28,10 @@ function FoodSelector({ onSelect }) {
           {fastFoodInfo.map((food, index) => (
             <div
               key={food.name}
-              className={`food-item${selectedIndices.includes(index) ? " selected" : ""}`}
+              className={`food-item${foodSelector.includes(index) ? " selected" : ""}`}
               onClick={() => handleSelect(index)}
               tabIndex={0}
-              role="button" // Improve accessibility for custom clickables
+              role="button"
               aria-label={food.name}
             >
               <img

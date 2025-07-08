@@ -7,11 +7,11 @@
   background: var(--color-dark-element);
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Stronger shadow */
-  padding: 2.5rem 2rem; /* More generous padding */
+  padding: 2.5rem 2rem; 
   max-width: 400px; /* Wider form */
   width: 90%;
   margin: 2rem auto;
-  gap: 1.5rem; /* Increased gap */
+  gap: 1.5rem; 
   border: 1px solid var(--color-dark-border);
 }
 
@@ -20,24 +20,24 @@
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  gap: 0.8rem; /* Increased gap */
+  gap: 0.8rem; 
 }
 
 .input-label {
   font-size: 1.15em; /* Slightly larger label */
-  color: var(--color-text-light); /* White text */
+  color: var(--color-text-light); 
   font-weight: 600;
 }
 
 .input-field {
   width: 100%;
-  padding: 12px 15px; /* More padding */
+  padding: 12px 15px; 
   border: 2px solid var(--color-dark-border); /* Darker initial border */
-  border-radius: 8px; /* Slightly more rounded */
+  border-radius: 8px; 
   font-size: 1.1em;
   transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
   background: #0d0d0d; /* Very dark background for input */
-  color: var(--color-text-light); /* White text input */
+  color: var(--color-text-light); 
 }
 
 .input-field::placeholder {
@@ -56,10 +56,10 @@
   background-color: var(--color-orange-fluorescent); /* Fluorescent orange background */
   color: #000; /* Black text on orange for contrast */
   border: none;
-  border-radius: 8px; /* Slightly more rounded */
-  padding: 12px 35px; /* More padding */
-  font-size: 1.2em; /* Larger font */
-  font-weight: 700; /* Bolder */
+  border-radius: 8px; 
+  padding: 12px 35px; 
+  font-size: 1.2em; 
+  font-weight: 700; 
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   box-shadow: 0 4px 10px rgba(255, 102, 0, 0.4); /* Initial orange glow */

@@ -1,12 +1,14 @@
 import express from "express";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 const app = express();
 app.use(express.json());
 
 // Connect to MongoDB Atlas
-const uri =
-  "mongodb+srv://darrenikinepule:Kohsamui08!@cluster1.dx6bxgq.mongodb.net/fuel_and_fire?retryWrites=true&w=majority&appName=cluster1";
+const uri = process.env.MONGODB_URI;
 mongoose.connect(uri);
 
 // Food schema and model

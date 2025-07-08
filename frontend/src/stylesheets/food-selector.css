@@ -6,19 +6,19 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 20px 0 40px; /* More padding for separation */
+  padding: 20px 0 40px; 
   position: relative; /* For glow effect */
 }
 
 .logo-img {
-  width: 180px; /* Slightly smaller logo */
+  width: 180px; 
   height: auto;
   margin-bottom: 15px;
   filter: drop-shadow(0 0 8px rgba(255, 102, 0, 0.6)); /* Subtle orange glow for logo */
 }
 
 .main-heading {
-  font-size: 3.5em; /* Larger heading */
+  font-size: 3.5em; 
   color: var(--color-orange-fluorescent);
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -32,14 +32,14 @@
   align-items: center;
   width: 100%;
   max-width: 1200px; /* Limit width for better layout on large screens */
-  margin-bottom: 40px; /* Space before user input */
+  margin-bottom: 40px; 
 }
 
 .food-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 25px; /* Slightly increased gap */
+  gap: 25px; 
   width: 100%;
 }
 
@@ -47,11 +47,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 200px; /* Fixed width */
-  min-height: 220px; /* Ensure consistent height */
-  background: var(--color-dark-element); /* Dark background for items */
-  border: 2px solid var(--color-dark-border); /* Subtle dark border */
-  border-radius: 12px; /* Slightly more rounded corners */
+  width: 200px; 
+  min-height: 220px; 
+  background: var(--color-dark-element); 
+  border: 2px solid var(--color-dark-border); 
+  border-radius: 12px;
   padding: 15px;
   transition: all 0.3s ease-in-out;
   cursor: pointer;

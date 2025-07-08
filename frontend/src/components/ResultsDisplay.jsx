@@ -32,7 +32,7 @@ function ResultsDisplay({ food, user }) {
           {" "}
           {totalCalories} calories{" "}
         </strong>
-        you'll need to do:
+        you can either do:
       </p>
       <div className="exercise-list">
         {exercises.map(ex => (

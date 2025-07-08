@@ -10,7 +10,7 @@ function IntroFuelAndFire() {
           Your Fun Fast-Food Fitness Converter!
         </p>
         <div className="intro-steps">
-          {/* Removed specific step colors as the background will be uniform dark */}
+         
           <div className="intro-step">
             <span className="intro-emoji" role="img" aria-label="utensils">🍔</span>
             <h2 className="intro-step-title">Pick Your Treat!</h2>

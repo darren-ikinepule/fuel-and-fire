@@ -12,20 +12,20 @@
 
 .intro-container {
   background: linear-gradient(145deg, #101010, #0a0a0a); /* Dark glossy background */
-  border-radius: 1.5rem; /* Slightly more rounded */
+  border-radius: 1.5rem; 
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); /* Stronger shadow for depth */
   padding: 2.5rem 2rem;
-  max-width: 550px; /* Slightly wider for better text flow */
+  max-width: 550px; 
   width: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem; /* Increased gap between sections */
+  gap: 2.5rem; 
   border: 1px solid var(--color-dark-border); /* Subtle dark border */
 }
 
 .intro-title {
-  font-size: 3.5rem; /* Larger, more impactful title */
+  font-size: 3.5rem;
   font-weight: 700;
   color: var(--color-orange-fluorescent); /* Fluorescent orange */
   text-transform: uppercase;
@@ -45,14 +45,14 @@
 .intro-steps {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Consistent gap with other components */
+  gap: 20px; 
 }
 
 .intro-step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem; /* More padding */
+  padding: 1.5rem; 
   border-radius: 1rem;
   background: #0d0d0d; /* Very dark background for individual steps */
   border: 1px solid var(--color-dark-border); /* Subtle dark border */
@@ -87,7 +87,7 @@
   border-color: var(--color-orange-fluorescent); /* Orange border on hover */
 }
 
-/* Removed specific step-red/orange/yellow backgrounds as per the new theme */
+
 
 .intro-emoji {
   font-size: 3rem; /* Larger emojis */
