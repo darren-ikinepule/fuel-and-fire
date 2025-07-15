@@ -1,11 +1,13 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 dotenv.config();
 
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Connect to MongoDB Atlas
 const uri = process.env.MONGODB_URI;
@@ -22,16 +24,6 @@ const FoodSchema = new mongoose.Schema({
 const Food = mongoose.model("Food", FoodSchema);
 
 // Get all food items
-app.get("/food", async (req, res) => {
-  const food = await Food.find();
-  res.json(food);
-});
-
-// app.get("/fighters", async (req, res) => {
-//   const fighters = await Fighter.find();
-//   res.json(fighters);
-  
-// });
 app.get("/food-items", async (req, res) => {
   const items = await Food.find();
   res.json(items);

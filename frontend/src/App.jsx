@@ -5,6 +5,7 @@ import ResultsDisplay from "./components/ResultsDisplay";
 import UserInputForm from "./components/UserInputForm";
 import "./index.css"; // Ensure your global styles are imported here or in index.js
 import IntroFuelAndFire from "./components/IntroFuelAndFire";
+import MetChart from "./components/MetChart";
 
 function App() {
   const [user, setUser] = useState({ weight: "" });
@@ -18,6 +19,7 @@ function App() {
   return (
     <>
       <IntroFuelAndFire/>
+      <MetChart/>
       <FoodSelector onSelect={setSelectedFood} />
       <UserInputForm
         user={user}

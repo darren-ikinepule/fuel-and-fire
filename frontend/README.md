@@ -2,27 +2,27 @@
 
 ---
 
-## ✅ Fuel & Fire MVP — Technical Project Plan (Student-Friendly)
+##  Fuel & Fire MVP — Technical Project Plan (Student-Friendly)
 
-### 🎯 Project Goal
+###  Project Goal
 
-Build a simple **React-based web app** that allows users to choose a fast food item from a list and see how much exercise (personalized by age and weight) they need to burn off the calories.
+Build a simple **React-based web app** that allows users to choose a fast food item from a list and see how much exercise (personalized by weight) they need to burn off the calories.
 
 ---
 
-## 🧩 1. **Feature Breakdown (MVP Scope)**
+##  1. **Feature Breakdown (MVP Scope)**
 
 | Feature                 | Description                                                                         |
 | ----------------------- | ----------------------------------------------------------------------------------- |
 | **Food Selector**       | Dropdown or list of static junk food items with their calorie counts                |
-| **User Input**          | Simple form to collect age and weight                                               |
-| **Exercise Calculator** | Function that translates calories into various exercises based on age/weight        |
+| **User Input**          | Simple form to collect weight                                               |
+| **Exercise Calculator** | Function that translates calories into various exercises based on weight        |
 | **Results Display**     | Show calorie count and multiple exercise options with time/reps estimates           |
 | **Basic UI**            | Responsive layout, readable design (focus on React components and state management) |
 
 ---
 
-## 🛠 2. **Tech Stack**
+##  2. **Tech Stack**
 
 | Layer                  | Tech                                                                   |
 | ---------------------- | ---------------------------------------------------------------------- |
@@ -32,7 +32,7 @@ Build a simple **React-based web app** that allows users to choose a fast food i
 
 ---
 
-## 📅 3. **Project Phases & Timeline**
+## 3. **Project Phases & Timeline**
 
 ### **Week 1–2: Planning & Setup**
 
@@ -45,7 +45,7 @@ Build a simple **React-based web app** that allows users to choose a fast food i
 ### **Week 3–4: Core Feature Development**
 
 * [ ] Build food selector component in React
-* [ ] Create form to input age + weight
+* [ ] Create form to input weight
 * [ ] Build function to compute exercise equivalents
 * [ ] Display results clearly (reusable UI components)
 * [ ] Hook up frontend to backend to get food data
@@ -54,7 +54,7 @@ Build a simple **React-based web app** that allows users to choose a fast food i
 
 * [ ] Improve responsiveness/styling
 * [ ] Add error handling and basic validation
-* [ ] Test with different user weights/ages and food combos
+* [ ] Test with different user weights and food combos
 
 ### **Week 6: Deployment & Wrap-up**
 
@@ -64,7 +64,7 @@ Build a simple **React-based web app** that allows users to choose a fast food i
 
 ---
 
-## 📦 4. **Data You’ll Need**
+## 4. **Data You’ll Need**
 
 * **Junk Food List (10–20 items)**: Name, Calories per serving
 * **Exercise Table or Formula**: Calories burned per min/reps for:
@@ -73,11 +73,11 @@ Build a simple **React-based web app** that allows users to choose a fast food i
   * Walking
   * Cycling
   * Push-ups
-* **Default assumptions** if user inputs are missing (e.g., average weight = 70kg, age = 25)
+* **Default assumptions** if user inputs are missing (e.g., average weight = 70kg, )
 
 ---
 
-## 🎓 5. **Learning Goals Focus (React)**
+##  5. **Learning Goals Focus (React)**
 
 | Skill                         | Feature to Practice                           |
 | ----------------------------- | --------------------------------------------- |

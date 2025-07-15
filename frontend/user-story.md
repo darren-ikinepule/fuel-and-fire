@@ -14,8 +14,9 @@ The wow-factor of Fuel & Fire lies in its ability to instantly transform abstrac
 ## Test-users
 
 Beck
-Kombie
+Kombe
 Victor
+Evan
 
 ## User Stories & Acceptance Criteria
 
@@ -65,6 +66,6 @@ As someone who doesn't understand complex numbers or fitness terms, I want to ea
 
 ## Acceptance Criteria:
 
-When I select a food item, the app should provide a simplified, non-numerical representation of its energy content (e.g., a visual "energy level" indicator or a relative size comparison).
+When I select a food item
 Instead of precise calorie numbers, the app should suggest easy-to-understand physical activities (e.g., "a brisk walk","jogging","swimming") and their approximate duration, without showing exact minutes or precise MET values initially.
 The app should offer encouraging, non-technical feedback that reinforces positive choices.
