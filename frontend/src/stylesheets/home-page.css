@@ -1,0 +1,278 @@
+/* HomePage.css */
+
+/* Using variables from App.css for consistency */
+:root {
+  --gloss-black: #0a0a0a;
+  --gloss-black-light: #1a1a1a;
+  --glowing-orange: #ffa500;
+  --glowing-orange-dark: #cc8400;
+  --text-light: #e0e0e0;
+  --text-medium: #b0b0b0;
+  --border-dark: #333333;
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+.homepage-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column; /* Stack header, main content, footer */
+  background: linear-gradient(to bottom right, var(--gloss-black-light) 0%, var(--gloss-black) 100%);
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
+  padding: 1.5rem;
+}
+
+/* Navigation Bar */
+.navbar {
+  display: flex;
+  justify-content: space-between; /* Space between logo and nav links */
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--gloss-black); /* Darker background for navbar */
+  border-bottom: 1px solid var(--border-dark);
+  box-shadow: 0 5px 15px var(--shadow-dark); /* Shadow for depth */
+  border-radius: 0.75rem; /* Rounded corners for navbar */
+  margin-bottom: 2rem;
+  position: relative; /* Needed for absolute positioning of mobile menu */
+  z-index: 100; /* Ensure navbar is on top */
+}
+
+.navbar-logo {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--glowing-orange);
+  text-shadow: 0 0 5px var(--glowing-orange), 0 0 10px rgba(255, 165, 0, 0.5);
+  text-decoration: none; /* Remove underline for logo link */
+  transition: color 0.2s ease-in-out;
+}
+
+.navbar-logo:hover {
+  color: var(--glowing-orange-dark);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem; /* Space between links */
+  list-style: none; /* Remove bullet points */
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link a {
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  position: relative; /* For underline effect */
+}
+
+.nav-link a:hover {
+  color: var(--glowing-orange);
+  text-shadow: 0 0 5px rgba(255, 165, 0, 0.5); /* Subtle glow on hover */
+}
+
+.nav-link a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: var(--glowing-orange);
+  transition: width 0.3s ease-in-out;
+}
+
+.nav-link a:hover::after {
+  width: 100%;
+}
+
+/* Hamburger Menu Icon */
+.hamburger-menu {
+  display: none; /* Hidden by default on desktop */
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 25px;
+  cursor: pointer;
+  z-index: 101; /* Above other content */
+}
+
+.hamburger-bar {
+  width: 100%;
+  height: 3px;
+  background-color: var(--glowing-orange);
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 5px rgba(255, 165, 0, 0.5); /* Glowing effect */
+}
+
+/* Animation for hamburger icon when active */
+.hamburger-menu.active .hamburger-bar:nth-child(1) {
+  transform: translateY(11px) rotate(45deg);
+}
+.hamburger-menu.active .hamburger-bar:nth-child(2) {
+  opacity: 0;
+}
+.hamburger-menu.active .hamburger-bar:nth-child(3) {
+  transform: translateY(-11px) rotate(-45deg);
+}
+
+/* Mobile Navigation Menu (hidden by default) */
+.mobile-nav-links {
+  display: none; /* Hidden by default */
+  flex-direction: column;
+  position: absolute;
+  top: 100%; /* Position below the navbar */
+  left: 0;
+  width: 100%;
+  background-color: var(--gloss-black); /* Same as navbar */
+  border-top: 1px solid var(--border-dark);
+  box-shadow: 0 5px 15px var(--shadow-dark);
+  padding: 1rem 0;
+  z-index: 99; /* Below navbar, above main content */
+  opacity: 0;
+  transform: translateY(-20px); /* Start slightly above */
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  border-radius: 0 0 0.75rem 0.75rem; /* Rounded bottom corners */
+}
+
+.mobile-nav-links.active {
+  display: flex; /* Show when active */
+  opacity: 1;
+  transform: translateY(0); /* Slide into place */
+}
+
+.mobile-nav-link {
+  list-style: none;
+  text-align: center;
+}
+
+.mobile-nav-link a {
+  display: block; /* Make links full width */
+  padding: 0.8rem 0;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.mobile-nav-link a:hover {
+  background-color: rgba(255, 165, 0, 0.1); /* Subtle orange background on hover */
+  color: var(--glowing-orange);
+}
+
+
+/* Main Content Area */
+.homepage-content {
+  flex-grow: 1; /* Allows content to take available space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.homepage-heading {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--glowing-orange);
+  text-shadow: 0 0 10px var(--glowing-orange), 0 0 20px rgba(255, 165, 0, 0.6);
+  margin-bottom: 1.5rem;
+}
+
+.homepage-subheading {
+  font-size: 1.5rem;
+  color: var(--text-medium);
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.homepage-cta-button {
+  padding: 1rem 2.5rem;
+  border-radius: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  background-color: var(--glowing-orange);
+  color: var(--gloss-black);
+  border: 2px solid var(--glowing-orange);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 15px var(--glowing-orange), 0 0 25px rgba(255, 165, 0, 0.5);
+}
+
+.homepage-cta-button:hover {
+  background-color: var(--glowing-orange-dark);
+  box-shadow: 0 0 20px var(--glowing-orange), 0 0 30px rgba(255, 165, 0, 0.7);
+  transform: translateY(-3px);
+}
+
+/* Footer (reusing App.css footer styles, but defining here for HomePage if standalone) */
+.homepage-footer {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--text-medium);
+  font-size: 0.85rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-dark);
+}
+
+.homepage-footer p {
+  margin-top: 0.5rem;
+}
+
+.homepage-footer .disclaimer-bold {
+  font-weight: 700;
+  color: var(--glowing-orange);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .nav-links {
+    display: none; /* Hide desktop nav links on smaller screens */
+  }
+  .hamburger-menu {
+    display: flex; /* Show hamburger menu on smaller screens */
+  }
+  .homepage-heading {
+    font-size: 2.2rem;
+  }
+  .homepage-subheading {
+    font-size: 1.2rem;
+  }
+  .homepage-cta-button {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage-container {
+    padding: 1rem;
+  }
+  .navbar {
+    padding: 0.8rem;
+  }
+  .navbar-logo {
+    font-size: 1.5rem;
+  }
+  .homepage-heading {
+    font-size: 1.8rem;
+  }
+  .homepage-subheading {
+    font-size: 1rem;
+  }
+  .homepage-cta-button {
+    font-size: 1rem;
+    padding: 0.7rem 1.8rem;
+  }
+}

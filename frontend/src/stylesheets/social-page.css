@@ -1,0 +1,48 @@
+/* SocialPage.css */
+/* Reusing core styles from CalculatorPage/App for consistency */
+:root {
+  --gloss-black: #0a0a0a;
+  --gloss-black-light: #1a1a1a;
+  --glowing-orange: #ffa500;
+  --glowing-orange-dark: #cc8400;
+  --text-light: #e0e0e0;
+  --text-medium: #b0b0b0;
+  --border-dark: #333333;
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+.placeholder-page-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom right, var(--gloss-black-light) 0%, var(--gloss-black) 100%);
+  color: var(--text-light);
+}
+
+.placeholder-card {
+  background-color: var(--gloss-black-light);
+  border-radius: 1rem;
+  box-shadow: 0 15px 30px var(--shadow-dark), 0 5px 15px var(--shadow-dark);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 32rem;
+  text-align: center;
+  border: 1px solid var(--border-dark);
+}
+
+.placeholder-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--glowing-orange);
+  text-shadow: 0 0 8px var(--glowing-orange), 0 0 15px rgba(255, 165, 0, 0.5);
+  margin-bottom: 1rem;
+}
+
+.placeholder-text {
+  font-size: 1.2rem;
+  color: var(--text-medium);
+  line-height: 1.6;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../stylesheets/intro-fuel-and-fire.css'; // Ensure you have this CSS file for styling
+import '../stylesheets/intro-fuel-and-fire.css'; 
 
 function IntroFuelAndFire() {
   return (
@@ -11,7 +11,7 @@ function IntroFuelAndFire() {
         </p>
         <div className="intro-steps">
          
-          <div className="intro-step">
+          <div className="intro-step" id="pick-your-treat">
             <span className="intro-emoji" role="img" aria-label="utensils">🍔</span>
             <h2 className="intro-step-title">Pick Your Treat!</h2>
             <p className="intro-step-desc">

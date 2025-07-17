@@ -146,7 +146,7 @@ body {
 
 /* Responsive adjustments */
 
-/* Mobile (min-width: 480px) - 3 cards per row */
+/* Mobile (min-width: 380px) - 3 cards per row */
 @media (min-width: 380px) {
   .met-chart-card {
     width: calc(33.333% - 1.1rem); /* (100% / 3) - total horizontal margin */
@@ -158,6 +158,14 @@ body {
   .met-chart-card {
     width: calc(25% - 1.5rem); /* (100% / 4) - total horizontal margin */
   }
+
+  .met-explanation-text {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #d1d5db; /* Gray text */
+  max-width: 800px;
+  margin: 0 auto;
+}
 }
 
 /* Larger Tablets (min-width: 1024px) - 5 cards per row */
