@@ -97,44 +97,23 @@ const HomePage = () => {
 
   return (
     <div className="homepage-container">
-      <nav className="navbar">
-        <a href="#" className="navbar-logo" onClick={() => handleNavLinkClick("/")}>
-          Fuel & Fire
-        </a>
-
-        <div className={`hamburger-menu ${isMenuOpen ? "active" : ""}`} onClick={toggleMenu}>
-          <div className="hamburger-bar"></div>
-          <div className="hamburger-bar"></div>
-          <div className="hamburger-bar"></div>
-        </div>
-
-        {/* Desktop Nav */}
-        <ul className="nav-links">
-          <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/")}>Home</a></li>
-          <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/calculator")}>Calculator</a></li>
-          <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/met")}>Met Table</a></li>
-          <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/intro")}>About</a></li>
-          <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/social")}>Social</a></li>
-        </ul>
-
-        {/* Mobile Nav */}
-        <ul className={`mobile-nav-links ${isMenuOpen ? "active" : ""}`}>
-          <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/")}>Home</a></li>
-          <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/calculator")}>Calculator</a></li>
-          <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/met")}>Met Table</a></li>
-          <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/intro")}>About</a></li>
-          <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/social")}>Social</a></li>
-        </ul>
-      </nav>
-
+      <img
+        src="/images/fuel-fire-logo.jpeg"
+        alt="Fuel & Fire Logo"
+        className="social-logo"
+      />
       <div className="homepage-content">
         <h2 className="homepage-heading">
           Balance Your Indulgence with Activity.
         </h2>
         <p className="homepage-subheading">
-          Fuel & Fire helps you understand the exercise equivalents of your favorite foods...
+          Fuel & Fire helps you understand the exercise equivalents of your
+          favorite foods...
         </p>
-        <button className="homepage-cta-button" onClick={() => handleNavLinkClick("/calculator")}>
+        <button
+          className="homepage-cta-button"
+          onClick={() => handleNavLinkClick("/calculator")}
+        >
           Start Balancing Now
         </button>
       </div>
@@ -142,7 +121,8 @@ const HomePage = () => {
       <div className="homepage-footer">
         <p>&copy; 2025 Fuel & Fire. All rights reserved.</p>
         <p className="disclaimer-text">
-          <span className="disclaimer-bold">Disclaimer:</span> Calorie and exercise values are approximate...
+          <span className="disclaimer-bold">Disclaimer:</span> Calorie and
+          exercise values are approximate...
         </p>
       </div>
     </div>

@@ -1,48 +1,93 @@
-/* SocialPage.css */
-/* Reusing core styles from CalculatorPage/App for consistency */
+/* SocialPage.css (Updated with intro style colors) */
+
+/* Using the same CSS variables as before */
 :root {
   --gloss-black: #0a0a0a;
   --gloss-black-light: #1a1a1a;
+
+  --color-black-gloss-start: #101010;
+  --color-black-gloss-end: #0a0a0a;
+
   --glowing-orange: #ffa500;
   --glowing-orange-dark: #cc8400;
+  --color-orange-fluorescent: #ff6600;
+
   --text-light: #e0e0e0;
   --text-medium: #b0b0b0;
+
   --border-dark: #333333;
+  --color-dark-border: #1a1a1a;
   --shadow-dark: rgba(0, 0, 0, 0.5);
 }
 
-.placeholder-page-container {
+.social-page-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 2rem;
+
+  /* Use intro radial gradient background for consistency */
+  background: radial-gradient(circle at center, var(--color-black-gloss-start) 0%, var(--color-black-gloss-end) 100%);
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(to bottom right, var(--gloss-black-light) 0%, var(--gloss-black) 100%);
   color: var(--text-light);
 }
 
-.placeholder-card {
+.social-card {
   background-color: var(--gloss-black-light);
-  border-radius: 1rem;
+  border-radius: 1.5rem;
   box-shadow: 0 15px 30px var(--shadow-dark), 0 5px 15px var(--shadow-dark);
+  border: 1px solid var(--color-dark-border);
   padding: 2.5rem;
+  max-width: 400px;
   width: 100%;
-  max-width: 32rem;
   text-align: center;
-  border: 1px solid var(--border-dark);
+  transition: box-shadow 0.3s ease-in-out;
 }
 
-.placeholder-title {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: var(--glowing-orange);
-  text-shadow: 0 0 8px var(--glowing-orange), 0 0 15px rgba(255, 165, 0, 0.5);
-  margin-bottom: 1rem;
+.social-card:hover {
+  box-shadow: 0 20px 40px rgba(255, 102, 0, 0.6), 0 8px 25px var(--shadow-dark);
 }
 
-.placeholder-text {
-  font-size: 1.2rem;
-  color: var(--text-medium);
-  line-height: 1.6;
+.social-logo {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+
+  /* Glow using intro fluorescent orange */
+  /* filter: drop-shadow(0 0 10px var(--color-orange-fluorescent)); */
+  margin: 0 auto 1.5rem;
+  display: block;
+  transition: filter 0.3s ease-in-out;
+}
+
+/* .social-logo:hover {
+  filter: drop-shadow(0 0 15px var(--glowing-orange-dark));
+} */
+
+.social-tagline {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-orange-fluorescent);
+  text-shadow: 0 0 8px var(--color-orange-fluorescent);
+  margin-bottom: 2.5rem;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  font-size: 2.25rem;
+}
+
+.social-icons a {
+  color: var(--color-orange-fluorescent);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.social-icons a:hover {
+  transform: scale(1.25);
+  color: var(--glowing-orange-dark);
+  text-shadow: 0 0 10px var(--glowing-orange-dark);
 }
