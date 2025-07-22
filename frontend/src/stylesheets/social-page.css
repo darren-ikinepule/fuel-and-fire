@@ -1,6 +1,6 @@
-/* SocialPage.css (Updated with intro style colors) */
+/* SocialPage.css (Responsive with media queries) */
 
-/* Using the same CSS variables as before */
+/* Variables (reuse consistent branding) */
 :root {
   --gloss-black: #0a0a0a;
   --gloss-black-light: #1a1a1a;
@@ -26,8 +26,6 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-
-  /* Use intro radial gradient background for consistency */
   background: radial-gradient(circle at center, var(--color-black-gloss-start) 0%, var(--color-black-gloss-end) 100%);
   font-family: 'Inter', sans-serif;
   color: var(--text-light);
@@ -40,7 +38,7 @@
   border: 1px solid var(--color-dark-border);
   padding: 2.5rem;
   max-width: 400px;
-  width: 100%;
+  width: 90%;
   text-align: center;
   transition: box-shadow 0.3s ease-in-out;
 }
@@ -50,34 +48,27 @@
 }
 
 .social-logo {
-  width: 140px;
-  height: 140px;
+  width: 300px;
+  height: 300px;
   object-fit: cover;
   border-radius: 10px;
-
-  /* Glow using intro fluorescent orange */
-  /* filter: drop-shadow(0 0 10px var(--color-orange-fluorescent)); */
   margin: 0 auto 1.5rem;
   display: block;
   transition: filter 0.3s ease-in-out;
 }
-
-/* .social-logo:hover {
-  filter: drop-shadow(0 0 15px var(--glowing-orange-dark));
-} */
 
 .social-tagline {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--color-orange-fluorescent);
   text-shadow: 0 0 8px var(--color-orange-fluorescent);
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .social-icons {
   display: flex;
   justify-content: center;
-  gap: 2.5rem;
+  gap: 2rem;
   font-size: 2.25rem;
 }
 
@@ -90,4 +81,48 @@
   transform: scale(1.25);
   color: var(--glowing-orange-dark);
   text-shadow: 0 0 10px var(--glowing-orange-dark);
+}
+
+/* ------------------------- */
+/* 📱 Responsive Adjustments */
+/* ------------------------- */
+
+/* Tablets (≤ 768px) */
+@media (max-width: 768px) {
+  .social-logo {
+    width: 220px;
+    height: 220px;
+  }
+
+  .social-tagline {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .social-icons {
+    gap: 1.5rem;
+    font-size: 2rem;
+  }
+}
+
+/* Mobile (≤ 480px) */
+@media (max-width: 480px) {
+  .social-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .social-logo {
+    width: 180px;
+    height: 180px;
+  }
+
+  .social-tagline {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .social-icons {
+    gap: 1rem;
+    font-size: 1.8rem;
+  }
 }

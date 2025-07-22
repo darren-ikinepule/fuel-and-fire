@@ -29,7 +29,7 @@
 
 /* Container uses intro’s radial gradient background */
 .homepage-container {
-  min-height: 100vh;
+  height: 80%;
   display: flex;
   flex-direction: column;
   background: radial-gradient(circle at center, var(--color-black-gloss-start) 0%, var(--color-black-gloss-end) 100%);

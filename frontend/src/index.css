@@ -22,12 +22,16 @@ body {
   background: radial-gradient(circle at center, var(--color-black-gloss-start) 0%, var(--color-black-gloss-end) 100%);
   color: var(--color-text-light);
   min-height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
   overflow-x: hidden; /* Prevent horizontal scroll */
+  
 }
+
+
 
 /* General Link/Button Reset */
 button {
