@@ -1,0 +1,65 @@
+/* split-burn-plan.css */
+
+.split-burn-plan-container {
+  background: radial-gradient(circle at center, var(--color-black-gloss-start), var(--color-black-gloss-end));
+  border: 1px solid var(--color-dark-border);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.2);
+}
+
+.split-plan-title {
+  color: var(--color-orange-fluorescent);
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px var(--color-orange-fluorescent);
+}
+
+.split-plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.split-plan-item {
+  background-color: var(--gloss-black-light);
+  border: 1px solid var(--color-dark-border);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.split-plan-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
+}
+
+.split-plan-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.split-plan-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.split-plan-exercise {
+  color: var(--color-orange-fluorescent);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.split-plan-value {
+  color: var(--color-text-light);
+  font-size: 1rem;
+}

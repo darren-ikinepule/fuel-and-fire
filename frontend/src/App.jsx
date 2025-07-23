@@ -1,68 +1,60 @@
-// // Example: App.jsx
-// import React, { useState } from "react";
-// import HomePage from "./components/HomePage";
-// import FoodSelector from "./components/FoodSelector";
-// import ResultsDisplay from "./components/ResultsDisplay";
-// import UserInputForm from "./components/UserInputForm";
-// import "./index.css"; // Ensure your global styles are imported here or in index.js
-// import IntroFuelAndFire from "./components/IntroFuelAndFire";
-// import MetChart from "./components/MetChart";
-// import SocialPage from "./components/SocialPage";
+// App.jsx (fixed validation display logic for Fuel & Fire)
 
-
-
-
-
-// function App() {
-//   const [user, setUser] = useState({ weight: "" });
-//   const [selectedFood, setSelectedFood] = useState([]);
-//   const [showResults, setShowResults] = useState(false);
-
-//   const handleFormSubmit = () => {
-//     setShowResults(true);
-//   };
-
-//   return (
-//     <>
-//       <HomePage/>
-//       <IntroFuelAndFire/>
-//       <MetChart/>
-//       <FoodSelector onSelect={setSelectedFood} />
-//       <UserInputForm
-//         user={user}
-//         onChange={setUser}
-//         onSubmit={handleFormSubmit}
-//       />
-//       {showResults && <ResultsDisplay food={selectedFood} user={user} />}
-//       <SocialPage/>
-     
-//     </>
-//   );
-// }
-
-// export default App;
-
-// App.jsx
-// App.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout";
 import HomePage from "./components/HomePage";
 import FoodSelector from "./components/FoodSelector";
-import ResultsDisplay from "./components/ResultsDisplay";
 import UserInputForm from "./components/UserInputForm";
+import ResultsDisplay from "./components/ResultsDisplay";
+import SplitBurnPlan from "./components/SplitBurnPlan";
+import ExerciseSelector from "./components/ExerciseSelector";
 import IntroFuelAndFire from "./components/IntroFuelAndFire";
 import MetChart from "./components/MetChart";
 import SocialPage from "./components/SocialPage";
 import NotFound from "./components/NotFound";
 
+import { calculateSplitExercises } from "./scripts/calculateSplitExercises";
+
 function App() {
   const [user, setUser] = useState({ weight: "" });
   const [selectedFood, setSelectedFood] = useState([]);
+  const [selectedExercises, setSelectedExercises] = useState([]);
+  const [splitExercises, setSplitExercises] = useState([]);
   const [showResults, setShowResults] = useState(false);
+  const [validationError, setValidationError] = useState("");
 
-  const handleFormSubmit = () => {
+  const handleExerciseSelect = (exerciseName) => {
+    setSelectedExercises((prev) =>
+      prev.includes(exerciseName)
+        ? prev.filter((name) => name !== exerciseName)
+        : [...prev, exerciseName]
+    );
+  };
+
+  const handleCalculate = () => {
+    const totalCalories = selectedFood.reduce((sum, f) => sum + f.calories, 0);
+
+    if (!user.weight || Number(user.weight) < 20) {
+      setValidationError("Please enter your weight before calculating.");
+      setShowResults(false);
+      return;
+    }
+    if (selectedFood.length === 0) {
+      setValidationError("Please select at least one food item before calculating.");
+      setShowResults(false);
+      return;
+    }
+    if (selectedExercises.length === 0) {
+      setValidationError("Please select at least one exercise before calculating.");
+      setShowResults(false);
+      return;
+    }
+
+    setValidationError("");
+    const split = calculateSplitExercises(selectedExercises, totalCalories, Number(user.weight));
+    setSplitExercises(split);
     setShowResults(true);
   };
 
@@ -79,12 +71,26 @@ function App() {
             element={
               <>
                 <FoodSelector onSelect={setSelectedFood} />
+                <ExerciseSelector onSelect={handleExerciseSelect} selected={selectedExercises} />
                 <UserInputForm
                   user={user}
                   onChange={setUser}
-                  onSubmit={handleFormSubmit}
+                  onSubmit={handleCalculate}
+                  selectedExercises={selectedExercises}
                 />
-                {showResults && <ResultsDisplay food={selectedFood} user={user} />}
+                {validationError && !showResults && (
+                  <p style={{ color: 'var(--color-orange-fluorescent)', textAlign: 'center', marginTop: '1rem' }}>{validationError}</p>
+                )}
+                {showResults && (
+                  <>
+                    <ResultsDisplay food={selectedFood} user={user} />
+                    <SplitBurnPlan
+                      splitExercises={splitExercises}
+                      totalCalories={selectedFood.reduce((sum, f) => sum + f.calories, 0)}
+                      selectedExercises={selectedExercises}
+                    />
+                  </>
+                )}
               </>
             }
           />

@@ -1,15 +1,27 @@
+// UserInputForm.jsx (final working validation fix)
+
 import React, { useState } from "react";
 import "../stylesheets/user-input-form.css";
 
 function UserInputForm({ user, onChange, onSubmit }) {
   const [localWeight, setLocalWeight] = useState(user.weight || "");
+  const [error, setError] = useState("");
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setLocalWeight(e.target.value);
+    if (e.target.value && Number(e.target.value) >= 20) {
+      setError("");
+    }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    const weightNum = Number(localWeight);
+    if (!localWeight || weightNum < 20 || weightNum > 300) {
+      setError("Please enter a valid weight between 20-300 kg before calculating.");
+      return;
+    }
+    setError("");
     onChange({ weight: localWeight });
     if (onSubmit) onSubmit();
   };
@@ -29,9 +41,10 @@ function UserInputForm({ user, onChange, onSubmit }) {
           value={localWeight}
           onChange={handleChange}
           className="input-field"
-          placeholder="e.g., 70" /* Add placeholder */
+          placeholder="e.g., 70"
           required
         />
+        {error && <p className="error-message" style={{ color: 'var(--color-orange-fluorescent)', marginTop: '0.5rem' }}>{error}</p>}
       </div>
       <button type="submit" className="submit-btn">Calculate Fuel Burn</button>
     </form>

@@ -7,7 +7,8 @@ function FoodSelector({ onSelect }) {
 
   const fetchFood = async () => {
     try {
-      const response = await fetch("http://localhost:3000/food-items");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/food-items`);
+      // const response = await fetch("http://localhost:3000/food-items");
       const data = await response.json();
       console.log("Food Data Response:", data);
       setFastFoodInfo(data);
