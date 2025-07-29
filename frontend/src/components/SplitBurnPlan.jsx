@@ -9,6 +9,7 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
   return (
     <div className="split-burn-plan-container">
       <h2 className="split-plan-title">Your Split Burn Plan</h2>
+      
       <p className="split-plan-summary">
         Dividing <strong className="orange">{totalCalories} calories</strong> across{" "}
         <strong className="orange">{selectedExercises.join(", ")}</strong>

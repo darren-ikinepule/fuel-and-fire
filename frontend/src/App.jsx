@@ -42,18 +42,26 @@ function App() {
       return;
     }
     if (selectedFood.length === 0) {
-      setValidationError("Please select at least one food item before calculating.");
+      setValidationError(
+        "Please select at least one food item before calculating."
+      );
       setShowResults(false);
       return;
     }
     if (selectedExercises.length === 0) {
-      setValidationError("Please select at least one exercise before calculating.");
+      setValidationError(
+        "Please select at least one exercise before calculating."
+      );
       setShowResults(false);
       return;
     }
 
     setValidationError("");
-    const split = calculateSplitExercises(selectedExercises, totalCalories, Number(user.weight));
+    const split = calculateSplitExercises(
+      selectedExercises,
+      totalCalories,
+      Number(user.weight)
+    );
     setSplitExercises(split);
     setShowResults(true);
   };
@@ -70,22 +78,25 @@ function App() {
             path="/calculator"
             element={
               <>
-              
                 <FoodSelector onSelect={setSelectedFood} />
-                <ExerciseSelector onSelect={handleExerciseSelect} selected={selectedExercises} />
+                <ExerciseSelector
+                  onSelect={handleExerciseSelect}
+                  selected={selectedExercises}
+                />
                 <UserInputForm
                   user={user}
                   onChange={setUser}
                   onSubmit={handleCalculate}
                   selectedExercises={selectedExercises}
                 />
+
                 {validationError && !showResults && (
                   <p
                     style={{
-                      color: 'var(--color-orange-fluorescent)',
-                      textAlign: 'center',
-                      marginTop: '1rem',
-                      fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)' // responsive text size
+                      color: "var(--color-orange-fluorescent)",
+                      textAlign: "center",
+                      marginTop: "1rem",
+                      fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)", // responsive text size
                     }}
                   >
                     {validationError}
@@ -96,7 +107,10 @@ function App() {
                     <ResultsDisplay food={selectedFood} user={user} />
                     <SplitBurnPlan
                       splitExercises={splitExercises}
-                      totalCalories={selectedFood.reduce((sum, f) => sum + f.calories, 0)}
+                      totalCalories={selectedFood.reduce(
+                        (sum, f) => sum + f.calories,
+                        0
+                      )}
                       selectedExercises={selectedExercises}
                     />
                   </>

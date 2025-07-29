@@ -36,6 +36,7 @@ function FoodSelector({ onSelect }) {
     <>
       <div className="heading-section">
         <h1 className="main-heading">Fuel & Fire</h1>
+        <h2 className="istruction-text">Please Select Your Food Items</h2>
       </div>
       <div className="food-selector">
         <div className="food-list">
