@@ -70,7 +70,7 @@ function App() {
             path="/calculator"
             element={
               <>
-                
+              
                 <FoodSelector onSelect={setSelectedFood} />
                 <ExerciseSelector onSelect={handleExerciseSelect} selected={selectedExercises} />
                 <UserInputForm
