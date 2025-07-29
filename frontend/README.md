@@ -47,8 +47,8 @@ Build a simple **React-based web app** that allows users to choose a fast food i
 * [ ] Build food selector component in React
 * [ ] Create form to input weight
 * [ ] Build function to compute exercise equivalents
-* [ ] Display results clearly (reusable UI components)
-* [ ] Hook up frontend to backend to get food data
+* [X] Display results clearly (reusable UI components)
+* [X] Hook up frontend to backend to get food data
 
 ### **Week 5: Polish & Test**
 

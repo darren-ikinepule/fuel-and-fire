@@ -1,4 +1,4 @@
-// components/ExerciseSelector.jsx (regenerated for persistent highlighting)
+// ExerciseSelector.jsx - Fuel & Fire clean, responsive, with persistent highlighting
 
 import React from 'react';
 import '../stylesheets/exercise-selector.css';
@@ -20,9 +20,11 @@ const exerciseOptions = [
   { name: "Plank (isometric)" }
 ];
 
-function ExerciseSelector({ onSelect, selected }) {
-  const handleToggle = (name) => {
-    onSelect(name);
+function ExerciseSelector({ onSelect, selected = [] }) {
+  const handleToggle = (exerciseName) => {
+    if (onSelect) {
+      onSelect(exerciseName);
+    }
   };
 
   return (
@@ -32,6 +34,7 @@ function ExerciseSelector({ onSelect, selected }) {
         {exerciseOptions.map((exercise) => (
           <button
             key={exercise.name}
+            type="button"
             className={`exercise-selector-item ${selected.includes(exercise.name) ? 'selected' : ''}`}
             onClick={() => handleToggle(exercise.name)}
           >

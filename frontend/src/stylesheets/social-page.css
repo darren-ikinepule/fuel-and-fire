@@ -1,32 +1,12 @@
-/* SocialPage.css (Responsive with media queries) */
-
-/* Variables (reuse consistent branding) */
-:root {
-  --gloss-black: #0a0a0a;
-  --gloss-black-light: #1a1a1a;
-
-  --color-black-gloss-start: #101010;
-  --color-black-gloss-end: #0a0a0a;
-
-  --glowing-orange: #ffa500;
-  --glowing-orange-dark: #cc8400;
-  --color-orange-fluorescent: #ff6600;
-
-  --text-light: #e0e0e0;
-  --text-medium: #b0b0b0;
-
-  --border-dark: #333333;
-  --color-dark-border: #1a1a1a;
-  --shadow-dark: rgba(0, 0, 0, 0.5);
-}
+/* SocialPage.css - Fuel & Fire Social Page */
 
 .social-page-container {
-  min-height: 100vh;
+  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: radial-gradient(circle at center, var(--color-black-gloss-start) 0%, var(--color-black-gloss-end) 100%);
+  background: radial-gradient(circle at center, var(--color-black-gloss-start), var(--color-black-gloss-end));
   font-family: 'Inter', sans-serif;
   color: var(--text-light);
 }
@@ -34,12 +14,12 @@
 .social-card {
   background-color: var(--gloss-black-light);
   border-radius: 1.5rem;
-  box-shadow: 0 15px 30px var(--shadow-dark), 0 5px 15px var(--shadow-dark);
   border: 1px solid var(--color-dark-border);
   padding: 2.5rem;
-  max-width: 400px;
+  max-width: 560px;
   width: 90%;
   text-align: center;
+  box-shadow: 0 15px 30px var(--shadow-dark), 0 5px 15px var(--shadow-dark);
   transition: box-shadow 0.3s ease-in-out;
 }
 
@@ -48,17 +28,17 @@
 }
 
 .social-logo {
-  width: 300px;
-  height: 300px;
+  width: 260px;
+  height: 260px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 1rem;
   margin: 0 auto 1.5rem;
   display: block;
   transition: filter 0.3s ease-in-out;
 }
 
 .social-tagline {
-  font-size: 1.4rem;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
   font-weight: 700;
   color: var(--color-orange-fluorescent);
   text-shadow: 0 0 8px var(--color-orange-fluorescent);
@@ -68,61 +48,35 @@
 .social-icons {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  font-size: 2.25rem;
+  gap: 1.5rem;
+  font-size: clamp(1.8rem, 5vw, 2.25rem);
 }
 
 .social-icons a {
   color: var(--color-orange-fluorescent);
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .social-icons a:hover {
-  transform: scale(1.25);
+  transform: scale(1.2);
   color: var(--glowing-orange-dark);
   text-shadow: 0 0 10px var(--glowing-orange-dark);
 }
 
-/* ------------------------- */
-/* 📱 Responsive Adjustments */
-/* ------------------------- */
-
-/* Tablets (≤ 768px) */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
   .social-logo {
-    width: 220px;
-    height: 220px;
-  }
-
-  .social-tagline {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .social-icons {
-    gap: 1.5rem;
-    font-size: 2rem;
+    width: 200px;
+    height: 200px;
   }
 }
 
-/* Mobile (≤ 480px) */
 @media (max-width: 480px) {
   .social-card {
-    padding: 2rem 1.5rem;
+    padding: 2rem 1rem;
   }
-
   .social-logo {
-    width: 180px;
-    height: 180px;
-  }
-
-  .social-tagline {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .social-icons {
-    gap: 1rem;
-    font-size: 1.8rem;
+    width: 160px;
+    height: 160px;
   }
 }

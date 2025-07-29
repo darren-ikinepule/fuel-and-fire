@@ -1,0 +1,119 @@
+/* src/stylesheets/global-compact.css */
+
+:root {
+  --color-black-gloss-start: #101010;
+  --color-black-gloss-end: #0a0a0a;
+  --color-orange-fluorescent: #ff6600;
+  --color-text-light: #f0f0f0;
+  --color-text-medium: #b0b0b0;
+  --color-dark-border: #1a1a1a;
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Chakra Petch', sans-serif;
+  background: radial-gradient(circle at center, var(--color-black-gloss-start), var(--color-black-gloss-end));
+  color: var(--color-text-light);
+  font-size: 0.8rem;
+  line-height: 1.4rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-orange-fluorescent);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0.5rem 0;
+}
+
+h1 { font-size: 1.4rem; }
+h2 { font-size: 1.2rem; }
+h3 { font-size: 1rem; }
+
+p, li, label, input, button, a {
+  font-size: 0.8rem;
+}
+
+button, .submit-btn {
+  background: var(--color-orange-fluorescent);
+  color: var(--color-black-gloss-start);
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover, .submit-btn:hover {
+  background: #e65c00;
+}
+
+.navbar {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.navbar-logo {
+  font-size: 1rem;
+}
+
+.nav-links, .mobile-nav-links {
+  gap: 0.5rem;
+}
+
+.main-content {
+  max-width: 1000px;
+  padding: 0.8rem;
+  gap: 0.8rem;
+}
+
+.card, .exercise-item, .split-plan-item {
+  background: var(--color-black-gloss-start);
+  border: 1px solid var(--color-dark-border);
+  border-radius: 8px;
+  padding: 0.6rem;
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.15);
+}
+
+.exercise-img, .split-plan-img, .food-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+}
+
+.footer, .homepage-footer {
+  font-size: 0.7rem;
+  padding: 0.4rem;
+}
+
+.input-field {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.5rem;
+}
+
+.food-selector .food-item {
+  width: 100px;
+  padding: 0.5rem;
+}
+
+.food-selector .food-img {
+  width: 60px;
+  height: 60px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  h1 { font-size: 1.2rem; }
+  h2 { font-size: 1rem; }
+  h3 { font-size: 0.9rem; }
+  .main-content { padding: 0.5rem; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1rem; }
+  h2 { font-size: 0.9rem; }
+  h3 { font-size: 0.8rem; }
+  .navbar { padding: 0.3rem 0.5rem; }
+}

@@ -1,3 +1,5 @@
+// FoodSelector.jsx – With deselect visual fix via blur()
+
 import React, { useState, useEffect } from "react";
 import "../stylesheets/food-selector.css";
 
@@ -5,33 +7,29 @@ function FoodSelector({ onSelect }) {
   const [foodSelector, setFoodSelector] = useState([]);
   const [fastFoodInfo, setFastFoodInfo] = useState([]);
 
-  const fetchFood = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/food-items`);
-      // const response = await fetch("http://localhost:3000/food-items");
-      const data = await response.json();
-      console.log("Food Data Response:", data);
-      setFastFoodInfo(data);
-    } catch (err) {
-      console.error("Error fetching food data:", err);
-    }
-  };
-
   useEffect(() => {
+    const fetchFood = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/food-items`);
+        const data = await response.json();
+        setFastFoodInfo(data);
+      } catch (err) {
+        console.error("Error fetching food data:", err);
+      }
+    };
     fetchFood();
   }, []);
 
-  const handleSelect = (index) => {
-    let newSelected;
-    if (foodSelector.includes(index)) {
-      newSelected = foodSelector.filter((i) => i !== index);
-    } else {
-      newSelected = [...foodSelector, index];
-    }
+  const handleSelect = (index, e) => {
+    const newSelected = foodSelector.includes(index)
+      ? foodSelector.filter((i) => i !== index)
+      : [...foodSelector, index];
+
     setFoodSelector(newSelected);
-    if (onSelect) {
-      onSelect(newSelected.map((i) => fastFoodInfo[i]));
-    }
+    onSelect?.(newSelected.map((i) => fastFoodInfo[i]));
+
+    // Remove focus immediately to prevent focus styles
+    e?.currentTarget?.blur();
   };
 
   return (
@@ -44,12 +42,10 @@ function FoodSelector({ onSelect }) {
           {fastFoodInfo.map((food, index) => (
             <div
               key={food.name}
-              className={`food-item${
-                foodSelector.includes(index) ? " selected" : ""
-              }`}
-              onClick={() => handleSelect(index)}
-              tabIndex={0}
+              className={`food-item${foodSelector.includes(index) ? " selected" : ""}`}
+              onClick={(e) => handleSelect(index, e)}
               role="button"
+              tabIndex={0}
               aria-label={food.name}
             >
               <img src={food.img} alt={food.name} className="food-img" />

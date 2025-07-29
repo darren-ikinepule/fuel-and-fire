@@ -1,183 +1,129 @@
-/* MetChart.css */
+/* met-chart.css - Fuel & Fire MET Chart Clean Styles */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-
-/* Base styles for the entire app */
-body {
-  font-family: 'Inter', sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Main container for the chart component */
 .met-chart-container {
   min-height: 100vh;
-  background-color: #1a1a1a; /* Gloss black background */
-  color: #f3f4f6; /* Light gray text */
+  background: radial-gradient(circle at center, var(--color-black-gloss-start), var(--color-black-gloss-end));
+  color: var(--color-text-light);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem; /* Base padding for smaller screens */
+  padding: 2rem 1rem;
 }
 
-/* Header section styling */
 .met-chart-header {
-  width: 100%;
-  max-width: 72rem; /* Max width for content */
+  max-width: 72rem;
   text-align: center;
   margin-bottom: 2rem;
 }
 
 .met-chart-title {
-  font-size: 3rem;
-  line-height: 1;
+  font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 800;
-  color: #f97316; /* Fluorescent orange */
-  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.5rem;
+  color: var(--color-orange-fluorescent);
+  text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
 }
 
 .met-chart-subtitle {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
-  color: #d1d5db; /* Gray text */
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: var(--color-text-medium);
 }
 
-/* MET Explanation Section Styling */
 .met-explanation-section {
-  width: 100%;
-  max-width: 72rem;
-  background-color: #2d3748; /* Slightly lighter dark background for contrast */
-  border-radius: 0.75rem;
-  border: 2px solid #ea580c; /* Orange border */
+  background: #0d0d0d;
+  border: 1px solid var(--color-orange-fluorescent);
+  border-radius: 1rem;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  max-width: 72rem;
   text-align: center;
+  margin-bottom: 2rem;
 }
 
 .met-explanation-title {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 700;
-  color: #f97316; /* Fluorescent orange */
-  margin-bottom: 1rem;
+  color: var(--color-orange-fluorescent);
+  margin-bottom: 0.5rem;
 }
 
 .met-explanation-text {
-  font-size: 1rem;
-  line-height: 1.5rem;
-  color: #d1d5db; /* Gray text */
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  color: var(--color-text-medium);
   max-width: 800px;
   margin: 0 auto;
+  line-height: 1.6;
 }
 
 .met-explanation-text strong {
-  color: #f97316; /* Fluorescent orange for emphasis */
+  color: var(--color-orange-fluorescent);
 }
 
-/* Main content area for the chart grid */
 .met-chart-main {
-  width: 100%;
   max-width: 72rem;
+  width: 100%;
 }
 
-/* Flexbox Grid Container */
 .met-chart-grid {
   display: flex;
-  flex-wrap: wrap; /* Allow items to wrap to the next line */
-  justify-content: center; /* Center items horizontally when they don't fill a row */
-  margin: -0.75rem; /* Compensate for the margin on individual cards */
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
 }
 
-/* Individual Card Styling */
 .met-chart-card {
-  background-color: #2d3748; /* Dark gray background for cards */
+  background: #111;
+  border: 1px solid var(--color-dark-border);
   border-radius: 0.75rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 1.2rem;
   text-align: center;
-  border: 2px solid #ea580c; /* Orange border */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth hover effects */
-
-  /* Base width for very small mobile (less than 480px), effectively 1 column */
-  margin: 0.75rem; /* Half of the desired gap (1.5rem) */
-  width: calc(100% - 1.5rem); /* Full width minus total horizontal margin */
-  min-width: 150px; /* Ensure cards don't become too small */
+  flex: 1 1 calc(45% - 1rem);
+  max-width: calc(45% - 1rem);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .met-chart-card:hover {
-  transform: scale(1.05); /* Slightly enlarge on hover */
-  box-shadow: 0 10px 20px -5px rgba(249, 115, 22, 0.5); /* Orange glow shadow on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
+  border-color: var(--color-orange-fluorescent);
 }
 
 .met-chart-card-image {
-  width: 6rem;
-  height: 6rem;
-  margin-bottom: 1rem;
-  border-radius: 9999px; /* Circular image */
-  border: 4px solid #f97316; /* Orange border around image */
-  padding: 0.25rem;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--color-orange-fluorescent);
+  margin-bottom: 0.75rem;
 }
 
 .met-chart-card-name {
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
   font-weight: 700;
-  color: #fdba74; /* Lighter orange for names */
+  color: var(--color-orange-fluorescent);
   margin-bottom: 0.5rem;
 }
 
 .met-chart-card-value {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-  font-weight: 800;
-  color: #f97316; /* Fluorescent orange for values */
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-weight: 700;
+  color: var(--color-orange-fluorescent);
 }
 
 .met-chart-card-unit {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+  font-size: 0.9em;
   font-weight: 600;
+  color: var(--color-text-medium);
 }
 
-/* Responsive adjustments */
-
-/* Mobile (min-width: 380px) - 3 cards per row */
-@media (min-width: 380px) {
+@media (min-width: 640px) {
   .met-chart-card {
-    width: calc(33.333% - 1.1rem); /* (100% / 3) - total horizontal margin */
+    flex: 1 1 calc(30% - 1rem);
+    max-width: calc(30% - 1rem);
   }
 }
 
-/* Small Tablets (min-width: 768px) - 4 cards per row */
-@media (min-width: 768px) {
-  .met-chart-card {
-    width: calc(25% - 1.5rem); /* (100% / 4) - total horizontal margin */
-  }
-
-  .met-explanation-text {
-  font-size: 1rem;
-  line-height: 1.5rem;
-  color: #d1d5db; /* Gray text */
-  max-width: 800px;
-  margin: 0 auto;
-}
-}
-
-/* Larger Tablets (min-width: 1024px) - 5 cards per row */
 @media (min-width: 1024px) {
   .met-chart-card {
-    width: calc(20% - 1.5rem); /* (100% / 5) - total horizontal margin */
-  }
-}
-
-/* Larger Desktops (min-width: 1280px) - 6 cards per row */
-@media (min-width: 1280px) {
-  .met-chart-card {
-    width: calc(16.666% - 1.5rem); /* (100% / 6) - total horizontal margin */
+    flex: 1 1 calc(20% - 1rem);
+    max-width: calc(20% - 1rem);
   }
 }

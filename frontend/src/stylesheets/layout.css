@@ -11,8 +11,11 @@
 }
 
 body, html, .layout-container {
-  min-height: 100vh;
+  height: 100%;
+  width: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   background: radial-gradient(circle at center, var(--color-black-gloss-start) 0%, var(--color-black-gloss-end) 100%);
   color: var(--color-text-light);
@@ -100,6 +103,7 @@ body, html, .layout-container {
 
 /* Footer styling */
 .homepage-footer {
+  margin-top: auto;
   text-align: center;
   padding: 1rem;
   font-size: 0.9rem;

@@ -1,6 +1,6 @@
-// App.jsx (fixed validation display logic for Fuel & Fire)
+// App.jsx - Fuel & Fire clean, responsive, clear validation logic
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout";
@@ -38,7 +38,7 @@ function App() {
 
     if (!user.weight || Number(user.weight) < 20) {
       setValidationError("Please enter your weight before calculating.");
-      setShowResults(false);
+      setShowResults(true);
       return;
     }
     if (selectedFood.length === 0) {
@@ -70,6 +70,7 @@ function App() {
             path="/calculator"
             element={
               <>
+                
                 <FoodSelector onSelect={setSelectedFood} />
                 <ExerciseSelector onSelect={handleExerciseSelect} selected={selectedExercises} />
                 <UserInputForm
@@ -79,7 +80,16 @@ function App() {
                   selectedExercises={selectedExercises}
                 />
                 {validationError && !showResults && (
-                  <p style={{ color: 'var(--color-orange-fluorescent)', textAlign: 'center', marginTop: '1rem' }}>{validationError}</p>
+                  <p
+                    style={{
+                      color: 'var(--color-orange-fluorescent)',
+                      textAlign: 'center',
+                      marginTop: '1rem',
+                      fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)' // responsive text size
+                    }}
+                  >
+                    {validationError}
+                  </p>
                 )}
                 {showResults && (
                   <>

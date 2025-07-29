@@ -1,18 +1,17 @@
-// SplitBurnPlan.jsx (Regenerated with Total Calories and Breakdown Display)
+// SplitBurnPlan.jsx - Fuel & Fire clean, responsive split burn summary
 
 import React from 'react';
 import '../stylesheets/split-burn-plan.css';
 
 function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
-  if (!splitExercises || splitExercises.length === 0) {
-    return null;
-  }
+  if (!splitExercises || splitExercises.length === 0) return null;
 
   return (
     <div className="split-burn-plan-container">
       <h2 className="split-plan-title">Your Split Burn Plan</h2>
       <p className="split-plan-summary">
-        Dividing <strong>{totalCalories} calories</strong> across <strong>{selectedExercises.join(", ")}</strong>
+        Dividing <strong className="orange">{totalCalories} calories</strong> across{" "}
+        <strong className="orange">{selectedExercises.join(", ")}</strong>
       </p>
       <div className="split-plan-list">
         {splitExercises.map((ex, idx) => (

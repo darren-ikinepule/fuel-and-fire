@@ -1,10 +1,11 @@
-/* src/index.css */
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap'); /* A good sporty/techy font */
+/* src/index.css - Fuel & Fire clean, fully responsive base */
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap');
 
 :root {
   --color-black-gloss-start: #1a1a1a;
   --color-black-gloss-end: #000000;
-  --color-orange-fluorescent: #FF6600; /* Fluorescent Orange */
+  --color-orange-fluorescent: #FF6600;
   --color-text-light: #f0f0f0;
   --color-text-medium: #b0b0b0;
   --color-dark-element: #222;
@@ -15,29 +16,40 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Chakra Petch', sans-serif; /* Applied globally */
+  font-family: 'Chakra Petch', sans-serif;
 }
 
 body {
   background: radial-gradient(circle at center, var(--color-black-gloss-start) 0%, var(--color-black-gloss-end) 100%);
   color: var(--color-text-light);
-  min-height: 100vh;
-  width: 100vw;
+  height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding: 10px;
+  overflow-x: hidden;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem); /* responsive base size */
+  line-height: 1.5;
   
 }
 
-
-
-/* General Link/Button Reset */
 button {
   border: none;
   background: none;
   cursor: pointer;
-  padding: 0;
   font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Responsive container utility (optional for consistent layouts) */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 1rem;
+}
+
+/* Images scale properly */
+img {
+  max-width: 100%;
+  height: auto;
 }

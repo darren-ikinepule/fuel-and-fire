@@ -1,4 +1,4 @@
-// UserInputForm.jsx (final working validation fix)
+// UserInputForm.jsx - Fuel & Fire clean, responsive, with final validation logic
 
 import React, { useState } from "react";
 import "../stylesheets/user-input-form.css";
@@ -8,8 +8,9 @@ function UserInputForm({ user, onChange, onSubmit }) {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setLocalWeight(e.target.value);
-    if (e.target.value && Number(e.target.value) >= 20) {
+    const value = e.target.value;
+    setLocalWeight(value);
+    if (value && Number(value) >= 20 && Number(value) <= 300) {
       setError("");
     }
   };
@@ -18,12 +19,12 @@ function UserInputForm({ user, onChange, onSubmit }) {
     e.preventDefault();
     const weightNum = Number(localWeight);
     if (!localWeight || weightNum < 20 || weightNum > 300) {
-      setError("Please enter a valid weight between 20-300 kg before calculating.");
+      setError("Please enter a valid weight between 20–300 kg before calculating.");
       return;
     }
     setError("");
     onChange({ weight: localWeight });
-    if (onSubmit) onSubmit();
+    onSubmit?.();
   };
 
   return (
@@ -44,9 +45,13 @@ function UserInputForm({ user, onChange, onSubmit }) {
           placeholder="e.g., 70"
           required
         />
-        {error && <p className="error-message" style={{ color: 'var(--color-orange-fluorescent)', marginTop: '0.5rem' }}>{error}</p>}
+        {error && (
+          <p className="error-message">{error}</p>
+        )}
       </div>
-      <button type="submit" className="submit-btn">Calculate Fuel Burn</button>
+      <button type="submit" className="submit-btn">
+        Calculate Fuel Burn
+      </button>
     </form>
   );
 }

@@ -1,4 +1,4 @@
-/* src/stylesheets/food-selector.css */
+/* food-selector.css - Fuel & Fire clean, fully responsive */
 
 .heading-section {
   display: flex;
@@ -6,24 +6,16 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 20px 0 40px; 
-  position: relative; /* For glow effect */
-}
-
-.logo-img {
-  width: 180px; 
-  height: auto;
-  margin-bottom: 15px;
-  filter: drop-shadow(0 0 8px rgba(255, 102, 0, 0.6)); /* Subtle orange glow for logo */
+  padding: 1rem 0 2rem;
+  position: relative;
 }
 
 .main-heading {
-  font-size: 3.5em; 
+  font-size: clamp(2rem, 5vw, 3.5rem);
   color: var(--color-orange-fluorescent);
   text-transform: uppercase;
   letter-spacing: 3px;
-  text-shadow: 0 0 15px rgba(255, 102, 0, 0.7); /* Stronger glow for heading */
-  margin-top: 10px;
+  text-shadow: 0 0 15px rgba(255, 102, 0, 0.7);
 }
 
 .food-selector {
@@ -31,15 +23,16 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 1200px; /* Limit width for better layout on large screens */
-  margin-bottom: 40px; 
+  max-width: 1200px;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
 }
 
 .food-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 25px; 
+  gap: 1rem;
   width: 100%;
 }
 
@@ -47,12 +40,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 200px; 
-  min-height: 220px; 
-  background: var(--color-dark-element); 
-  border: 2px solid var(--color-dark-border); 
+  width: clamp(140px, 20vw, 200px);
+  min-height: clamp(160px, 22vw, 220px);
+  background: var(--color-dark-element);
+  border: 2px solid var(--color-dark-border);
   border-radius: 12px;
-  padding: 15px;
+  padding: 0.75rem;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
   position: relative;
@@ -60,7 +53,8 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
-.food-item::before { /* Edgy/sporty underline effect on hover */
+/* Hover underline bar */
+.food-item::before {
   content: '';
   position: absolute;
   bottom: 0;
@@ -73,81 +67,45 @@
   transition: transform 0.3s ease-out;
 }
 
-.food-item:hover::before,
-.food-item:focus::before {
+.food-item:hover::before {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
 
-
-.food-item:hover,
-.food-item:focus {
-  transform: translateY(-5px) scale(1.02); /* Slight lift and scale */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 102, 0, 0.7); /* Stronger glow on hover */
-  border-color: var(--color-orange-fluorescent); /* Orange border on hover */
-  outline: none; /* Remove default focus outline */
+/* Hover lift effect */
+.food-item:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 102, 0, 0.7);
+  border-color: var(--color-orange-fluorescent);
 }
 
+/* Selected state */
 .food-item.selected {
-  border: 2px solid var(--color-orange-fluorescent); /* Fluorescent orange border when selected */
-  background: linear-gradient(135deg, rgba(255, 102, 0, 0.15), rgba(255, 102, 0, 0.05)); /* Subtle orange tint */
-  box-shadow: 0 0 20px rgba(255, 102, 0, 0.8), inset 0 0 10px rgba(255, 102, 0, 0.5); /* Stronger glow and inner glow */
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.15), rgba(255, 102, 0, 0.05));
+  border-color: var(--color-orange-fluorescent);
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.8), inset 0 0 10px rgba(255, 102, 0, 0.5);
 }
 
 .food-img {
-  width: 90%; /* Larger image */
-  height: 100px; /* Fixed height for consistency */
-  object-fit: cover; /* Ensures images fill space without distortion */
+  width: 90%;
+  height: clamp(80px, 10vw, 100px);
+  object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border for image */
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .food-name {
-  font-size: 1.1em;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
   font-weight: 600;
-  color: var(--color-text-light); /* White text for names */
-  margin-bottom: 6px;
+  color: var(--color-text-light);
   text-align: center;
 }
 
 .food-calories {
-  font-size: 0.95em;
-  color: var(--color-orange-fluorescent); /* Orange for calories */
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  color: var(--color-orange-fluorescent);
   font-weight: bold;
   text-align: center;
-  text-shadow: 0 0 5px rgba(255, 102, 0, 0.4); /* Small glow for calories */
-}
-
-@media (max-width: 768px) {
-  .main-heading {
-    font-size: 2.5em;
-  }
-  .food-item {
-    width: 160px;
-    min-height: 180px;
-  }
-  .food-img {
-    height: 80px;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-heading {
-    font-size: 2em;
-  }
-  .logo-img {
-    width: 150px;
-  }
-  .food-item {
-    width: 140px;
-    min-height: 160px;
-    padding: 10px;
-  }
-  .food-name {
-    font-size: 1em;
-  }
-  .food-calories {
-    font-size: 0.85em;
-  }
+  text-shadow: 0 0 5px rgba(255, 102, 0, 0.4);
 }
