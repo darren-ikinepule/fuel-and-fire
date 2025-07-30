@@ -71,7 +71,8 @@
   {
     "img": "/images/large-fries.jpeg",
     "name": "Fries Large",
-    "calories": 578
+    "calories": 578,
+    "company": "kfc"
   },
   {
     "img": "/images/wicked-wings-12pce.jpeg",
@@ -91,6 +92,12 @@
     "name": "Zinger Burger",
     "calories": 406,
     "company": "kfc"
+  },
+  {
+    "img": "/images/mc-breckfast.jpeg",
+    "name": "Mc Breckfast",
+    "calories": 1340,
+    "company": "mc donalds"
   }
   
   

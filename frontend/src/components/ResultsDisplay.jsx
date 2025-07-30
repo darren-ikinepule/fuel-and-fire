@@ -26,13 +26,13 @@ function ResultsDisplay({ food, user }) {
         <strong className="food-summary-names">
           {" "}
           {food.map(f => f.name).join(", ")}{" "}
-        </strong>
+        </strong><br/>
         totaling 
         <strong className="total-calories-value">
           {" "}
           {totalCalories} calories{" "}
         </strong>
-        you can either do:
+        you can:
       </p>
       <div className="exercise-list">
         {exercises.map(ex => (
