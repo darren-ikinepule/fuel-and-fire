@@ -54,7 +54,7 @@ const fastFoodInfo = [
     "company": "kfc",
   },
   {
-    "img": "/images/3-wicked-wings.jpeg",
+    "img": "/images/wicked-wings-3.jpeg",
     "name": "3 Wicked Wings",
     "calories": 396,
     "company": "kfc",

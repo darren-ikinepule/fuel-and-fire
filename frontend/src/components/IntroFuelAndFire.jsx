@@ -41,12 +41,12 @@ function IntroFuelAndFire() {
             </div>
           ))}
         </div>
-        {/* <div className="intro-fun">
+        <div className="intro-fun">
           <span className="intro-emoji" role="img" aria-label="sparkles">✨</span>
           <p className="intro-fun-text">
             A fun, curious way to stay aware of your fitness goals!
           </p>
-        </div> */}
+        </div>
       </div>
     </div>
   );

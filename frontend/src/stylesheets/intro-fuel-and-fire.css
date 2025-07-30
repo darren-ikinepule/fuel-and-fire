@@ -124,7 +124,7 @@
   color: var(--color-orange-fluorescent);
   font-weight: 700;
   font-size: clamp(1rem, 3vw, 1.2rem);
-  text-shadow: 0 0 6px rgba(255, 102, 0, 0.5);
+  text-shadow: 0 0 2px rgba(255, 102, 0, 0.5);
 }
 
 /* Existing styles... */
