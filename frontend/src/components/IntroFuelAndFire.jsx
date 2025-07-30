@@ -1,9 +1,16 @@
 // IntroFuelAndFire.jsx - Fuel & Fire Clean Hero Introduction
 
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import '../stylesheets/intro-fuel-and-fire.css';
 
 function IntroFuelAndFire() {
+  const navigate = useNavigate(); // Make sure useNavigate is called here
+
+  const handleCalculateLinkClick = (path) => {
+    navigate(path);
+    // setIsMenuOpen(false); // This state (setIsMenuOpen) is not defined in this component, so it can be removed or defined if relevant elsewhere.
+  };
   return (
     <div className="intro-bg">
       <div className="intro-container">
@@ -27,7 +34,7 @@ function IntroFuelAndFire() {
               desc: 'Discover how many minutes of activity it takes to burn it off using MET calculations.',
             },
           ].map((step, idx) => (
-            <div key={idx} className="intro-step">
+            <div key={idx} className="intro-step" onClick={() => handleCalculateLinkClick("/calculator")}> {/* Corrected typo here */}
               <span className="intro-emoji" role="img" aria-label={step.title}>{step.emoji}</span>
               <h2 className="intro-step-title">{step.title}</h2>
               <p className="intro-step-desc">{step.desc}</p>
