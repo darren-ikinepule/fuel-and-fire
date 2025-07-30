@@ -35,7 +35,7 @@ const HomePage = () => {
         </p>
         <button
           className="homepage-cta-button"
-          onClick={() => handleNavLinkClick("/calculator")}
+          onClick={() => handleNavLinkClick("/intro")}
         >
           Start Balancing Now
         </button>

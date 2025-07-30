@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 0 2rem;
   background: radial-gradient(circle at center, var(--color-black-gloss-start), var(--color-black-gloss-end));
 }
 
@@ -20,6 +20,7 @@
   text-align: center;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1.5rem;
   border: 1px solid var(--color-dark-border);
 }
@@ -123,4 +124,63 @@
   font-weight: 700;
   font-size: clamp(1rem, 3vw, 1.2rem);
   text-shadow: 0 0 6px rgba(255, 102, 0, 0.5);
+}
+
+/* Existing styles... */
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .intro-container {
+    padding: 2rem 1.5rem; /* Slightly less padding for tablets/larger phones */
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-container {
+    padding: 1.5rem 1rem; /* More compact padding for smaller phones */
+    border-radius: 1rem; /* Slightly smaller border radius */
+    gap: 1rem;
+  }
+  .intro-title {
+    font-size: clamp(1.8rem, 8vw, 2.5rem); /* Adjust clamp for smaller max size */
+    letter-spacing: 1px;
+  }
+  .intro-subtitle {
+    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+  }
+  .intro-step {
+    padding: 1rem; /* Reduce step padding */
+    border-radius: 0.75rem;
+  }
+  .intro-emoji {
+    font-size: clamp(1.8rem, 8vw, 2.5rem); /* Smaller emojis */
+  }
+  .intro-step-title {
+    font-size: clamp(1rem, 3.5vw, 1.2rem);
+    letter-spacing: 0.5px;
+  }
+  .intro-step-desc {
+    font-size: clamp(0.8rem, 2.8vw, 0.95rem);
+  }
+  .intro-fun {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+  .intro-fun-text {
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+  }
+}
+
+/* Optional: For very small screens */
+@media (max-width: 375px) {
+  .intro-container {
+    padding: 1rem 0.75rem; /* Even more compact */
+  }
+  .intro-title {
+    font-size: clamp(1.6rem, 7vw, 2rem);
+  }
+  .intro-subtitle {
+    font-size: clamp(0.85rem, 3vw, 1rem);
+  }
 }

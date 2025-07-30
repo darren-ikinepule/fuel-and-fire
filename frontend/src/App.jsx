@@ -1,6 +1,5 @@
-// App.jsx - Fuel & Fire clean, responsive, clear validation logic
-
-import React, { useState } from "react";
+// App.jsx
+import React, { useState } from "react"; // Removed useEffect and useRef imports
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout";
@@ -33,37 +32,40 @@ function App() {
     );
   };
 
-  const handleCalculate = () => {
+  // IMPORTANT: This function now accepts the weight directly from UserInputForm
+  const handleCalculate = (weightFromInputForm) => {
+    // Reset validation error and hide results at the beginning of each calculation attempt
+    setValidationError("");
+    setShowResults(false);
+
     const totalCalories = selectedFood.reduce((sum, f) => sum + f.calories, 0);
 
-    if (!user.weight || Number(user.weight) < 20) {
-      setValidationError("Please enter your weight before calculating.");
-      setShowResults(true);
-      return;
+    // Use the weight passed directly from UserInputForm for immediate validation
+    if (!weightFromInputForm || Number(weightFromInputForm) < 20 || Number(weightFromInputForm) > 300) {
+      setValidationError("Please enter a valid weight between 20–300 kg before calculating.");
+      return; // Stop execution if validation fails
     }
     if (selectedFood.length === 0) {
       setValidationError(
         "Please select at least one food item before calculating."
       );
-      setShowResults(false);
-      return;
+      return; // Stop execution if validation fails
     }
     if (selectedExercises.length === 0) {
       setValidationError(
         "Please select at least one exercise before calculating."
       );
-      setShowResults(false);
-      return;
+      return; // Stop execution if validation fails
     }
 
-    setValidationError("");
+    // If all validations pass, then proceed with calculation and show results
     const split = calculateSplitExercises(
       selectedExercises,
       totalCalories,
-      Number(user.weight)
+      Number(weightFromInputForm) // Use the passed weight here
     );
     setSplitExercises(split);
-    setShowResults(true);
+    setShowResults(true); // Only set to true if all checks pass
   };
 
   return (
@@ -86,17 +88,17 @@ function App() {
                 <UserInputForm
                   user={user}
                   onChange={setUser}
-                  onSubmit={handleCalculate}
+                  onSubmit={handleCalculate} // Pass handleCalculate as the onSubmit prop
                   selectedExercises={selectedExercises}
                 />
 
-                {validationError && !showResults && (
+                {validationError && (
                   <p
                     style={{
                       color: "var(--color-orange-fluorescent)",
                       textAlign: "center",
                       marginTop: "1rem",
-                      fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)", // responsive text size
+                      fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
                     }}
                   >
                     {validationError}
