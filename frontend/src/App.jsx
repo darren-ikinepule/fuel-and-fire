@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useState } from "react"; // Removed useEffect and useRef imports
+import React, { useState, useRef, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout";
@@ -13,6 +13,7 @@ import IntroFuelAndFire from "./components/IntroFuelAndFire";
 import MetChart from "./components/MetChart";
 import SocialPage from "./components/SocialPage";
 import NotFound from "./components/NotFound";
+import './stylesheets/split-burn-plan.css';
 
 import { calculateSplitExercises } from "./scripts/calculateSplitExercises";
 
@@ -22,7 +23,28 @@ function App() {
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [splitExercises, setSplitExercises] = useState([]);
   const [showResults, setShowResults] = useState(false);
+  const [showSplitBurnPlan, setShowSplitBurnPlan] = useState(false);
   const [validationError, setValidationError] = useState("");
+  const [burnPlanError, setBurnPlanError] = useState("");
+
+  // Create refs for the sections
+  const resultsSectionRef = useRef(null);
+  const burnPlanSectionRef = useRef(null);
+
+  // UseEffect to scroll to results when showResults becomes true
+  useEffect(() => {
+    if (showResults && resultsSectionRef.current) {
+      resultsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showResults]);
+
+  // NEW USEEFFECT FOR BURN PLAN
+  useEffect(() => {
+    if (showSplitBurnPlan && burnPlanSectionRef.current) {
+      burnPlanSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showSplitBurnPlan]);
+
 
   const handleExerciseSelect = (exerciseName) => {
     setSelectedExercises((prev) =>
@@ -30,43 +52,50 @@ function App() {
         ? prev.filter((name) => name !== exerciseName)
         : [...prev, exerciseName]
     );
+    setBurnPlanError("");
   };
 
-  // IMPORTANT: This function now accepts the weight directly from UserInputForm
   const handleCalculate = (weightFromInputForm) => {
-    // Reset validation error and hide results at the beginning of each calculation attempt
     setValidationError("");
+    setBurnPlanError("");
     setShowResults(false);
+    setShowSplitBurnPlan(false);
 
-    const totalCalories = selectedFood.reduce((sum, f) => sum + f.calories, 0);
-
-    // Use the weight passed directly from UserInputForm for immediate validation
     if (!weightFromInputForm || Number(weightFromInputForm) < 20 || Number(weightFromInputForm) > 300) {
       setValidationError("Please enter a valid weight between 20–300 kg before calculating.");
-      return; // Stop execution if validation fails
+      return;
     }
     if (selectedFood.length === 0) {
       setValidationError(
         "Please select at least one food item before calculating."
       );
-      return; // Stop execution if validation fails
-    }
-    if (selectedExercises.length === 0) {
-      setValidationError(
-        "Please select at least one exercise before calculating."
-      );
-      return; // Stop execution if validation fails
+      return;
     }
 
-    // If all validations pass, then proceed with calculation and show results
+    setShowResults(true);
+  };
+
+  const handleViewBurnPlan = () => {
+    setBurnPlanError("");
+
+    if (selectedExercises.length === 0) {
+      setBurnPlanError(
+        "Please select at least one exercise to view the burn plan."
+      );
+      setShowSplitBurnPlan(false);
+      return;
+    }
+
+    const totalCalories = selectedFood.reduce((sum, f) => sum + f.calories, 0);
     const split = calculateSplitExercises(
       selectedExercises,
       totalCalories,
-      Number(weightFromInputForm) // Use the passed weight here
+      Number(user.weight)
     );
     setSplitExercises(split);
-    setShowResults(true); // Only set to true if all checks pass
+    setShowSplitBurnPlan(true);
   };
+
 
   return (
     <Router>
@@ -81,14 +110,10 @@ function App() {
             element={
               <>
                 <FoodSelector onSelect={setSelectedFood} />
-                <ExerciseSelector
-                  onSelect={handleExerciseSelect}
-                  selected={selectedExercises}
-                />
                 <UserInputForm
                   user={user}
                   onChange={setUser}
-                  onSubmit={handleCalculate} // Pass handleCalculate as the onSubmit prop
+                  onSubmit={handleCalculate}
                   selectedExercises={selectedExercises}
                 />
 
@@ -104,9 +129,42 @@ function App() {
                     {validationError}
                   </p>
                 )}
+
                 {showResults && (
-                  <>
+                  <div ref={resultsSectionRef}>
                     <ResultsDisplay food={selectedFood} user={user} />
+
+                    <ExerciseSelector
+                      onSelect={handleExerciseSelect}
+                      selected={selectedExercises}
+                    />
+
+                    {burnPlanError && (
+                      <p
+                        style={{
+                          color: "var(--color-orange-fluorescent)",
+                          textAlign: "center",
+                          marginTop: "1rem",
+                          fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                        }}
+                      >
+                        {burnPlanError}
+                      </p>
+                    )}
+
+                    {!showSplitBurnPlan && (
+                      <button
+                        onClick={handleViewBurnPlan}
+                        className="cta-button"
+                      >
+                        View Burn Plan
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {showSplitBurnPlan && (
+                  <div ref={burnPlanSectionRef}>
                     <SplitBurnPlan
                       splitExercises={splitExercises}
                       totalCalories={selectedFood.reduce(
@@ -115,7 +173,7 @@ function App() {
                       )}
                       selectedExercises={selectedExercises}
                     />
-                  </>
+                  </div>
                 )}
               </>
             }

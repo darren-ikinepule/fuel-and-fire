@@ -80,3 +80,28 @@
   color: var(--color-text-light);
   font-size: clamp(0.95rem, 2vw, 1rem);
 }
+
+.cta-button {
+  background-color: var(--color-green-accent);
+  color: var(--color-light-text); /* Matches light text color in user-input-form */
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 5px; /* Matches border-radius */
+  cursor: pointer;
+  font-size: clamp(1rem, 2.5vw, 1.2rem); /* Matches font-size clamp */
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Matches transitions */
+  width: 100%; /* Matches width */
+  max-width: 250px; /* Matches max-width */
+  margin: 1.5rem auto 0; /* Centers it and adds top margin */
+  display: block; /* Ensures margin auto works */
+}
+
+.cta-button:hover {
+  background-color: var(--color-green-dark); /* Matches hover effect */
+  transform: translateY(-2px); /* Matches hover transform */
+}
+
+.cta-button:active {
+  transform: translateY(0); /* Matches active transform */
+}
