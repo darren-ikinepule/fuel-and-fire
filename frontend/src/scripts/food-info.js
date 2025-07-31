@@ -4,85 +4,92 @@ const fastFoodInfo = [
     "name": "Apple pie",
     "calories": 230,
     "company": "mc donalds",
+    "brand": "McDonalds"
   },
   {
-    "img": "/images/bigmac.jpeg",
+    "img": "/images/big-mac.jpeg",
     "name": "Big Mac",
-    "calories": 500,
+    "calories": 550,
     "company": "mc donalds",
+    "brand": "McDonalds"
   },
   {
-    "img": "/images/cheeseburger.jpeg",
-    "name": "Cheese Burger",
-    "calories": 380,
+    "img": "/images/chicken-mcnuggets-10-pc.jpeg",
+    "name": "Chicken McNuggets (10 pc)",
+    "calories": 480,
     "company": "mc donalds",
+    "brand": "McDonalds"
   },
   {
-    "img": "/images/chicken-nuggets.jpeg",
-    "name": "6 Chicken Nuggets",
-    "calories": 520,
+    "img": "/images/french-fries-large-mcdonalds.jpeg",
+    "name": "French Fries (Large)",
+    "calories": 510,
     "company": "mc donalds",
+    "brand": "McDonalds"
+  },
+  {
+    "img": "/images/mcflurry-oreo.jpeg",
+    "name": "McFlurry Oreo",
+    "calories": 340,
+    "company": "mc donalds",
+    "brand": "McDonalds"
   },
   {
     "img": "/images/quarter-pounder.jpeg",
-    "name": "Quater Pounder",
-    "calories": 740,
+    "name": "Quarter Pounder with Cheese",
+    "calories": 540,
     "company": "mc donalds",
+    "brand": "McDonalds"
   },
   {
-    "img": "/images/filet-o-fish.jpeg",
-    "name": "Fillet o Fish",
-    "calories": 380,
-    "company": "mc donalds",
-  },
-  {
-    "img": "/images/mc-chicken.jpeg",
-    "name": "Mc Chicken",
-    "calories": 450,
-    "company": "mc donalds",
-  },
-  {
-    "img": "/images/2-pce-chicken.jpeg",
-    "name": "2 Pce Chicken",
-    "calories": 450,
+    "img": "/images/hot-wings-6-pc-kfc.jpeg",
+    "name": "Hot Wings (6 pc)",
+    "calories": 570,
     "company": "kfc",
+    "brand": "KFC"
   },
   {
-    "img": "/images/3-pce-quarter-pack.jpeg",
-    "name": "3 Pce Quarter Pack",
-    "calories": 1115,
+    "img": "/images/original-recipe-chicken-1-piece-kfc.jpeg",
+    "name": "Original Recipe Chicken (1 piece)",
+    "calories": 320,
     "company": "kfc",
+    "brand": "KFC"
   },
   {
-    "img": "/images/wicked-wings-3.jpeg",
-    "name": "3 Wicked Wings",
-    "calories": 396,
-    "company": "kfc",
-  },
-  {
-    "img": "/images/large-fries.jpeg",
-    "name": "Fries Large",
-    "calories": 578,
-    "company": "mc donalds",
-  },
-  {
-    "img": "/images/wicked-wings-12pce.jpeg",
-    "name": "12 Wicked Wings",
-    "calories": 1572,
-    "company": "kfc",
-  },
-  {
-    "img": "/images/zinger-box-meal.jpeg",
-    "name": "Zinger Box Meal",
-    "calories": 1115,
-    "company": "kfc",
-  },
-  {
-    "img": "/images/zinger-burger.jpeg",
+    "img": "/images/zinger-burger-kfc.jpeg",
     "name": "Zinger Burger",
-    "calories": 406,
+    "calories": 450,
     "company": "kfc",
+    "brand": "KFC"
   },
+  {
+    "img": "/images/whopper-burger-king.jpeg",
+    "name": "Whopper",
+    "calories": 660,
+    "company": "burger king",
+    "brand": "Burger King"
+  },
+  {
+    "img": "/images/fries-burger-king.jpeg",
+    "name": "Fries (Burger King)",
+    "calories": 380, // Assuming medium fries
+    "company": "burger king",
+    "brand": "Burger King"
+  },
+  {
+    "img": "/images/chicken-nuggets-burger-king.jpeg",
+    "name": "Chicken Nuggets (9 pc)",
+    "calories": 430,
+    "company": "burger king",
+    "brand": "Burger King"
+  },
+  {
+    "img": "/images/oreo-shake-burger-king.jpeg",
+    "name": "Oreo Shake",
+    "calories": 550,
+    "company": "burger king",
+    "brand": "Burger King"
+  }
 ];
 
-export default fastFoodInfo;
+export { fastFoodInfo };
