@@ -13,8 +13,8 @@ import IntroFuelAndFire from "./components/IntroFuelAndFire";
 import MetChart from "./components/MetChart";
 import SocialPage from "./components/SocialPage";
 import NotFound from "./components/NotFound";
-import './stylesheets/split-burn-plan.css';
 
+import './stylesheets/split-burn-plan.css'; // Ensure this is imported for cta-button styling
 import { calculateSplitExercises } from "./scripts/calculateSplitExercises";
 
 function App() {
@@ -24,27 +24,54 @@ function App() {
   const [splitExercises, setSplitExercises] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [showSplitBurnPlan, setShowSplitBurnPlan] = useState(false);
-  const [validationError, setValidationError] = useState("");
-  const [burnPlanError, setBurnPlanError] = useState("");
+  const [validationError, setValidationError] = useState(""); // For initial food/weight validation
+  const [burnPlanError, setBurnPlanError] = useState(""); // For split burn plan specific validation
 
-  // Create refs for the sections
   const resultsSectionRef = useRef(null);
   const burnPlanSectionRef = useRef(null);
 
-  // UseEffect to scroll to results when showResults becomes true
+  // Effect to scroll to results when showResults becomes true
   useEffect(() => {
     if (showResults && resultsSectionRef.current) {
       resultsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [showResults]);
 
-  // NEW USEEFFECT FOR BURN PLAN
+  // === NEW/MODIFIED: Effect to calculate split exercises dynamically ===
   useEffect(() => {
-    if (showSplitBurnPlan && burnPlanSectionRef.current) {
-      burnPlanSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [showSplitBurnPlan]);
+    // Only calculate if the Split Burn Plan is intended to be shown
+    if (showSplitBurnPlan) {
+      if (selectedExercises.length === 0) {
+        setBurnPlanError("Please select at least one exercise to see your split burn plan.");
+        setSplitExercises([]); // Clear previous split exercises
+        return;
+      }
+      if (selectedFood.length === 0 || !user.weight || Number(user.weight) <= 0) {
+        // This case should ideally be caught by handleCalculate before showResults,
+        // but adding a safeguard here.
+        setBurnPlanError("Please ensure you have selected food and entered a valid weight.");
+        setSplitExercises([]);
+        return;
+      }
 
+      const totalCalories = selectedFood.reduce((sum, f) => sum + f.calories, 0);
+      const split = calculateSplitExercises(
+        selectedExercises,
+        totalCalories,
+        Number(user.weight)
+      );
+      setSplitExercises(split);
+      setBurnPlanError(""); // Clear error if calculation is successful
+      
+      // Scroll to the burn plan if it's updated dynamically
+      if (burnPlanSectionRef.current) {
+        burnPlanSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+    } else {
+      setSplitExercises([]); // Clear split exercises if plan is not visible
+    }
+  }, [selectedExercises, selectedFood, user.weight, showSplitBurnPlan]); // Dependencies
 
   const handleExerciseSelect = (exerciseName) => {
     setSelectedExercises((prev) =>
@@ -52,14 +79,14 @@ function App() {
         ? prev.filter((name) => name !== exerciseName)
         : [...prev, exerciseName]
     );
-    setBurnPlanError("");
+    // Note: burnPlanError will be handled by the useEffect above
   };
 
   const handleCalculate = (weightFromInputForm) => {
     setValidationError("");
     setBurnPlanError("");
     setShowResults(false);
-    setShowSplitBurnPlan(false);
+    setShowSplitBurnPlan(false); // Hide split plan on new calculation
 
     if (!weightFromInputForm || Number(weightFromInputForm) < 20 || Number(weightFromInputForm) > 300) {
       setValidationError("Please enter a valid weight between 20–300 kg before calculating.");
@@ -71,29 +98,21 @@ function App() {
       );
       return;
     }
-
+    // Update user state. This will trigger the relevant useEffects.
+    setUser({ weight: weightFromInputForm });
     setShowResults(true);
   };
 
   const handleViewBurnPlan = () => {
-    setBurnPlanError("");
-
+    // This function now primarily just controls the visibility and initial validation.
+    // The actual calculation is done in the useEffect.
     if (selectedExercises.length === 0) {
-      setBurnPlanError(
-        "Please select at least one exercise to view the burn plan."
-      );
+      setBurnPlanError("Please select at least one exercise to view the burn plan.");
       setShowSplitBurnPlan(false);
       return;
     }
-
-    const totalCalories = selectedFood.reduce((sum, f) => sum + f.calories, 0);
-    const split = calculateSplitExercises(
-      selectedExercises,
-      totalCalories,
-      Number(user.weight)
-    );
-    setSplitExercises(split);
-    setShowSplitBurnPlan(true);
+    setBurnPlanError(""); // Clear error if validation passes
+    setShowSplitBurnPlan(true); // Show the plan, useEffect will calculate
   };
 
 
@@ -112,9 +131,8 @@ function App() {
                 <FoodSelector onSelect={setSelectedFood} />
                 <UserInputForm
                   user={user}
-                  onChange={setUser}
+                  onChange={setUser} // Ensure user.weight is updated via this prop
                   onSubmit={handleCalculate}
-                  selectedExercises={selectedExercises}
                 />
 
                 {validationError && (
@@ -163,7 +181,7 @@ function App() {
                   </div>
                 )}
 
-                {showSplitBurnPlan && (
+                {showSplitBurnPlan && splitExercises.length > 0 && ( // Only show if we have exercises to display
                   <div ref={burnPlanSectionRef}>
                     <SplitBurnPlan
                       splitExercises={splitExercises}
@@ -174,6 +192,19 @@ function App() {
                       selectedExercises={selectedExercises}
                     />
                   </div>
+                )}
+                {/* Display burnPlanError even if splitExercises is empty, as long as showSplitBurnPlan is true */}
+                {showSplitBurnPlan && splitExercises.length === 0 && burnPlanError && (
+                   <p
+                    style={{
+                      color: "var(--color-orange-fluorescent)",
+                      textAlign: "center",
+                      marginTop: "1rem",
+                      fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                    }}
+                  >
+                    {burnPlanError}
+                  </p>
                 )}
               </>
             }
