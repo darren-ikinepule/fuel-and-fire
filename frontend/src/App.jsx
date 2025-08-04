@@ -14,7 +14,7 @@ import MetChart from "./components/MetChart";
 import SocialPage from "./components/SocialPage";
 import NotFound from "./components/NotFound";
 
-import './stylesheets/split-burn-plan.css'; // Ensure this is imported for cta-button styling
+
 import { calculateSplitExercises } from "./scripts/calculateSplitExercises";
 
 function App() {
@@ -33,7 +33,10 @@ function App() {
   // Effect to scroll to results when showResults becomes true
   useEffect(() => {
     if (showResults && resultsSectionRef.current) {
-      resultsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      resultsSectionRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   }, [showResults]);
 
@@ -42,19 +45,30 @@ function App() {
     // Only calculate if the Split Burn Plan is intended to be shown
     if (showSplitBurnPlan) {
       if (selectedExercises.length === 0) {
-        setBurnPlanError("Please select at least one exercise to see your split burn plan.");
+        setBurnPlanError(
+          "Please select at least one exercise to see your split burn plan."
+        );
         setSplitExercises([]); // Clear previous split exercises
         return;
       }
-      if (selectedFood.length === 0 || !user.weight || Number(user.weight) <= 0) {
+      if (
+        selectedFood.length === 0 ||
+        !user.weight ||
+        Number(user.weight) <= 0
+      ) {
         // This case should ideally be caught by handleCalculate before showResults,
         // but adding a safeguard here.
-        setBurnPlanError("Please ensure you have selected food and entered a valid weight.");
+        setBurnPlanError(
+          "Please ensure you have selected food and entered a valid weight."
+        );
         setSplitExercises([]);
         return;
       }
 
-      const totalCalories = selectedFood.reduce((sum, f) => sum + f.calories, 0);
+      const totalCalories = selectedFood.reduce(
+        (sum, f) => sum + f.calories,
+        0
+      );
       const split = calculateSplitExercises(
         selectedExercises,
         totalCalories,
@@ -62,12 +76,14 @@ function App() {
       );
       setSplitExercises(split);
       setBurnPlanError(""); // Clear error if calculation is successful
-      
+
       // Scroll to the burn plan if it's updated dynamically
       if (burnPlanSectionRef.current) {
-        burnPlanSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        burnPlanSectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
-
     } else {
       setSplitExercises([]); // Clear split exercises if plan is not visible
     }
@@ -88,8 +104,14 @@ function App() {
     setShowResults(false);
     setShowSplitBurnPlan(false); // Hide split plan on new calculation
 
-    if (!weightFromInputForm || Number(weightFromInputForm) < 20 || Number(weightFromInputForm) > 300) {
-      setValidationError("Please enter a valid weight between 20–300 kg before calculating.");
+    if (
+      !weightFromInputForm ||
+      Number(weightFromInputForm) < 20 ||
+      Number(weightFromInputForm) > 300
+    ) {
+      setValidationError(
+        "Please enter a valid weight between 20–300 kg before calculating."
+      );
       return;
     }
     if (selectedFood.length === 0) {
@@ -107,14 +129,15 @@ function App() {
     // This function now primarily just controls the visibility and initial validation.
     // The actual calculation is done in the useEffect.
     if (selectedExercises.length === 0) {
-      setBurnPlanError("Please select at least one exercise to view the burn plan.");
+      setBurnPlanError(
+        "Please select at least one exercise to view the burn plan."
+      );
       setShowSplitBurnPlan(false);
       return;
     }
     setBurnPlanError(""); // Clear error if validation passes
     setShowSplitBurnPlan(true); // Show the plan, useEffect will calculate
   };
-
 
   return (
     <Router>
@@ -174,6 +197,13 @@ function App() {
                       <button
                         onClick={handleViewBurnPlan}
                         className="cta-button"
+                        style={{
+                          background: "var(--color-orange-fluorescent)",
+                          color: "black",
+                          textAlign: "center",
+                          marginTop: "1rem",
+                          fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                        }}
                       >
                         View Burn Plan
                       </button>
@@ -181,31 +211,21 @@ function App() {
                   </div>
                 )}
 
-                {showSplitBurnPlan && splitExercises.length > 0 && ( // Only show if we have exercises to display
-                  <div ref={burnPlanSectionRef}>
-                    <SplitBurnPlan
-                      splitExercises={splitExercises}
-                      totalCalories={selectedFood.reduce(
-                        (sum, f) => sum + f.calories,
-                        0
-                      )}
-                      selectedExercises={selectedExercises}
-                    />
-                  </div>
-                )}
+                {showSplitBurnPlan &&
+                  splitExercises.length > 0 && ( // Only show if we have exercises to display
+                    <div ref={burnPlanSectionRef}>
+                      <SplitBurnPlan
+                        splitExercises={splitExercises}
+                        totalCalories={selectedFood.reduce(
+                          (sum, f) => sum + f.calories,
+                          0
+                        )}
+                        selectedExercises={selectedExercises}
+                      />
+                    </div>
+                  )}
                 {/* Display burnPlanError even if splitExercises is empty, as long as showSplitBurnPlan is true */}
-                {showSplitBurnPlan && splitExercises.length === 0 && burnPlanError && (
-                   <p
-                    style={{
-                      color: "var(--color-orange-fluorescent)",
-                      textAlign: "center",
-                      marginTop: "1rem",
-                      fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
-                    }}
-                  >
-                    {burnPlanError}
-                  </p>
-                )}
+               
               </>
             }
           />

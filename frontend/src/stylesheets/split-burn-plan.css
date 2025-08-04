@@ -1,5 +1,9 @@
 /* split-burn-plan.css - Fuel & Fire clean, responsive */
 
+/* Define CSS variables if they are not globally defined elsewhere */
+/* For this component to work correctly, these or equivalent global variables are needed */
+
+
 .split-burn-plan-container {
   background: radial-gradient(circle at center, var(--color-black-gloss-start), var(--color-black-gloss-end));
   border: 1px solid var(--color-dark-border);
@@ -10,6 +14,9 @@
   margin: 2rem auto;
   text-align: center;
   box-shadow: 0 8px 25px rgba(255, 102, 0, 0.15);
+  display: flex; /* Added for flex column layout to center the button */
+  flex-direction: column; /* Added for flex column layout */
+  align-items: center; /* Center items horizontally */
 }
 
 .split-plan-title {
@@ -36,6 +43,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  width: 100%; /* Ensure list takes full width */
 }
 
 .split-plan-item {
@@ -82,26 +90,102 @@
 }
 
 .cta-button {
-  background-color: var(--color-green-accent);
-  color: var(--color-light-text); /* Matches light text color in user-input-form */
+  background-color: var(--color-orange-fluorescent);
+  color: green;
   padding: 0.8rem 1.5rem;
   border: none;
-  border-radius: 5px; /* Matches border-radius */
+  border-radius: 5px;
   cursor: pointer;
-  font-size: clamp(1rem, 2.5vw, 1.2rem); /* Matches font-size clamp */
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
   font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Matches transitions */
-  width: 100%; /* Matches width */
-  max-width: 250px; /* Matches max-width */
-  margin: 1.5rem auto 0; /* Centers it and adds top margin */
-  display: block; /* Ensures margin auto works */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+  max-width: 250px;
+  margin: 1.5rem auto 0;
+  display: block;
 }
 
 .cta-button:hover {
-  background-color: var(--color-green-dark); /* Matches hover effect */
-  transform: translateY(-2px); /* Matches hover transform */
+   background-color: #FF8C00;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(255, 102, 0, 0.8);
+  outline: none;
 }
 
 .cta-button:active {
-  transform: translateY(0); /* Matches active transform */
+  transform: translateY(0);
+}
+
+/* NEW: Scroll to Top Button Styles */
+.scroll-to-top-btn {
+  background-color: rgba(255, 102, 0, 0.7); /* Semi-transparent orange */
+  color: #0a0a0a; /* Dark text */
+  border: 1px solid rgba(255, 102, 0, 0.9); /* Slightly more opaque border */
+  border-radius: 50%; /* Round shape */
+  width: 50px; /* Fixed width */
+  height: 50px; /* Fixed height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem; /* Size of the arrow */
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.5); /* Orange glow */
+  transition: all 0.3s ease;
+  margin-top: 2rem; /* Space from content above */
+  /* Centering is handled by parent flexbox now */
+}
+
+.scroll-to-top-btn:hover {
+  background-color: rgba(255, 102, 0, 0.9); /* Less transparent on hover */
+  box-shadow: 0 0 15px rgba(255, 102, 0, 0.8);
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .split-burn-plan-container {
+    padding: 2rem 1.2rem;
+  }
+  .split-plan-title {
+    font-size: 2em;
+  }
+  .split-plan-summary {
+    font-size: 1em;
+  }
+  .split-plan-item {
+    padding: 1rem 1.2rem;
+  }
+  .split-plan-img {
+    width: 45px;
+    height: 45px;
+    margin-right: 1rem;
+  }
+  .split-plan-value {
+    font-size: 1.2em;
+  }
+}
+@media (max-width: 480px) {
+  .split-burn-plan-container {
+    padding: 1.5rem 0.8rem;
+  }
+  .split-plan-title {
+    font-size: 1.6em;
+  }
+  .split-plan-summary {
+    font-size: 0.9em;
+  }
+  .split-plan-item {
+    padding: 0.8rem 1rem;
+  }
+  .split-plan-img {
+    width: 40px;
+    height: 40px;
+    margin-right: 0.8rem;
+  }
+  .split-plan-exercise {
+    font-size: 0.9em;
+  }
+  .split-plan-value {
+    font-size: 1.1em;
+  }
 }
