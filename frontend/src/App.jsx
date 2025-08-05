@@ -77,13 +77,7 @@ function App() {
       setSplitExercises(split);
       setBurnPlanError(""); // Clear error if calculation is successful
 
-      // Scroll to the burn plan if it's updated dynamically
-      if (burnPlanSectionRef.current) {
-        burnPlanSectionRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
+      // The scrolling logic is no longer here
     } else {
       setSplitExercises([]); // Clear split exercises if plan is not visible
     }
@@ -125,9 +119,8 @@ function App() {
     setShowResults(true);
   };
 
+  // UPDATED: The function now scrolls to the bottom of the page
   const handleViewBurnPlan = () => {
-    // This function now primarily just controls the visibility and initial validation.
-    // The actual calculation is done in the useEffect.
     if (selectedExercises.length === 0) {
       setBurnPlanError(
         "Please select at least one exercise to view the burn plan."
@@ -137,6 +130,14 @@ function App() {
     }
     setBurnPlanError(""); // Clear error if validation passes
     setShowSplitBurnPlan(true); // Show the plan, useEffect will calculate
+    
+    // Smoothly scroll to the very bottom of the page
+    setTimeout(() => {
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth"
+        });
+    }, 100); // A small delay to ensure the content has been rendered
   };
 
   return (
