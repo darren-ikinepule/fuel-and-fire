@@ -61,6 +61,7 @@
   transform: scale(1.2);
   color: var(--glowing-orange-dark);
   text-shadow: 0 0 10px var(--glowing-orange-dark);
+  transition: all 0.5s ease-in-out;
 }
 
 /* Responsive Adjustments */

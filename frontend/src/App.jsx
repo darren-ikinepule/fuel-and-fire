@@ -204,6 +204,7 @@ function App() {
                           textAlign: "center",
                           marginTop: "1rem",
                           fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                          transition: "all 2s ease-out"
                         }}
                       >
                         View Burn Plan
