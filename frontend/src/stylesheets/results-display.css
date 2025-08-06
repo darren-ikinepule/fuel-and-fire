@@ -2,11 +2,15 @@
 
 .results-container {
   margin-top: 3rem;
-  background: linear-gradient(145deg, #101010, #0a0a0a); /* Dark gradient for glossy look */
+  background: linear-gradient(
+    145deg,
+    #101010,
+    #0a0a0a
+  ); /* Dark gradient for glossy look */
   padding: 2.5rem 2rem;
-  border-radius: 15px; 
+  border-radius: 15px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); /* Stronger shadow */
-  max-width: 700px; 
+  max-width: 700px;
   width: 90vw;
   margin-left: auto;
   margin-right: auto;
@@ -18,8 +22,9 @@
   overflow: hidden; /* For any internal overflow */
 }
 
-.results-container::before { /* Edgy top border */
-  content: '';
+.results-container::before {
+  /* Edgy top border */
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -39,26 +44,38 @@
   color: var(--color-text-medium); /* Lighter gray for placeholder */
 }
 
+/* NEW: Wrapper for heading and toggle button */
+.results-header-wrapper {
+  display: flex;
+  justify-content: center; /* Center content initially */
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 1rem; /* Space between heading and button */
+  width: 100%; /* Take full width of parent */
+  margin-bottom: 1.5rem; /* Space below the header area */
+}
+
 .results-container h2.results-heading {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0; /* Remove previous margin-bottom as it's now in wrapper */
   color: var(--color-orange-fluorescent); /* Orange heading */
-  font-size: 2.8em; /* Larger heading */
+  font-size: 2.2em; /* Larger heading */
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 2px;
   text-shadow: 0 0 15px rgba(255, 102, 0, 0.7); /* Stronger glow */
+  flex-shrink: 0; /* Prevent heading from shrinking */
 }
 
 .results-container p.summary-text {
-  font-size: 1.15em; 
+  font-size: 1.15em;
   margin-bottom: 2rem;
   text-align: center;
   line-height: 1.6;
-  color: var(--color-text-light); 
+  color: var(--color-text-light);
 }
 
 .summary-text .food-summary-names {
-  color: var(--color-text-light); 
+  color: var(--color-text-light);
   font-weight: 700;
 }
 
@@ -72,7 +89,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px; 
+  gap: 20px;
   width: 100%;
 }
 
@@ -82,7 +99,7 @@
   background: #0d0d0d; /* Very dark background for items */
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
-  padding: 1.2rem 1.8rem; 
+  padding: 1.2rem 1.8rem;
   min-width: 280px; /* Allow items to be smaller for better wrapping */
   flex: 1 1 auto; /* Allow items to grow/shrink */
   max-width: calc(50% - 10px); /* Two items per row on wider screens */
@@ -102,8 +119,10 @@
   height: 55px;
   object-fit: contain;
   border-radius: 50%; /* Make images circular */
-  margin-right: 1.2rem; 
-  background: var(--color-black-gloss-start); /* Dark background for image circle */
+  margin-right: 1.2rem;
+  background: var(
+    --color-black-gloss-start
+  ); /* Dark background for image circle */
   padding: 8px;
   border: 2px solid var(--color-orange-fluorescent); /* Orange border for exercise images */
   box-shadow: 0 0 8px rgba(255, 102, 0, 0.5); /* Glow for image */
@@ -124,13 +143,36 @@
 .exercise-value {
   color: var(--color-orange-fluorescent); /* Orange for value */
   font-weight: bold;
-  font-size: 1.3em; 
+  font-size: 1.3em;
   text-shadow: 0 0 6px rgba(255, 102, 0, 0.4);
+}
+
+/* UPDATED: Style for the toggle button (now within ResultsDisplay) */
+.toggle-results-btn {
+  border: 2px solid var(--color-orange-fluorescent); /* Orange background */
+  color: var(--color-text-light); /*  text for contrast */
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0; /* Prevent button from shrinking */
+  /* Remove margin-top/bottom as it's now handled by results-header-wrapper gap */
+}
+
+.toggle-results-btn:hover {
+  background-color: #ff8c00; /* Slightly darker orange on hover */
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.5); /* Stronger orange glow */
+  color: black;
 }
 
 @media (max-width: 768px) {
   .results-container {
     padding: 2rem 1.2rem;
+  }
+  .results-header-wrapper {
+    flex-direction: column; /* Stack heading and button on small screens */
+    gap: 0.8rem;
   }
   .results-container h2.results-heading {
     font-size: 2.2em;
