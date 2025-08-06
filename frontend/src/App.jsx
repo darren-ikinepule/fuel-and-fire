@@ -54,8 +54,8 @@ function App() {
     }
   }, [showResults]); // Dependency: runs when showResults state changes
 
-  // Effect to calculate and scroll to the split burn plan when it becomes visible
-  // This effect consolidates calculation and scrolling for the split plan.
+  // NEW: Effect to calculate the split burn exercises when the visibility is toggled.
+  // This hook is now responsible ONLY for the calculation logic.
   useEffect(() => {
     if (showSplitBurnPlan) {
       // Validate if exercises are selected and food/weight are valid before calculating
@@ -90,8 +90,16 @@ function App() {
       );
       setSplitExercises(split); // Update state with calculated split exercises
       setBurnPlanError(""); // Clear any previous burn plan errors
+    } else {
+      setSplitExercises([]); // Clear split exercises if the plan is not visible
+    }
+  }, [selectedExercises, selectedFood, user.weight, showSplitBurnPlan]); // Dependencies: runs when these states change
 
-      // Scroll to the burn plan section after it's rendered and calculated
+  // NEW: Separate effect to handle scrolling.
+  // This ensures scrolling only happens AFTER splitExercises has been calculated and the component has rendered.
+  useEffect(() => {
+    // Only scroll if the burn plan is meant to be shown and there are exercises to display.
+    if (showSplitBurnPlan && splitExercises.length > 0) {
       // Using requestAnimationFrame for smoother synchronization with browser repaint
       requestAnimationFrame(() => {
         if (burnPlanSectionRef.current) {
@@ -101,10 +109,8 @@ function App() {
           });
         }
       });
-    } else {
-      setSplitExercises([]); // Clear split exercises if the plan is not visible
     }
-  }, [selectedExercises, selectedFood, user.weight, showSplitBurnPlan]); // Dependencies: runs when these states change
+  }, [splitExercises, showSplitBurnPlan]); // Dependencies: triggers on changes to splitExercises or showSplitBurnPlan
 
   // Handler for selecting/deselecting exercises for the split plan
   const handleExerciseSelect = (exerciseName) => {
@@ -148,19 +154,24 @@ function App() {
     setShowResults(true); // This will trigger the useEffect for scrolling to results
   };
 
-  // Handler for showing the split burn plan
+  // Handler for showing/hiding the split burn plan
   const handleViewBurnPlan = () => {
-    // Validate if exercises are selected before showing the plan
-    if (selectedExercises.length === 0) {
+    // Check if the plan is currently hidden and exercises are not selected
+    if (!showSplitBurnPlan && selectedExercises.length === 0) {
       setBurnPlanError(
         "Please select at least one exercise to view the burn plan."
       );
-      setShowSplitBurnPlan(false); // Ensure plan is hidden if validation fails
       return;
     }
-    setBurnPlanError(""); // Clear error if validation passes
-    setShowSplitBurnPlan(true); // This will trigger the useEffect for calculating and scrolling
+
+    // Toggle the visibility state
+    setShowSplitBurnPlan((prev) => !prev);
+    // Clear the error message if the plan is being shown
+    if (!showSplitBurnPlan) {
+      setBurnPlanError("");
+    }
   };
+
 
   // Handler to toggle the visibility of ResultsDisplay content
   const toggleResultsContentVisibility = () => {
@@ -235,23 +246,21 @@ function App() {
                       </p>
                     )}
 
-                    {/* Button to view the split burn plan, hidden if already shown */}
-                    {!showSplitBurnPlan && (
-                      <button
-                        onClick={handleViewBurnPlan}
-                        className="cta-button"
-                        style={{
-                          background: "var(--color-orange-fluorescent)",
-                          color: "black",
-                          textAlign: "center",
-                          marginTop: "1rem",
-                          fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
-                          transition: "all 2s ease-out"
-                        }}
-                      >
-                        View Burn Plan
-                      </button>
-                    )}
+                    {/* Button to view the split burn plan, now toggles visibility */}
+                    <button
+                      onClick={handleViewBurnPlan}
+                      className="cta-button"
+                      style={{
+                        background: "var(--color-orange-fluorescent)",
+                        color: "black",
+                        textAlign: "center",
+                        marginTop: "1rem",
+                        fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                        transition: "all 2s ease-out"
+                      }}
+                    >
+                      {showSplitBurnPlan ? "Hide Burn Plan" : "View Burn Plan"}
+                    </button>
                   </div>
                 )}
 
@@ -278,4 +287,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; //working
