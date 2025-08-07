@@ -34,13 +34,13 @@ function App() {
 
   // Scroll to results when shown
   useEffect(() => {
-    if (showResults && !showSplitBurnPlan && resultsSectionRef.current) {
+    if (showResults && resultsSectionRef.current) {
       resultsSectionRef.current.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
     }
-  }, [showResults, showSplitBurnPlan]);
+  }, [showResults]);
 
   // Calculate split burn plan when toggled
   useEffect(() => {
@@ -72,13 +72,14 @@ function App() {
 
   // Scroll to SplitBurnPlan when shown
   useEffect(() => {
+    // We'll use a timeout to ensure the DOM has rendered the new component before we scroll.
     if (showSplitBurnPlan && burnPlanSectionRef.current) {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         burnPlanSectionRef.current.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
-      });
+      }, 100);
     }
   }, [showSplitBurnPlan]);
 
@@ -116,7 +117,7 @@ function App() {
       setBurnPlanError("Please select at least one exercise to view the burn plan.");
       return;
     }
-    
+
     // Toggle the visibility state
     setShowSplitBurnPlan((prev) => !prev);
   };
@@ -155,23 +156,19 @@ function App() {
 
                 {showResults && (
                   <div ref={resultsSectionRef}>
-                    {/* Your Fuel Burn Workout is now hidden when the split plan is shown */}
-                    {!showSplitBurnPlan && (
-                      <ResultsDisplay
-                        food={selectedFood}
-                        user={user}
-                        isContentVisible={isResultsContentVisible}
-                        toggleContentVisibility={toggleResultsContentVisibility}
-                      />
-                    )}
+                    {/* ResultsDisplay is no longer hidden by the split burn plan toggle */}
+                    <ResultsDisplay
+                      food={selectedFood}
+                      user={user}
+                      isContentVisible={isResultsContentVisible}
+                      toggleContentVisibility={toggleResultsContentVisibility}
+                    />
 
-                    {/* ExerciseSelector is now always visible when results are shown */}
                     <ExerciseSelector
                       onSelect={handleExerciseSelect}
                       selected={selectedExercises}
                     />
 
-                    {/* Split Burn Plan is shown only when toggled */}
                     {showSplitBurnPlan && (
                       <div ref={burnPlanSectionRef}>
                         <SplitBurnPlan
