@@ -114,4 +114,4 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
   );
 }
 
-export default SplitBurnPlan;
+export default SplitBurnPlan; //works

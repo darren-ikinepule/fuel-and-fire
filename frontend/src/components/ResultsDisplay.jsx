@@ -1,9 +1,9 @@
+// ResultsDisplay.jsx
 import React from "react";
 import { calculateExercises } from "../scripts/exercise";
 import "../stylesheets/results-display.css";
 
-
-// UPDATED: Accept isContentVisible and toggleContentVisibility props
+// Renders the summary of the workout needed to burn off the selected calories.
 function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility }) {
   if (!food || food.length === 0 || !user.weight) {
     return (
@@ -21,16 +21,8 @@ function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility 
 
   return (
     <div className="results-container">
-      {/* NEW: Wrapper for heading and toggle button */}
-      <div className="results-header-wrapper">
-        <h2 className="results-heading">Your Fuel Burn Workout</h2>
-        <button
-          onClick={toggleContentVisibility}
-          className="toggle-results-btn"
-        >
-          {isContentVisible ? "Hide Details" : "Show Details"}
-        </button>
-      </div>
+      {/* Heading is now separate from the button */}
+      <h2 className="results-heading">Your Fuel Burn Workout</h2>
 
       {/* Conditionally render content based on isContentVisible prop */}
       {isContentVisible && (
@@ -63,6 +55,14 @@ function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility 
           </div>
         </>
       )}
+
+      {/* Moved toggle button to the bottom of the container */}
+      <button
+        onClick={toggleContentVisibility}
+        className="toggle-results-btn-bottom"
+      >
+        {isContentVisible ? "Hide Details" : "Show Details"}
+      </button>
     </div>
   );
 }

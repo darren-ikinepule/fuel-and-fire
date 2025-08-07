@@ -40,184 +40,128 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 1.1em;
-  color: var(--color-text-medium); /* Lighter gray for placeholder */
+  padding: 2rem;
 }
 
-/* NEW: Wrapper for heading and toggle button */
-.results-header-wrapper {
-  display: flex;
-  justify-content: center; /* Center content initially */
-  align-items: center;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
-  gap: 1rem; /* Space between heading and button */
-  width: 100%; /* Take full width of parent */
-  margin-bottom: 1.5rem; /* Space below the header area */
-}
-
-.results-container h2.results-heading {
-  margin-bottom: 0; /* Remove previous margin-bottom as it's now in wrapper */
-  color: var(--color-orange-fluorescent); /* Orange heading */
-  font-size: 2.2em; /* Larger heading */
+.results-heading {
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  color: var(--color-orange-fluorescent);
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 0 0 15px rgba(255, 102, 0, 0.7); /* Stronger glow */
-  flex-shrink: 0; /* Prevent heading from shrinking */
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
 }
 
-.results-container p.summary-text {
-  font-size: 1.15em;
-  margin-bottom: 2rem;
-  text-align: center;
+.summary-text {
+  font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+  color: var(--color-text-light);
   line-height: 1.6;
-  color: var(--color-text-light);
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.summary-text .food-summary-names {
-  color: var(--color-text-light);
-  font-weight: 700;
+.food-summary-names {
+  color: var(--color-orange-fluorescent);
+  font-weight: bold;
 }
 
-.summary-text .total-calories-value {
-  color: var(--color-orange-fluorescent); /* Orange for calorie value */
-  font-weight: 700;
-  text-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+.total-calories-value {
+  color: var(--color-orange-fluorescent);
+  font-weight: bold;
 }
 
 .exercise-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 1rem;
   width: 100%;
+  margin-top: 1rem;
 }
 
 .exercise-item {
+  background: var(--color-dark-element);
+  border: 2px solid var(--color-dark-border);
+  border-radius: 12px;
+  padding: 1rem;
   display: flex;
   align-items: center;
-  background: #0d0d0d; /* Very dark background for items */
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
-  padding: 1.2rem 1.8rem;
-  min-width: 280px; /* Allow items to be smaller for better wrapping */
-  flex: 1 1 auto; /* Allow items to grow/shrink */
-  max-width: calc(50% - 10px); /* Two items per row on wider screens */
-  margin-bottom: 0; /* Remove old margin */
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  border: 1px solid #222; /* Subtle dark border */
+  gap: 1rem;
+  width: calc(50% - 0.5rem); /* Two items per row with gap */
+  max-width: 320px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .exercise-item:hover {
-  transform: translateY(-5px); /* Lift on hover */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 102, 0, 0.7); /* Stronger glow on hover */
-  border-color: var(--color-orange-fluorescent); /* Orange border on hover */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(255, 102, 0, 0.2);
 }
 
 .exercise-img {
-  width: 55px; /* Slightly larger image */
-  height: 55px;
-  object-fit: contain;
-  border-radius: 50%; /* Make images circular */
-  margin-right: 1.2rem;
-  background: var(
-    --color-black-gloss-start
-  ); /* Dark background for image circle */
-  padding: 8px;
-  border: 2px solid var(--color-orange-fluorescent); /* Orange border for exercise images */
-  box-shadow: 0 0 8px rgba(255, 102, 0, 0.5); /* Glow for image */
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .exercise-details {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  flex-grow: 1;
+  text-align: left;
 }
 
 .exercise-label {
-  font-weight: 600;
-  color: var(--color-text-medium); /* Lighter gray for label */
-  font-size: 1em;
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  font-weight: 500;
+  color: var(--color-text-light);
 }
 
 .exercise-value {
-  color: var(--color-orange-fluorescent); /* Orange for value */
+  font-size: clamp(1.1rem, 2.5vw, 1.2rem);
+  color: var(--color-orange-fluorescent);
   font-weight: bold;
-  font-size: 1.3em;
-  text-shadow: 0 0 6px rgba(255, 102, 0, 0.4);
 }
 
-/* UPDATED: Style for the toggle button (now within ResultsDisplay) */
-.toggle-results-btn {
-  border: 2px solid var(--color-orange-fluorescent); /* Orange background */
-  color: var(--color-text-light); /*  text for contrast */
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
-  font-size: clamp(0.8rem, 2vw, 1rem);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0; /* Prevent button from shrinking */
-  /* Remove margin-top/bottom as it's now handled by results-header-wrapper gap */
-}
-
-.toggle-results-btn:hover {
-  background-color: #ff8c00; /* Slightly darker orange on hover */
-  box-shadow: 0 0 10px rgba(255, 102, 0, 0.5); /* Stronger orange glow */
+/* NEW STYLES for the button at the bottom */
+.toggle-results-btn-bottom {
+  background: var(--color-orange-fluorescent);
   color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  font-weight: bold;
+  margin-top: 2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.toggle-results-btn-bottom:hover {
+  background-color: #ff8c00; /* Slightly darker orange on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255, 102, 0, 0.8);
 }
 
 @media (max-width: 768px) {
   .results-container {
     padding: 2rem 1.2rem;
   }
-  .results-header-wrapper {
-    flex-direction: column; /* Stack heading and button on small screens */
-    gap: 0.8rem;
-  }
-  .results-container h2.results-heading {
+  .results-heading {
     font-size: 2.2em;
   }
   .summary-text {
     font-size: 1.05em;
   }
   .exercise-item {
-    max-width: calc(100% - 10px); /* Full width on smaller screens */
-    flex-direction: row; /* Keep content in a row */
+    width: 100%;
+    flex-direction: row;
     padding: 1rem 1.2rem;
   }
   .exercise-img {
     width: 45px;
     height: 45px;
     margin-right: 1rem;
-  }
-  .exercise-value {
-    font-size: 1.2em;
-  }
-}
-
-@media (max-width: 480px) {
-  .results-container {
-    padding: 1.5rem 0.8rem;
-  }
-  .results-container h2.results-heading {
-    font-size: 1.8em;
-  }
-  .summary-text {
-    font-size: 0.95em;
-  }
-  .exercise-item {
-    min-width: unset; /* Allow to shrink more */
-    padding: 0.8rem 1rem;
-  }
-  .exercise-img {
-    width: 40px;
-    height: 40px;
-    margin-right: 0.8rem;
-  }
-  .exercise-label {
-    font-size: 0.9em;
-  }
-  .exercise-value {
-    font-size: 1.1em;
   }
 }
