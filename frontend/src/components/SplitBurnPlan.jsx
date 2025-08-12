@@ -65,7 +65,7 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
       <h2 className="split-plan-title">Your Split Burn Plan</h2>
       <p className="split-plan-summary">
         You've selected to burn off your total of
-        <strong className="total-calories-value"> {totalCalories}</strong> calories using:
+        <strong className="total-calories-value"> {` ${totalCalories}`}</strong> calories using:
       </p>
       <div className="split-plan-list">
         {splitExercises.map((ex, idx) => (

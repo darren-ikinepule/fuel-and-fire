@@ -135,7 +135,15 @@ const fastFoodInfo = [
     "calories": 200,
     "company": "subway",
     "brand": "Subway"
-  }
+  },
+
+  {
+  "img": "/images/pizza-pepperoni-pizza-hut.jpeg",
+  "name": "Large Pepperoni Pizza",
+  "calories": 2400,
+  "company": "Pizza Hut",
+  "brand": "Pizza Hut"
+}
 ];
 
 // Export the array so it can be imported in App.jsx
