@@ -73,24 +73,49 @@ export function calculateExercises(calories, weightKg) {
   Object.entries(metValues).forEach(([name, exerciseDetails]) => {
     let value = 0;
     let unit = "";
+    let formattedValue = ""; // New variable for the formatted string
     const img = exerciseDetails.img; // Image is always present
 
     // Check if the exercise has a caloriesPerRep property
     if (exerciseDetails.caloriesPerRep !== undefined) {
       // Calculate repetitions for exercises like push-ups, burpees, and now Jumping Jacks
-      value = calories / exerciseDetails.caloriesPerRep;
+      value = Math.round(calories / exerciseDetails.caloriesPerRep);
       unit = "reps";
+      formattedValue = value > 0 ? `${value} reps` : "0 reps";
     } else if (exerciseDetails.met !== undefined) {
       // Calculate time in minutes for MET-based exercises
       // Formula: Calories per minute = (MET * User Weight in kg * 3.5) / 200
       const caloriesPerMinute = (exerciseDetails.met * weightKg * 3.5) / 200;
 
       if (caloriesPerMinute > 0) {
-        value = calories / caloriesPerMinute;
-        unit = "minutes";
+        value = Math.round(calories / caloriesPerMinute); // Value is now rounded minutes
       } else {
         value = 0; // Avoid division by zero
       }
+      unit = "minutes";
+
+      // NEW: Logic to format minutes into hours and minutes
+      const hours = Math.floor(value / 60);
+      const remainingMinutes = value % 60;
+
+      if (hours > 0 && remainingMinutes > 0) {
+        // e.g., 1 hr 19 mins
+        const hourLabel = hours === 1 ? "hr" : "hrs";
+        const minuteLabel = remainingMinutes === 1 ? "min" : "mins";
+        formattedValue = `${hours} ${hourLabel} ${remainingMinutes} ${minuteLabel}`;
+      } else if (hours > 0 && remainingMinutes === 0) {
+        // e.g., 2 hrs
+        const hourLabel = hours === 1 ? "hr" : "hrs";
+        formattedValue = `${hours} ${hourLabel}`;
+      } else if (remainingMinutes > 0) {
+        // e.g., 45 mins
+        const minuteLabel = remainingMinutes === 1 ? "min" : "mins";
+        formattedValue = `${remainingMinutes} ${minuteLabel}`;
+      } else {
+        // Case for 0 minutes
+        formattedValue = "0 mins";
+      }
+
     } else {
       // Fallback for any exercise definition that lacks both met and caloriesPerRep
       console.warn(
@@ -98,14 +123,16 @@ export function calculateExercises(calories, weightKg) {
       );
       value = 0;
       unit = "N/A";
+      formattedValue = "N/A";
     }
 
-    // Push the calculated result, rounded to the nearest whole number
+    // Push the calculated result
     results.push({
       name: name,
-      value: value > 0 && !isNaN(value) ? Math.round(value) : 0,
+      value: value, // The numerical value is still available
       unit: unit,
       img: img,
+      displayValue: formattedValue, // The new formatted string for display
     });
   });
 

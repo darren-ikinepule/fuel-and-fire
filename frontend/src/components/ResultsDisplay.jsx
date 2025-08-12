@@ -47,7 +47,8 @@ function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility 
                 <div className="exercise-details">
                   <span className="exercise-label">{ex.name}:</span>
                   <span className="exercise-value">
-                    <strong>{ex.value}</strong> {ex.unit}
+                    {/* UPDATED: Use displayValue for formatted string */}
+                    <strong>{ex.displayValue}</strong>
                   </span>
                 </div>
               </div>
