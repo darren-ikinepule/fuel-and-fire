@@ -1,6 +1,6 @@
 // SplitBurnPlan.jsx - Fuel & Fire clean, responsive split burn summary with checklist
-import React, { useState, useEffect } from 'react';
-import '../stylesheets/split-burn-plan.css';
+import React, { useState, useEffect } from 'react'; // Import useState and useEffect
+import '../stylesheets/split-burn-plan.css'; // Ensure this CSS file contains the .scroll-to-top-btn styles
 
 /**
  * Renders the split burn plan, showing how total calories are divided across selected exercises.
@@ -9,9 +9,8 @@ import '../stylesheets/split-burn-plan.css';
  * @param {Array<Object>} props.splitExercises - Array of exercise objects with calculated values (e.g., { name, value, unit, img }).
  * @param {number} props.totalCalories - The total calories to be burned.
  * @param {Array<string>} props.selectedExercises - Array of names of exercises selected by the user.
- * @param {Function} props.onResetApp - Function to call to reset the entire app state.
  */
-function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises, onResetApp }) {
+function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
   // Check if there are exercises to display; if not, return null to render nothing.
   if (!splitExercises || splitExercises.length === 0) return null;
 
@@ -48,13 +47,8 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises, onRes
     }));
   };
 
-  // Handler to dismiss the celebration message and reset the app
+  // Handler to dismiss the celebration message
   const dismissCelebration = () => {
-    // NEW: Call the reset function passed from the parent component.
-    if (onResetApp) {
-      onResetApp();
-    }
-    // Now hide the celebration message. The app's state is handled by the parent.
     setShowCelebration(false);
   };
 
@@ -71,7 +65,7 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises, onRes
       <h2 className="split-plan-title">Your Split Burn Plan</h2>
       <p className="split-plan-summary">
         You've selected to burn off your total of
-        <strong className="total-calories-value">{totalCalories}</strong> calories using:
+        <strong className="total-calories-value"> {totalCalories}</strong> calories using:
       </p>
       <div className="split-plan-list">
         {splitExercises.map((ex, idx) => (
@@ -81,21 +75,19 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises, onRes
           >
             <div className="split-plan-details">
               <span className="split-plan-exercise">{ex.name}:</span>
-              {/* UPDATED: Use displayValue for formatted string */}
-              <span className="split-plan-value">{ex.displayValue}</span>
+              <span className="split-plan-value">{ex.value} {ex.unit}</span>
             </div>
             {/* UPDATED: Checkbox moved to the end of the flex item */}
-            <div className="exercise-complete-action">
-              {completedExercises[ex.name] && <span className="exercise-done-text">Done</span>}
-              <input
-                type="checkbox"
-                id={`exercise-checkbox-${idx}`}
-                checked={!!completedExercises[ex.name]} // Ensure it's a boolean
-                onChange={() => handleToggleComplete(ex.name)}
-                className="exercise-complete-checkbox"
-              />
-            </div>
+            <input
+              type="checkbox"
+              id={`exercise-checkbox-${idx}`}
+              checked={!!completedExercises[ex.name]} // Ensure it's a boolean
+              onChange={() => handleToggleComplete(ex.name)}
+              className="exercise-complete-checkbox"
+            />
+            Completed
           </div>
+          
         ))}
       </div>
 
@@ -124,4 +116,4 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises, onRes
   );
 }
 
-export default SplitBurnPlan;
+export default SplitBurnPlan; //works
