@@ -24,58 +24,72 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
   useEffect(() => {
     setCompletedExercises({});
     setShowCelebration(false);
-  }, [splitExercises]); // Trigger this effect when the list of split exercises changes.
+  }, [selectedExercises, totalCalories]);
 
-  // Effect to check if all exercises are completed and show celebration
-  useEffect(() => {
-    // Check if the current list of split exercises exists and has items
-    const allExercisesCompleted = splitExercises && splitExercises.length > 0
-      ? splitExercises.every(ex => completedExercises[ex.name])
-      : false;
-
-    // Show celebration if all are completed and the list isn't empty
-    if (allExercisesCompleted) {
-      setShowCelebration(true);
-    }
-  }, [completedExercises, splitExercises]);
-
-  // Handler for when a checkbox is toggled
+  /**
+   * Toggles the completion status of an exercise.
+   * @param {string} exerciseName - The name of the exercise to toggle.
+   */
   const handleToggleComplete = (exerciseName) => {
-    setCompletedExercises((prev) => ({
-      ...prev,
-      [exerciseName]: !prev[exerciseName],
-    }));
+    const newCompletedExercises = {
+      ...completedExercises,
+      [exerciseName]: !completedExercises[exerciseName],
+    };
+    setCompletedExercises(newCompletedExercises);
+
+    // Check if all exercises are now completed
+    const allCompleted = splitExercises.every((ex) => newCompletedExercises[ex.name]);
+    if (allCompleted && splitExercises.length > 0) {
+      setShowCelebration(true);
+    } else {
+      setShowCelebration(false);
+    }
   };
 
-  // Handler to dismiss the celebration message
+  /**
+   * Dismisses the celebration message.
+   */
   const dismissCelebration = () => {
     setShowCelebration(false);
   };
 
-  // Function to scroll back to the top of the page
+  /**
+   * Smoothly scrolls the window to the top of the page.
+   */
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   };
 
   return (
     <div className="split-burn-plan-container">
-      <h2 className="split-plan-title">Your Split Burn Plan</h2>
+      <h2 className="split-plan-title">Your Personalized Burn Plan</h2>
       <p className="split-plan-summary">
-        You've selected to burn off your total of
-        <strong className="total-calories-value"> {` ${totalCalories}`}</strong> calories using:
+        Based on your selection of{' '}
+        <strong className="food-summary-names">
+          {/* Note: In a full app, you'd pass the actual food names here */}
+          your food items
+        </strong>
+        , which total
+        <strong className="total-calories-value"> {totalCalories} calories</strong>,
+        here is your workout plan split across the exercises you selected.
       </p>
+
       <div className="split-plan-list">
         {splitExercises.map((ex, idx) => (
-          <div
-            key={ex.name}
-            className={`split-plan-item ${completedExercises[ex.name] ? 'completed' : ''}`}
-          >
+          <div key={ex.name} className="split-plan-item">
+            {/* Display the exercise image */}
+            <img src={ex.img} alt={ex.name} className="split-plan-img" />
+
+            {/* Display the exercise name and value */}
             <div className="split-plan-details">
               <span className="split-plan-exercise">{ex.name}:</span>
-              <span className="split-plan-value">{ex.value} {ex.unit}</span>
+              <span className="split-plan-value">
+                {/* UPDATED: Use the formatted string for the value */}
+                {ex.displayValue}
+              </span>
             </div>
             {/* UPDATED: Checkbox moved to the end of the flex item */}
             <input
@@ -85,7 +99,7 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
               onChange={() => handleToggleComplete(ex.name)}
               className="exercise-complete-checkbox"
             />
-            Completed
+            <label>Completed</label>
           </div>
           
         ))}
