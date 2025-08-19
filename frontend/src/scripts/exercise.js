@@ -7,7 +7,7 @@ export function calculateExercises(calories, weightKg) {
       img: "https://placehold.co/128x128/000/FFF?text=RUN",
     },
     "Jumping Jacks": {
-      caloriesPerRep: 0.2, // Now calculated in reps
+      caloriesPerRep: 0.4, // Now calculated in reps
       img: "https://placehold.co/128x128/000/FFF?text=JJ",
     },
     "Cycling (moderate)": {
@@ -24,11 +24,11 @@ export function calculateExercises(calories, weightKg) {
     },
     // Exercises with caloriesPerRep:
     "Push-ups (vigorous)": {
-      caloriesPerRep: 0.3, // Based on vigorous calisthenics.
+      caloriesPerRep: 0.5, // Based on vigorous calisthenics.
       img: "https://placehold.co/128x128/000/FFF?text=PUSH",
     },
     "Burpees (moderate-vigorous)": {
-      caloriesPerRep: 0.5, // High-intensity bodyweight exercise.
+      caloriesPerRep: 0.8, // High-intensity bodyweight exercise.
       img: "https://placehold.co/128x128/000/FFF?text=BURPEE",
     },
     // Other MET-based exercises:
