@@ -17,6 +17,7 @@ import NotFound from "./components/NotFound";
 
 // Import Utility Functions
 import { calculateSplitExercises } from "./scripts/calculateSplitExercises";
+import AiCalorieCalculator from "./components/AiCalorieCalculator";
 
 function App() {
   const [user, setUser] = useState({ weight: "" });
@@ -134,10 +135,12 @@ function App() {
           <Route path="/intro" element={<IntroFuelAndFire />} />
           <Route path="/met" element={<MetChart />} />
           <Route path="/social" element={<SocialPage />} />
+          <Route path="/aicaloriecalculator" element={<AiCalorieCalculator />} />
           <Route
             path="/calculator"
             element={
               <>
+              
                 <FoodSelector onSelect={setSelectedFood} />
                 <UserInputForm user={user} onChange={setUser} onSubmit={handleCalculate} />
 
@@ -208,6 +211,7 @@ function App() {
                     </button>
                   </div>
                 )}
+                
               </>
             }
           />

@@ -32,6 +32,7 @@ const Layout = () => {
           <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/met")}>Met Table</a></li>
           <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/intro")}>About</a></li>
           <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/social")}>Social</a></li>
+          <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/aicaloriecalculator")}>Custom Food Selector</a></li>
         </ul>
 
         <ul className={`mobile-nav-links ${isMenuOpen ? "active" : ""}`}>
@@ -40,6 +41,7 @@ const Layout = () => {
           <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/met")}>Met Table</a></li>
           <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/intro")}>About</a></li>
           <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/social")}>Social</a></li>
+          <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/aicaloriecalculator")}>Custom Food Selector</a></li>
         </ul>
       </nav>
 
