@@ -113,7 +113,7 @@ export default function AiCalorieCalculator() {
   return (
     <div className="calorie-calculator-container">
       <div className="calculator-card">
-        <h1 className="main-title">AI Calorie Calculator</h1>
+        <h1 className="main-title">Custom Food Calculator</h1>
         <form onSubmit={handleCalculate} className="input-form">
           <input
             type="text"
