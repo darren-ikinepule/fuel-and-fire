@@ -53,8 +53,18 @@ export default function AiCalorieCalculator() {
       }
     };
     
-    const apiKey = "AIzaSyAUw61Ta-bFJA8OMQGEIynl2ymVp-uzbjI";
+    // Environment variable integration: Secure API key management
+    // Prevents hardcoded secrets in source code and enables different keys per environment
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+    // Runtime validation: Ensure API key is configured before making requests
+    // Provides clear error messaging for configuration issues
+    if (!apiKey) {
+      setLoading(false);
+      setError('API key not configured. Please check your environment variables.');
+      return;
+    }
 
     try {
       const response = await fetch(apiUrl, {
