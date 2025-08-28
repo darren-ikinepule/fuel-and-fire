@@ -1,43 +1,51 @@
-// SplitBurnPlan.jsx - Fuel & Fire clean, responsive split burn summary with checklist
-import React, { useState, useEffect } from 'react'; // Import useState and useEffect
-import '../stylesheets/split-burn-plan.css'; // Ensure this CSS file contains the .scroll-to-top-btn styles
+// SplitBurnPlan.jsx - Interactive workout checklist with completion tracking and celebration features
+
+import React, { useState, useEffect } from 'react';
+import '../stylesheets/split-burn-plan.css';
 
 /**
- * Renders the split burn plan, showing how total calories are divided across selected exercises.
- * Includes a checklist feature for users to mark exercises as completed.
+ * SplitBurnPlan - Interactive workout plan component with progress tracking
+ * Displays personalized exercise split based on calorie targets and selected exercises
+ * Features completion tracking, celebration feedback, and navigation utilities
  * @param {Object} props - Component props.
  * @param {Array<Object>} props.splitExercises - Array of exercise objects with calculated values (e.g., { name, value, unit, img }).
  * @param {number} props.totalCalories - The total calories to be burned.
  * @param {Array<string>} props.selectedExercises - Array of names of exercises selected by the user.
  */
 function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
-  // Check if there are exercises to display; if not, return null to render nothing.
+  // Guard clause: Early return for empty data prevents unnecessary rendering
   if (!splitExercises || splitExercises.length === 0) return null;
 
-  // State to manage the checked status of each exercise
+  // Completion tracking state - uses object map for O(1) lookup performance
   const [completedExercises, setCompletedExercises] = useState({});
-  // State to control the visibility of the celebration message
+  // UI state for gamification - celebration overlay visibility
   const [showCelebration, setShowCelebration] = useState(false);
 
-  // NEW: Effect to reset the state when the exercises or food selection changes
-  // This prevents the celebration message from appearing incorrectly for a new workout.
+  /**
+   * Reset state when workout parameters change
+   * Prevents stale celebration states when user modifies their workout plan
+   * Dependencies: selectedExercises and totalCalories trigger state reset
+   */
   useEffect(() => {
     setCompletedExercises({});
     setShowCelebration(false);
   }, [selectedExercises, totalCalories]);
 
   /**
-   * Toggles the completion status of an exercise.
+   * Handles exercise completion toggle with automatic celebration detection
+   * Uses immutable state update pattern and checks completion status in real-time
    * @param {string} exerciseName - The name of the exercise to toggle.
    */
   const handleToggleComplete = (exerciseName) => {
+    // Immutable state update using spread operator for React optimization
     const newCompletedExercises = {
       ...completedExercises,
       [exerciseName]: !completedExercises[exerciseName],
     };
     setCompletedExercises(newCompletedExercises);
 
-    // Check if all exercises are now completed
+    // Real-time completion validation using Array.every() for boolean logic
+    // Checks if all exercises in the current plan are marked complete
     const allCompleted = splitExercises.every((ex) => newCompletedExercises[ex.name]);
     if (allCompleted && splitExercises.length > 0) {
       setShowCelebration(true);
@@ -47,14 +55,15 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
   };
 
   /**
-   * Dismisses the celebration message.
+   * Dismisses celebration overlay - simple state reset for modal-like behavior
    */
   const dismissCelebration = () => {
     setShowCelebration(false);
   };
 
   /**
-   * Smoothly scrolls the window to the top of the page.
+   * Smooth scroll utility for better UX navigation
+   * Uses native Web API with smooth behavior for polished interaction
    */
   const scrollToTop = () => {
     window.scrollTo({
@@ -69,7 +78,7 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
       <p className="split-plan-summary">
         Based on your selection of{' '}
         <strong className="food-summary-names">
-          {/* Note: In a full app, you'd pass the actual food names here */}
+          {/* Note: Placeholder for dynamic food names - could be enhanced with actual food data */}
           your food items
         </strong>
         , which total
@@ -80,22 +89,22 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
       <div className="split-plan-list">
         {splitExercises.map((ex, idx) => (
           <div key={ex.name} className="split-plan-item">
-            {/* Display the exercise image */}
             <img src={ex.img} alt={ex.name} className="split-plan-img" />
 
-            {/* Display the exercise name and value */}
             <div className="split-plan-details">
               <span className="split-plan-exercise">{ex.name}:</span>
               <span className="split-plan-value">
-                {/* UPDATED: Use the formatted string for the value */}
+                {/* Uses pre-formatted displayValue from calculation logic */}
+                {/* Maintains separation between data formatting and presentation */}
                 {ex.displayValue}
               </span>
             </div>
-            {/* UPDATED: Checkbox moved to the end of the flex item */}
+            {/* Checkbox positioned at item end for consistent visual hierarchy */}
             <input
               type="checkbox"
               id={`exercise-checkbox-${idx}`}
-              checked={!!completedExercises[ex.name]} // Ensure it's a boolean
+              // Boolean coercion (!!） ensures proper checkbox behavior even with undefined values
+              checked={!!completedExercises[ex.name]}
               onChange={() => handleToggleComplete(ex.name)}
               className="exercise-complete-checkbox"
             />
@@ -105,16 +114,19 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
         ))}
       </div>
 
-      {/* Button to return to the top of the page */}
+      {/* Navigation utility with accessibility considerations */}
       <button
-        onClick={scrollToTop} // Call the scrollToTop function when clicked.
-        className="scroll-to-top-btn" // Apply specific styles for the button.
-        aria-label="Return to top of page" // Provide an accessible label for screen readers.
+        onClick={scrollToTop}
+        className="scroll-to-top-btn"
+        // Screen reader accessibility for non-text navigation element
+        aria-label="Return to top of page"
       >
-        &#8593; {/* Unicode character for an upward arrow */}
+        {/* Unicode arrow provides visual cue without dependency on external icons */}
+        &#8593;
       </button>
 
-      {/* NEW: Celebration Message */}
+      {/* Gamification feature: Conditional celebration overlay */}
+      {/* Modal-like overlay provides positive reinforcement for workout completion */}
       {showCelebration && (
         <div className="celebration-message-overlay">
           <div className="celebration-message-content">
@@ -130,4 +142,4 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
   );
 }
 
-export default SplitBurnPlan; //works
+export default SplitBurnPlan;

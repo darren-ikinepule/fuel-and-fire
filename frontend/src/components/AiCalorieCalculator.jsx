@@ -12,6 +12,7 @@ export default function AiCalorieCalculator() {
   const [nutritionData, setNutritionData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  // Reference to automatically scroll to results after API response
   const resultRef = useRef(null);
 
   /**
@@ -24,9 +25,12 @@ export default function AiCalorieCalculator() {
     setLoading(true);
     setError('');
     
-    // Using a more structured prompt for better AI output
+    // Structured prompt engineering: requesting specific JSON format to ensure consistent parsing
+    // This approach reduces API response variability and parsing errors
     const geminiPrompt = `Analyze the following food list and provide a detailed nutritional breakdown in a JSON array format. For each item, include the food name, total calories, protein in grams, carbohydrates in grams, and fats in grams. If a food item cannot be identified, return an object for that item with "not found" in the "food" field. The entire response must be a single JSON array, with keys in the following order: 'food', 'calories', 'protein_g', 'carbohydrates_g', 'fat_g'. Here is the list: ${prompt}`;
 
+    // Gemini API payload with structured output configuration
+    // responseMimeType and responseSchema enforce JSON format compliance
     const payload = {
       contents: [{ role: "user", parts: [{ text: geminiPrompt }] }],
       generationConfig: {
@@ -42,6 +46,7 @@ export default function AiCalorieCalculator() {
               "carbohydrates_g": { "type": "NUMBER" },
               "fat_g": { "type": "NUMBER" }
             },
+            // propertyOrdering ensures consistent key sequence in response
             "propertyOrdering": ["food", "calories", "protein_g", "carbohydrates_g", "fat_g"]
           }
         }
@@ -58,6 +63,8 @@ export default function AiCalorieCalculator() {
         body: JSON.stringify(payload)
       });
 
+      // Exponential backoff retry logic for rate limiting (429 status)
+      // Delay increases exponentially: 1s, 2s, 4s for retries 0, 1, 2
       if (response.status === 429 && retryCount < 3) {
         const delay = Math.pow(2, retryCount) * 1000;
         console.warn(`Rate limit exceeded. Retrying in ${delay / 1000} seconds...`);
@@ -69,17 +76,20 @@ export default function AiCalorieCalculator() {
       }
 
       const result = await response.json();
+      // Defensive programming: validate expected API response structure
       if (!result.candidates || !result.candidates[0].content || !result.candidates[0].content.parts) {
         throw new Error('Unexpected API response structure.');
       }
 
-      // Extract the JSON string from the response
+      // Extract the JSON string from the nested API response structure
       const jsonText = result.candidates[0].content.parts[0].text;
       
       try {
+        // Parse the AI-generated JSON and update state
         const data = JSON.parse(jsonText);
         setNutritionData(data);
         setLoading(false);
+        // Auto-scroll to results for better UX after successful data fetch
         resultRef.current?.scrollIntoView({ behavior: 'smooth' });
       } catch (parseError) {
         console.error('Failed to parse JSON:', jsonText);
@@ -95,11 +105,13 @@ export default function AiCalorieCalculator() {
 
   /**
    * Calculates the sum of a specific key from the nutrition data.
+   * Uses reduce with fallback for missing/null values to prevent calculation errors
    * @param {string} key The key to sum (e.g., 'calories').
    * @returns {number} The total sum.
    */
   const calculateTotal = (key) => {
     if (!nutritionData) return 0;
+    // Reduce with null coalescing (|| 0) handles cases where API returns null/undefined values
     return nutritionData.reduce((sum, item) => sum + (item[key] || 0), 0);
   };
 
@@ -174,6 +186,7 @@ export default function AiCalorieCalculator() {
               <li key={index} className="breakdown-item">
                 <span className="food-name">{item.food}</span>
                 <div className="nutrition-values">
+                  {/* Conditional rendering: show nutrition data or "Not Found" message */}
                   {item.calories ? (
                     <>
                       <span>{item.calories.toFixed(1)} cal</span>

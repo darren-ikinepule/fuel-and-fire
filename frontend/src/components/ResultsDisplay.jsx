@@ -1,10 +1,17 @@
-// ResultsDisplay.jsx
+// ResultsDisplay.jsx - Exercise calculation results component with collapsible UI
+
 import React from "react";
 import { calculateExercises } from "../scripts/exercise";
 import "../stylesheets/results-display.css";
 
-// Renders the summary of the workout needed to burn off the selected calories.
+/**
+ * ResultsDisplay - Renders personalized workout recommendations based on food selections
+ * Features conditional rendering, data validation, and collapsible content for better UX
+ * Calculates exercise equivalents using user weight and total calorie intake
+ */
 function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility }) {
+  // Guard clause pattern: Early return for invalid/incomplete data states
+  // Prevents unnecessary calculations and provides clear user guidance
   if (!food || food.length === 0 || !user.weight) {
     return (
       <div className="results-container placeholder">
@@ -16,19 +23,22 @@ function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility 
     );
   }
 
+  // Aggregate total calories from selected food items using reduce for functional approach
   const totalCalories = food.reduce((sum, f) => sum + f.calories, 0);
+  // External calculation logic keeps component focused on presentation
+  // Number() conversion ensures weight is numeric for mathematical operations
   const exercises = calculateExercises(totalCalories, Number(user.weight));
 
   return (
     <div className="results-container">
-      {/* Heading is now separate from the button */}
       <h2 className="results-heading">Your Fuel Burn Workout</h2>
 
-      {/* Conditionally render content based on isContentVisible prop */}
+      {/* Progressive disclosure pattern: Show detailed content only when requested */}
       {isContentVisible && (
         <>
           <p className="summary-text">
             To burn off your 
+            {/* Dynamic food name concatenation with proper spacing and formatting */}
             <strong className="food-summary-names">
               {" "}
               {food.map(f => f.name).join(", ")}{" "}
@@ -47,7 +57,8 @@ function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility 
                 <div className="exercise-details">
                   <span className="exercise-label">{ex.name}:</span>
                   <span className="exercise-value">
-                    {/* UPDATED: Use displayValue for formatted string */}
+                    {/* Uses pre-formatted displayValue from calculation module */}
+                    {/* Separates data formatting logic from presentation component */}
                     <strong>{ex.displayValue}</strong>
                   </span>
                 </div>
@@ -57,7 +68,8 @@ function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility 
         </>
       )}
 
-      {/* Moved toggle button to the bottom of the container */}
+      {/* Toggle button positioned at bottom for consistent UI flow */}
+      {/* Button text dynamically reflects current state for clear user feedback */}
       <button
         onClick={toggleContentVisibility}
         className="toggle-results-btn-bottom"
