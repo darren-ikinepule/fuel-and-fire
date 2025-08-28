@@ -13,10 +13,10 @@ The wow-factor of Fuel & Fire lies in its ability to instantly transform abstrac
 
 ## Test-users
 
-Beck
-Kombe
-Victor
-Evan
+Anran (canva)
+Kombe (Xero)
+Victor (Teacher at Take2)
+Henry (Datacom)
 
 ## feed back form
 https://forms.gle/bP35sxB9JdkyCjy78
