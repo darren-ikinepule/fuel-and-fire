@@ -132,6 +132,13 @@ export default function AiCalorieCalculator() {
         </form>
       </div>
 
+      {loading && (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Analyzing your food items...</p>
+        </div>
+      )}
+
       {error && (
         <div className="error-message" role="alert">
           {error}

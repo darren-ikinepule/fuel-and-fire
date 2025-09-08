@@ -13,11 +13,14 @@ function FoodSelector({ onSelect }) {
   const [foodSelector, setFoodSelector] = useState([]);
   // Store complete food data from API including images, names, and calorie information
   const [fastFoodInfo, setFastFoodInfo] = useState([]);
+  // Track loading state for food data
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch food data on component mount - runs once due to empty dependency array
   useEffect(() => {
     const fetchFood = async () => {
       try {
+        setIsLoading(true);
         // Use Vite environment variable for API endpoint - supports different environments (dev/prod)
         const response = await fetch(`${import.meta.env.VITE_API_URL}/food-items`);
         const data = await response.json();
@@ -25,6 +28,8 @@ function FoodSelector({ onSelect }) {
       } catch (err) {
         // Fail silently to prevent crashes - could be enhanced with user-facing error handling
         console.error("Error fetching food data:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchFood();
@@ -58,24 +63,31 @@ function FoodSelector({ onSelect }) {
         <h2 className="istruction-text">Please Select Your Food Items</h2>
       </div>
       <div className="food-selector">
-        <div className="food-list">
-          {fastFoodInfo.map((food, index) => (
-            <div
-              key={food.name}
-              // Dynamic CSS class construction for selection state visual feedback
-              className={`food-item${foodSelector.includes(index) ? " selected" : ""}`}
-              onClick={(e) => handleSelect(index, e)}
-              // Accessibility: Make div keyboard navigable and screen reader friendly
-              role="button"
-              tabIndex={0}
-              aria-label={food.name}
-            >
-              <img src={food.img} alt={food.name} className="food-img" />
-              <div className="food-name">{food.name}</div>
-              <div className="food-calories">{food.calories} cal</div>
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p className="loading-text">Loading food items...</p>
+          </div>
+        ) : (
+          <div className="food-list">
+            {fastFoodInfo.map((food, index) => (
+              <div
+                key={food.name}
+                // Dynamic CSS class construction for selection state visual feedback
+                className={`food-item${foodSelector.includes(index) ? " selected" : ""}`}
+                onClick={(e) => handleSelect(index, e)}
+                // Accessibility: Make div keyboard navigable and screen reader friendly
+                role="button"
+                tabIndex={0}
+                aria-label={food.name}
+              >
+                <img src={food.img} alt={food.name} className="food-img" />
+                <div className="food-name">{food.name}</div>
+                <div className="food-calories">{food.calories} cal</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
