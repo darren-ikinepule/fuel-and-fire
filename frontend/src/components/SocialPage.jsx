@@ -25,40 +25,40 @@ const SocialPage = () => {
           {/* Security implementation: target="_blank" with rel="noopener noreferrer" */}
           {/* Prevents window.opener exploitation and referrer information leakage */}
           <a
-            href="https://facebook.com/fuelandfire"
+            href="https://www.facebook.com/login"
             target="_blank"
             rel="noopener noreferrer"
             // Accessibility: Provides context for screen readers when visual icons aren't descriptive
-            aria-label="Fuel & Fire on Facebook"
+            aria-label="Login to Facebook"
             // Enhanced UX: Tooltip for mouse users while maintaining accessibility
-            title="Facebook"
+            title="Facebook Login"
           >
             <FaFacebookF />
           </a>
           <a
-            href="https://instagram.com/fuelandfire"
+            href="https://www.instagram.com/accounts/login"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Fuel & Fire on Instagram"
-            title="Instagram"
+            aria-label="Login to Instagram"
+            title="Instagram Login"
           >
             <FaInstagram />
           </a>
           <a
-            href="https://twitter.com/fuelandfire"
+            href="https://twitter.com/i/flow/login"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Fuel & Fire on Twitter"
-            title="Twitter"
+            aria-label="Login to Twitter"
+            title="Twitter Login"
           >
             <FaTwitter />
           </a>
           <a
-            href="https://youtube.com/fuelandfire"
+            href="https://accounts.google.com/signin"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Fuel & Fire on YouTube"
-            title="YouTube"
+            aria-label="Login to YouTube"
+            title="YouTube Login"
           >
             <FaYoutube />
           </a>
