@@ -129,59 +129,221 @@
 
 /* Existing styles... */
 
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
+/* Responsive adjustments */
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .intro-bg {
+    padding: 0 1.5rem;
+  }
   .intro-container {
-    padding: 2rem 1.5rem; /* Slightly less padding for tablets/larger phones */
-    gap: 1.25rem;
+    max-width: 90%;
+    padding: 2.2rem 1.8rem;
+  }
+  .intro-title {
+    font-size: clamp(2rem, 5.5vw, 3rem);
+  }
+  .intro-subtitle {
+    font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+  }
+  .intro-step {
+    padding: 1.1rem;
+  }
+  .intro-emoji {
+    font-size: clamp(1.8rem, 5.5vw, 2.8rem);
+  }
+  .intro-step-title {
+    font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+  }
+  .intro-step-desc {
+    font-size: clamp(0.85rem, 2.2vw, 1rem);
+  }
+  .intro-fun-text {
+    font-size: clamp(0.95rem, 2.8vw, 1.15rem);
   }
 }
 
-@media (max-width: 480px) {
+/* Tablets and large phones */
+@media (max-width: 768px) {
+  .intro-bg {
+    padding: 0 1.2rem;
+  }
   .intro-container {
-    padding: 1.5rem 1rem; /* More compact padding for smaller phones */
-    border-radius: 1rem; /* Slightly smaller border radius */
-    gap: 1rem;
+    padding: 2rem 1.5rem;
+    gap: 1.25rem;
+    max-width: 95%;
   }
   .intro-title {
-    font-size: clamp(1.8rem, 8vw, 2.5rem); /* Adjust clamp for smaller max size */
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+  }
+  .intro-subtitle {
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+  }
+  .intro-step {
+    padding: 1rem;
+  }
+  .intro-emoji {
+    font-size: clamp(1.6rem, 6vw, 2.5rem);
+  }
+  .intro-step-title {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+  }
+  .intro-step-desc {
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+  }
+  .intro-fun-text {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .intro-bg {
+    padding: 0 1rem;
+  }
+  .intro-container {
+    padding: 1.5rem 1rem;
+    border-radius: 1rem;
+    gap: 1rem;
+    max-width: 100%;
+  }
+  .intro-title {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
     letter-spacing: 1px;
   }
   .intro-subtitle {
-    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+    font-size: clamp(0.85rem, 3vw, 1.1rem);
   }
   .intro-step {
-    padding: 1rem; /* Reduce step padding */
+    padding: 0.9rem;
     border-radius: 0.75rem;
   }
   .intro-emoji {
-    font-size: clamp(1.8rem, 8vw, 2.5rem); /* Smaller emojis */
+    font-size: clamp(1.4rem, 7vw, 2.2rem);
   }
   .intro-step-title {
-    font-size: clamp(1rem, 3.5vw, 1.2rem);
+    font-size: clamp(0.9rem, 3.2vw, 1.15rem);
     letter-spacing: 0.5px;
   }
   .intro-step-desc {
-    font-size: clamp(0.8rem, 2.8vw, 0.95rem);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
   }
   .intro-fun {
-    padding: 1rem;
+    padding: 0.9rem;
     border-radius: 0.75rem;
   }
   .intro-fun-text {
-    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    font-size: clamp(0.85rem, 3.2vw, 1.05rem);
   }
 }
 
-/* Optional: For very small screens */
+/* Very small phones */
 @media (max-width: 375px) {
+  .intro-bg {
+    padding: 0 0.8rem;
+  }
   .intro-container {
-    padding: 1rem 0.75rem; /* Even more compact */
+    padding: 1.2rem 0.8rem;
+    gap: 0.8rem;
   }
   .intro-title {
-    font-size: clamp(1.6rem, 7vw, 2rem);
+    font-size: clamp(1.4rem, 8vw, 2rem);
+    letter-spacing: 0.5px;
   }
   .intro-subtitle {
-    font-size: clamp(0.85rem, 3vw, 1rem);
+    font-size: clamp(0.8rem, 3.5vw, 1rem);
+  }
+  .intro-step {
+    padding: 0.8rem;
+    border-radius: 0.6rem;
+  }
+  .intro-emoji {
+    font-size: clamp(1.2rem, 8vw, 2rem);
+  }
+  .intro-step-title {
+    font-size: clamp(0.85rem, 3.5vw, 1.1rem);
+  }
+  .intro-step-desc {
+    font-size: clamp(0.7rem, 2.8vw, 0.85rem);
+  }
+  .intro-fun {
+    padding: 0.8rem;
+    border-radius: 0.6rem;
+  }
+  .intro-fun-text {
+    font-size: clamp(0.8rem, 3.5vw, 1rem);
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .intro-bg {
+    padding: 0 0.6rem;
+  }
+  .intro-container {
+    padding: 1rem 0.6rem;
+    gap: 0.6rem;
+  }
+  .intro-title {
+    font-size: clamp(1.2rem, 9vw, 1.8rem);
+  }
+  .intro-subtitle {
+    font-size: clamp(0.75rem, 4vw, 0.95rem);
+  }
+  .intro-step {
+    padding: 0.7rem;
+    border-radius: 0.5rem;
+  }
+  .intro-emoji {
+    font-size: clamp(1rem, 9vw, 1.8rem);
+  }
+  .intro-step-title {
+    font-size: clamp(0.8rem, 4vw, 1rem);
+  }
+  .intro-step-desc {
+    font-size: clamp(0.65rem, 3vw, 0.8rem);
+  }
+  .intro-fun {
+    padding: 0.7rem;
+    border-radius: 0.5rem;
+  }
+  .intro-fun-text {
+    font-size: clamp(0.75rem, 4vw, 0.95rem);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .intro-bg {
+    padding: 0 1rem;
+  }
+  .intro-container {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+  .intro-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin-bottom: 0.8rem;
+  }
+  .intro-subtitle {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    margin-bottom: 1rem;
+  }
+  .intro-step {
+    padding: 0.6rem;
+  }
+  .intro-emoji {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+  }
+  .intro-step-title {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  }
+  .intro-step-desc {
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+  }
+  .intro-fun {
+    padding: 0.6rem;
+  }
+  .intro-fun-text {
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
   }
 }

@@ -60,3 +60,117 @@
   box-shadow: 0 0 10px var(--color-orange-fluorescent);
 }
 
+/* Responsive adjustments */
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .exercise-selector-container {
+    max-width: 90%;
+    padding: 1.2rem;
+  }
+  .exercise-selector-list {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.6rem;
+  }
+}
+
+/* Tablets and large phones */
+@media (max-width: 768px) {
+  .exercise-selector-container {
+    max-width: 95%;
+    padding: 1rem;
+    margin-top: 1.5rem;
+  }
+  .exercise-selector-title {
+    font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+    margin-bottom: 0.8rem;
+  }
+  .exercise-selector-list {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 0.5rem;
+  }
+  .exercise-selector-item {
+    padding: 0.4rem 0.8rem;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .exercise-selector-container {
+    max-width: 100%;
+    padding: 0.8rem;
+    margin-top: 1.2rem;
+  }
+  .exercise-selector-title {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    margin-bottom: 0.6rem;
+  }
+  .exercise-selector-list {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.4rem;
+  }
+  .exercise-selector-item {
+    padding: 0.3rem 0.6rem;
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+    border-radius: 6px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 375px) {
+  .exercise-selector-container {
+    padding: 0.6rem;
+    margin-top: 1rem;
+  }
+  .exercise-selector-title {
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+  }
+  .exercise-selector-list {
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 0.3rem;
+  }
+  .exercise-selector-item {
+    padding: 0.25rem 0.5rem;
+    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+    border-radius: 5px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .exercise-selector-container {
+    padding: 0.5rem;
+  }
+  .exercise-selector-title {
+    font-size: clamp(0.85rem, 4vw, 1rem);
+  }
+  .exercise-selector-list {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.25rem;
+  }
+  .exercise-selector-item {
+    padding: 0.2rem 0.4rem;
+    font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .exercise-selector-container {
+    padding: 0.6rem;
+    margin-top: 0.8rem;
+  }
+  .exercise-selector-title {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    margin-bottom: 0.5rem;
+  }
+  .exercise-selector-list {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.3rem;
+  }
+  .exercise-selector-item {
+    padding: 0.3rem 0.6rem;
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  }
+}
+

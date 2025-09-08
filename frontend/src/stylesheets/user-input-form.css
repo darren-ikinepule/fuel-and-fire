@@ -80,3 +80,122 @@
   box-shadow: 0 6px 20px rgba(255, 102, 0, 0.8);
   outline: none;
 }
+
+/* Responsive adjustments */
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .user-input-form {
+    max-width: 400px;
+    padding: 1.8rem 1.3rem;
+  }
+}
+
+/* Tablets and large phones */
+@media (max-width: 768px) {
+  .user-input-form {
+    max-width: 90%;
+    padding: 1.5rem 1.2rem;
+    margin: 1.5rem auto;
+  }
+  .input-label {
+    font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+  }
+  .input-field {
+    font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+    padding: 0.7rem 0.9rem;
+  }
+  .submit-btn {
+    font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+    padding: 0.7rem 1.8rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .user-input-form {
+    max-width: 95%;
+    padding: 1.2rem 1rem;
+    margin: 1.2rem auto;
+    gap: 1.2rem;
+  }
+  .input-label {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+  .input-field {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    padding: 0.6rem 0.8rem;
+  }
+  .submit-btn {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    padding: 0.6rem 1.5rem;
+  }
+  .error-message {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+  }
+}
+
+/* Very small phones */
+@media (max-width: 375px) {
+  .user-input-form {
+    padding: 1rem 0.8rem;
+    margin: 1rem auto;
+    gap: 1rem;
+  }
+  .input-label {
+    font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  }
+  .input-field {
+    font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+    padding: 0.5rem 0.7rem;
+  }
+  .submit-btn {
+    font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+    padding: 0.5rem 1.2rem;
+  }
+  .error-message {
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .user-input-form {
+    padding: 0.8rem 0.6rem;
+    margin: 0.8rem auto;
+    gap: 0.8rem;
+  }
+  .input-label {
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+  }
+  .input-field {
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    padding: 0.4rem 0.6rem;
+  }
+  .submit-btn {
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    padding: 0.4rem 1rem;
+  }
+  .error-message {
+    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .user-input-form {
+    padding: 0.8rem 1rem;
+    margin: 0.8rem auto;
+    gap: 0.8rem;
+  }
+  .input-label {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+  .input-field {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    padding: 0.5rem 0.8rem;
+  }
+  .submit-btn {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    padding: 0.5rem 1.2rem;
+  }
+}

@@ -263,6 +263,24 @@
 }
 
 /* Responsive adjustments */
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .homepage-container {
+    padding: 1.2rem;
+  }
+  .homepage-content {
+    max-width: 90%;
+    padding: 2rem 1.5rem;
+  }
+  .homepage-heading {
+    font-size: clamp(2.5rem, 5vw, 3rem);
+  }
+  .homepage-subheading {
+    font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+  }
+}
+
+/* Tablets and large phones */
 @media (max-width: 768px) {
   .navbar {
     padding: 1rem;
@@ -275,13 +293,107 @@
     display: flex;
   }
   .homepage-heading {
-    font-size: 2.25rem;
+    font-size: clamp(2rem, 6vw, 2.5rem);
   }
   .homepage-subheading {
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
   }
   .homepage-content {
     padding: 1.5rem;
-    max-width: 90vw;
+    max-width: 95vw;
+  }
+  .homepage-cta-button {
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
+    padding: 0.8rem 1.2rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .homepage-container {
+    padding: 1rem;
+  }
+  .navbar {
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  .homepage-content {
+    padding: 1.2rem;
+    max-width: 100%;
+  }
+  .homepage-heading {
+    font-size: clamp(1.8rem, 7vw, 2.2rem);
+    margin-bottom: 1rem;
+  }
+  .homepage-subheading {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    margin-bottom: 2rem;
+  }
+  .homepage-cta-button {
+    font-size: clamp(0.9rem, 2.8vw, 1rem);
+    padding: 0.7rem 1rem;
+  }
+  .homepage-footer {
+    font-size: 0.8rem;
+    padding: 0.8rem 0;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 375px) {
+  .homepage-container {
+    padding: 0.8rem;
+  }
+  .homepage-content {
+    padding: 1rem;
+  }
+  .homepage-heading {
+    font-size: clamp(1.6rem, 8vw, 2rem);
+  }
+  .homepage-subheading {
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+  }
+  .homepage-cta-button {
+    font-size: clamp(0.85rem, 3vw, 0.95rem);
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .homepage-container {
+    padding: 0.6rem;
+  }
+  .homepage-content {
+    padding: 0.8rem;
+  }
+  .homepage-heading {
+    font-size: clamp(1.4rem, 9vw, 1.8rem);
+  }
+  .homepage-subheading {
+    font-size: clamp(0.8rem, 4vw, 0.95rem);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .homepage-container {
+    padding: 0.5rem;
+  }
+  .homepage-content {
+    padding: 1rem;
+    max-width: 90%;
+  }
+  .homepage-heading {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin-bottom: 0.8rem;
+  }
+  .homepage-subheading {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    margin-bottom: 1.5rem;
+  }
+  .homepage-cta-button {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    padding: 0.6rem 1rem;
   }
 }

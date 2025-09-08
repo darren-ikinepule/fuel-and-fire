@@ -227,18 +227,277 @@ body {
 }
 
 /* Responsive adjustments */
-@media (min-width: 640px) {
-  .input-form {
-    flex-direction: row;
-    gap: 1rem;
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .calorie-calculator-container {
+    padding: 0.8rem;
   }
-  .calculate-button {
-    width: auto;
+  .calculator-card, .results-card {
+    max-width: 90%;
+    padding: 1.8rem 1.5rem;
+  }
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
   }
 }
 
-@media (min-width: 768px) {
+/* Tablets and large phones */
+@media (max-width: 768px) {
+  .calorie-calculator-container {
+    padding: 0.6rem;
+    min-height: 85vh;
+  }
+  .calculator-card, .results-card {
+    max-width: 95%;
+    padding: 1.5rem 1.2rem;
+  }
+  .main-title, .summary-title {
+    font-size: clamp(1.3rem, 3.5vw, 2rem);
+  }
+  .input-form {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .input-field {
+    font-size: clamp(0.9rem, 2.2vw, 1rem);
+    padding: 0.7rem 0.9rem;
+  }
+  .calculate-button {
+    width: 100%;
+    font-size: clamp(0.9rem, 2.2vw, 1rem);
+    padding: 0.7rem 1.2rem;
+  }
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+  .summary-item {
+    padding: 0.8rem;
+  }
+  .summary-value {
+    font-size: clamp(1.2rem, 3vw, 1.4rem);
+  }
+  .summary-label {
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+  }
+  .breakdown-title {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+  }
+  .breakdown-item {
+    padding: 0.8rem;
+  }
+  .food-name {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+  .nutrition-values {
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+    gap: 0.6rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .calorie-calculator-container {
+    padding: 0.4rem;
+    min-height: 80vh;
+  }
+  .calculator-card, .results-card {
+    max-width: 100%;
+    padding: 1.2rem 1rem;
+  }
+  .main-title, .summary-title {
+    font-size: clamp(1.1rem, 4vw, 1.8rem);
+    margin-bottom: 1rem;
+  }
+  .input-field {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    padding: 0.6rem 0.8rem;
+  }
+  .calculate-button {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    padding: 0.6rem 1rem;
+  }
+  .summary-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .summary-item {
+    padding: 0.6rem;
+  }
+  .summary-value {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+  }
+  .summary-label {
+    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+  }
+  .breakdown-title {
+    font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+  }
+  .breakdown-item {
+    padding: 0.6rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .food-name {
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+    margin-right: 0;
+    margin-bottom: 0.3rem;
+  }
+  .nutrition-values {
+    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .loading-container {
+    padding: 2rem 0.8rem;
+  }
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+  }
+  .loading-text {
+    font-size: clamp(0.9rem, 2.2vw, 1rem);
+  }
+}
+
+/* Very small phones */
+@media (max-width: 375px) {
+  .calorie-calculator-container {
+    padding: 0.3rem;
+  }
+  .calculator-card, .results-card {
+    padding: 1rem 0.8rem;
+  }
+  .main-title, .summary-title {
+    font-size: clamp(1rem, 4.5vw, 1.6rem);
+  }
+  .input-field {
+    font-size: clamp(0.8rem, 2.2vw, 0.9rem);
+    padding: 0.5rem 0.7rem;
+  }
+  .calculate-button {
+    font-size: clamp(0.8rem, 2.2vw, 0.9rem);
+    padding: 0.5rem 0.8rem;
+  }
+  .summary-item {
+    padding: 0.5rem;
+  }
+  .summary-value {
+    font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+  }
+  .summary-label {
+    font-size: clamp(0.7rem, 1.6vw, 0.8rem);
+  }
+  .breakdown-item {
+    padding: 0.5rem;
+  }
+  .food-name {
+    font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+  }
+  .nutrition-values {
+    font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+    gap: 0.4rem;
+  }
+  .loading-container {
+    padding: 1.5rem 0.6rem;
+  }
+  .loading-spinner {
+    width: 35px;
+    height: 35px;
+  }
+  .loading-text {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .calorie-calculator-container {
+    padding: 0.2rem;
+  }
+  .calculator-card, .results-card {
+    padding: 0.8rem 0.6rem;
+  }
+  .main-title, .summary-title {
+    font-size: clamp(0.9rem, 5vw, 1.4rem);
+  }
+  .input-field {
+    font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+    padding: 0.4rem 0.6rem;
+  }
+  .calculate-button {
+    font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+    padding: 0.4rem 0.6rem;
+  }
+  .summary-item {
+    padding: 0.4rem;
+  }
+  .summary-value {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+  }
+  .summary-label {
+    font-size: clamp(0.65rem, 1.4vw, 0.75rem);
+  }
+  .breakdown-item {
+    padding: 0.4rem;
+  }
+  .food-name {
+    font-size: clamp(0.75rem, 1.4vw, 0.85rem);
+  }
+  .nutrition-values {
+    font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+    gap: 0.3rem;
+  }
+  .loading-container {
+    padding: 1.2rem 0.4rem;
+  }
+  .loading-spinner {
+    width: 30px;
+    height: 30px;
+  }
+  .loading-text {
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .calorie-calculator-container {
+    min-height: auto;
+    padding: 0.5rem;
+  }
+  .calculator-card, .results-card {
+    padding: 1rem;
+  }
+  .main-title, .summary-title {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    margin-bottom: 0.8rem;
+  }
+  .input-form {
+    flex-direction: row;
+    gap: 0.6rem;
+  }
+  .calculate-button {
+    width: auto;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    padding: 0.5rem 0.8rem;
+  }
   .summary-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+  }
+  .summary-item {
+    padding: 0.5rem;
+  }
+  .breakdown-item {
+    padding: 0.5rem;
+    flex-direction: row;
+    align-items: center;
+  }
+  .food-name {
+    margin-right: 0.5rem;
+    margin-bottom: 0;
   }
 }

@@ -70,20 +70,140 @@
   transition: all 0.5s ease-in-out;
 }
 
-/* Responsive Adjustments */
+/* Responsive adjustments */
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .social-page-container {
+    padding: 1.5rem;
+  }
+  .social-card {
+    max-width: 90%;
+    padding: 2.2rem 2rem;
+  }
+  .social-logo {
+    width: 240px;
+    height: 240px;
+  }
+  .social-tagline {
+    font-size: clamp(0.9rem, 2.2vw, 1.2rem);
+  }
+  .social-icons {
+    font-size: clamp(1.6rem, 4vw, 2rem);
+  }
+}
+
+/* Tablets and large phones */
 @media (max-width: 768px) {
+  .social-page-container {
+    padding: 1.2rem;
+  }
+  .social-card {
+    max-width: 95%;
+    padding: 2rem 1.5rem;
+  }
   .social-logo {
     width: 200px;
     height: 200px;
   }
+  .social-tagline {
+    font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+    margin-bottom: 1.5rem;
+  }
+  .social-icons {
+    font-size: clamp(1.5rem, 4.5vw, 1.8rem);
+    gap: 1.2rem;
+  }
 }
 
+/* Small phones */
 @media (max-width: 480px) {
+  .social-page-container {
+    padding: 1rem;
+  }
   .social-card {
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
+    max-width: 100%;
   }
   .social-logo {
     width: 160px;
     height: 160px;
+  }
+  .social-tagline {
+    font-size: clamp(0.8rem, 2.8vw, 1rem);
+    margin-bottom: 1.2rem;
+  }
+  .social-icons {
+    font-size: clamp(1.3rem, 5vw, 1.6rem);
+    gap: 1rem;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 375px) {
+  .social-page-container {
+    padding: 0.8rem;
+  }
+  .social-card {
+    padding: 1.2rem 0.8rem;
+  }
+  .social-logo {
+    width: 140px;
+    height: 140px;
+  }
+  .social-tagline {
+    font-size: clamp(0.75rem, 3vw, 0.95rem);
+    margin-bottom: 1rem;
+  }
+  .social-icons {
+    font-size: clamp(1.2rem, 5.5vw, 1.4rem);
+    gap: 0.8rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .social-page-container {
+    padding: 0.6rem;
+  }
+  .social-card {
+    padding: 1rem 0.6rem;
+  }
+  .social-logo {
+    width: 120px;
+    height: 120px;
+  }
+  .social-tagline {
+    font-size: clamp(0.7rem, 3.5vw, 0.9rem);
+    margin-bottom: 0.8rem;
+  }
+  .social-icons {
+    font-size: clamp(1.1rem, 6vw, 1.3rem);
+    gap: 0.6rem;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .social-page-container {
+    padding: 0.5rem;
+  }
+  .social-card {
+    padding: 1rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .social-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 0;
+  }
+  .social-tagline {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    margin-bottom: 0.8rem;
+  }
+  .social-icons {
+    font-size: clamp(1.2rem, 3vw, 1.4rem);
+    gap: 0.8rem;
   }
 }

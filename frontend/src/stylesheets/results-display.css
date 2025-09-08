@@ -144,24 +144,172 @@
   box-shadow: 0 0 15px rgba(255, 102, 0, 0.8);
 }
 
+/* Responsive adjustments */
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .results-container {
+    max-width: 90%;
+    padding: 2.2rem 1.8rem;
+  }
+  .exercise-item {
+    width: calc(50% - 0.5rem);
+    max-width: 300px;
+  }
+}
+
+/* Tablets and large phones */
 @media (max-width: 768px) {
   .results-container {
     padding: 2rem 1.2rem;
+    max-width: 95%;
   }
   .results-heading {
-    font-size: 2.2em;
+    font-size: clamp(1.8rem, 4.5vw, 2.2rem);
   }
   .summary-text {
-    font-size: 1.05em;
+    font-size: clamp(1rem, 2.2vw, 1.05rem);
   }
   .exercise-item {
     width: 100%;
     flex-direction: row;
     padding: 1rem 1.2rem;
+    max-width: none;
   }
   .exercise-img {
     width: 45px;
     height: 45px;
     margin-right: 1rem;
+  }
+  .exercise-label {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+  }
+  .exercise-value {
+    font-size: clamp(1rem, 2.2vw, 1.1rem);
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .results-container {
+    padding: 1.5rem 1rem;
+    max-width: 100%;
+    margin: 2rem auto;
+  }
+  .results-heading {
+    font-size: clamp(1.6rem, 5vw, 2rem);
+    margin-bottom: 1.2rem;
+  }
+  .summary-text {
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    margin-bottom: 1.5rem;
+  }
+  .exercise-item {
+    padding: 0.8rem 1rem;
+    flex-direction: row;
+    align-items: center;
+  }
+  .exercise-img {
+    width: 40px;
+    height: 40px;
+    margin-right: 0.8rem;
+  }
+  .exercise-details {
+    flex-grow: 1;
+  }
+  .exercise-label {
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  }
+  .exercise-value {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+  .toggle-results-btn-bottom {
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+    padding: 0.6rem 1.2rem;
+    margin-top: 1.5rem;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 375px) {
+  .results-container {
+    padding: 1.2rem 0.8rem;
+  }
+  .results-heading {
+    font-size: clamp(1.4rem, 6vw, 1.8rem);
+  }
+  .summary-text {
+    font-size: clamp(0.85rem, 2.8vw, 0.95rem);
+  }
+  .exercise-item {
+    padding: 0.7rem 0.8rem;
+  }
+  .exercise-img {
+    width: 35px;
+    height: 35px;
+    margin-right: 0.6rem;
+  }
+  .exercise-label {
+    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+  }
+  .exercise-value {
+    font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  }
+  .toggle-results-btn-bottom {
+    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 320px) {
+  .results-container {
+    padding: 1rem 0.6rem;
+  }
+  .results-heading {
+    font-size: clamp(1.2rem, 7vw, 1.6rem);
+  }
+  .summary-text {
+    font-size: clamp(0.8rem, 3vw, 0.9rem);
+  }
+  .exercise-item {
+    padding: 0.6rem 0.7rem;
+  }
+  .exercise-img {
+    width: 30px;
+    height: 30px;
+    margin-right: 0.5rem;
+  }
+  .exercise-label {
+    font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+  }
+  .exercise-value {
+    font-size: clamp(0.75rem, 1.6vw, 0.9rem);
+  }
+  .toggle-results-btn-bottom {
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .results-container {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+  .results-heading {
+    font-size: clamp(1.5rem, 4vw, 1.8rem);
+    margin-bottom: 0.8rem;
+  }
+  .summary-text {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    margin-bottom: 1rem;
+  }
+  .exercise-item {
+    padding: 0.6rem 0.8rem;
+  }
+  .exercise-img {
+    width: 35px;
+    height: 35px;
   }
 }
