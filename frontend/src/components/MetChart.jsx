@@ -10,6 +10,17 @@ import { metValues } from "../scripts/met-values.js";
  * Features dual measurement systems: MET values for timed activities, calories per rep for discrete exercises
  */
 const MetChart = () => {
+  /**
+   * Smooth scroll utility for better UX navigation
+   * Uses native Web API with smooth behavior for polished interaction
+   */
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   return (
     <div className="met-chart-container">
       <header className="met-chart-header">
@@ -62,6 +73,17 @@ const MetChart = () => {
           ))}
         </div>
       </main>
+
+      {/* Navigation utility with accessibility considerations */}
+      <button
+        onClick={scrollToTop}
+        className="scroll-to-top-btn"
+        // Screen reader accessibility for non-text navigation element
+        aria-label="Return to top of page"
+      >
+        {/* Unicode arrow provides visual cue without dependency on external icons */}
+        &#8593;
+      </button>
     </div>
   );
 };

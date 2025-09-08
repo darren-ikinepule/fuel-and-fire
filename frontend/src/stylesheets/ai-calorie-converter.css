@@ -226,6 +226,34 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+/* CTA Button Styles for Burn Plan */
+.cta-button {
+  background-color: var(--color-orange-fluorescent);
+  color: black;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 250px;
+  margin: 1.5rem auto 0;
+  display: block;
+}
+
+.cta-button:hover {
+  background-color: #FF8C00;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(255, 102, 0, 0.8);
+  outline: none;
+}
+
+.cta-button:active {
+  transform: translateY(0);
+}
+
 /* Responsive adjustments */
 /* Large tablets and small desktops */
 @media (max-width: 1024px) {

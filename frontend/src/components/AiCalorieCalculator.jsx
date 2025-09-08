@@ -1,7 +1,10 @@
 // File: AiCalorieCalculator.jsx
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import '../stylesheets/ai-calorie-converter.css'; // Import the dedicated CSS file
+import ExerciseSelector from './ExerciseSelector.jsx';
+import SplitBurnPlan from './SplitBurnPlan.jsx';
+import { calculateSplitExercises } from '../scripts/calculateSplitExercises.js';
 
 /**
  * AiCalorieCalculator is a React component that calculates
@@ -13,6 +16,13 @@ export default function AiCalorieCalculator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const resultRef = useRef(null);
+  
+  // Exercise selection and burn plan state
+  const [selectedExercises, setSelectedExercises] = useState([]);
+  const [splitExercises, setSplitExercises] = useState([]);
+  const [showSplitBurnPlan, setShowSplitBurnPlan] = useState(false);
+  const [burnPlanError, setBurnPlanError] = useState('');
+  const burnPlanSectionRef = useRef(null);
 
   /**
    * Fetches nutritional data from the Gemini API.
@@ -110,6 +120,64 @@ export default function AiCalorieCalculator() {
     }
   };
 
+  // Handler for selecting/deselecting exercises
+  const handleExerciseSelect = (exerciseName) => {
+    setSelectedExercises((prev) =>
+      prev.includes(exerciseName)
+        ? prev.filter((name) => name !== exerciseName)
+        : [...prev, exerciseName]
+    );
+  };
+
+  // Handler for the "View Burn Plan" button
+  const handleViewBurnPlan = () => {
+    if (!showSplitBurnPlan && selectedExercises.length === 0) {
+      setBurnPlanError("Please select at least one exercise to view the burn plan.");
+      return;
+    }
+    setShowSplitBurnPlan((prev) => !prev);
+  };
+
+  // Calculate split exercises when burn plan is shown
+  useEffect(() => {
+    if (showSplitBurnPlan && nutritionData) {
+      if (selectedExercises.length === 0) {
+        setBurnPlanError("Please select at least one exercise to see your split burn plan.");
+        setSplitExercises([]);
+        return;
+      }
+
+      // Calculate total calories from nutrition data
+      const totalCalories = calculateTotal('calories');
+      if (totalCalories <= 0) {
+        setBurnPlanError("Please calculate nutrition data first.");
+        setSplitExercises([]);
+        return;
+      }
+
+      // For AI calculator, we'll use a default weight of 70kg since no weight input
+      const defaultWeight = 70;
+      const split = calculateSplitExercises(selectedExercises, totalCalories, defaultWeight);
+      setSplitExercises(split);
+      setBurnPlanError("");
+    } else {
+      setSplitExercises([]);
+      setBurnPlanError("");
+    }
+  }, [selectedExercises, nutritionData, showSplitBurnPlan]);
+
+  // Scroll to burn plan section when shown
+  useEffect(() => {
+    if (showSplitBurnPlan && burnPlanSectionRef.current) {
+      setTimeout(() => {
+        burnPlanSectionRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 100);
+    }
+  }, [showSplitBurnPlan]);
+
   return (
     <div className="calorie-calculator-container">
       <div className="calculator-card">
@@ -196,6 +264,57 @@ export default function AiCalorieCalculator() {
             ))}
           </ul>
         </div>
+      )}
+
+      {/* Exercise Selection Section - Only show when nutrition data is available */}
+      {nutritionData && (
+        <>
+          <ExerciseSelector
+            onSelect={handleExerciseSelect}
+            selected={selectedExercises}
+          />
+
+          {/* Burn Plan Button */}
+          <button
+            onClick={handleViewBurnPlan}
+            className="cta-button"
+            style={{
+              background: "var(--color-orange-fluorescent)",
+              color: "black",
+              textAlign: "center",
+              marginTop: "1rem",
+              fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+              transition: "all 2s ease-out",
+            }}
+          >
+            {showSplitBurnPlan ? "Hide Burn Plan" : "View Burn Plan"}
+          </button>
+
+          {/* Burn Plan Error Display */}
+          {burnPlanError && (
+            <p
+              style={{
+                color: "var(--color-orange-fluorescent)",
+                textAlign: "center",
+                marginTop: "1rem",
+                fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+              }}
+            >
+              {burnPlanError}
+            </p>
+          )}
+
+          {/* Split Burn Plan Section */}
+          {showSplitBurnPlan && (
+            <div ref={burnPlanSectionRef}>
+              <SplitBurnPlan
+                splitExercises={splitExercises}
+                totalCalories={calculateTotal('calories')}
+                selectedExercises={selectedExercises}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

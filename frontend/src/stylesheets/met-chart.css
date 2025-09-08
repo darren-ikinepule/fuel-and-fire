@@ -360,3 +360,33 @@
     height: 45px;
   }
 }
+
+/* Return to Top Button Styles */
+.scroll-to-top-btn {
+  background-color: rgba(255, 102, 0, 0.7); /* Semi-transparent orange */
+  color: #0a0a0a; /* Dark text for contrast */
+  border: 1px solid rgba(255, 102, 0, 0.9); /* Slightly more opaque border */
+  border-radius: 50%; /* Round shape */
+  width: 50px; /* Fixed width */
+  height: 50px; /* Fixed height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem; /* Size of the arrow */
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.5); /* Orange glow */
+  transition: all 0.3s ease;
+  margin: 2rem auto 0; /* Space from content above, centered */
+  position: relative;
+  z-index: 10;
+}
+
+.scroll-to-top-btn:hover {
+  background-color: rgba(255, 102, 0, 0.9); /* Less transparent on hover */
+  box-shadow: 0 0 15px rgba(255, 102, 0, 0.8); /* Stronger glow on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.scroll-to-top-btn:active {
+  transform: translateY(0); /* Resets position on click */
+}

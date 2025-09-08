@@ -15,10 +15,39 @@
 
 .exercise-selector-title {
   color: var(--color-orange-fluorescent);
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
   text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px rgba(255, 102, 0, 0.6), 0 0 30px rgba(255, 102, 0, 0.3);
+  position: relative;
+  padding: 1rem 0;
+}
+
+.exercise-selector-title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-orange-fluorescent), transparent);
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
+}
+
+.exercise-selector-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-orange-fluorescent), transparent);
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
 }
 
 .exercise-selector-list {
