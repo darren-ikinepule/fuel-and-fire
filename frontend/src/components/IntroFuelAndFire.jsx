@@ -83,7 +83,7 @@ function IntroFuelAndFire() {
                 desc: 'Discover how many minutes of activity it takes to burn it off using MET calculations.',
               },
             ].map((step, idx) => (
-              <div key={idx} className="intro-step" onClick={() => handleCalculateLinkClick("/calculator")}>
+              <div key={idx} className="intro-step">
                 <span className="intro-emoji" role="img" aria-label={step.title}>{step.emoji}</span>
                 <h3 className="intro-step-title">{step.title}</h3>
                 <p className="intro-step-desc">{step.desc}</p>
