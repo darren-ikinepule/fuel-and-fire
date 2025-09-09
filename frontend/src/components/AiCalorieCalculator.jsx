@@ -58,7 +58,10 @@ export default function AiCalorieCalculator() {
       }
     };
     
-    const apiKey = "AIzaSyAUw61Ta-bFJA8OMQGEIynl2ymVp-uzbjI";
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('Gemini API key not found. Please check your environment variables.');
+    }
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
     try {
