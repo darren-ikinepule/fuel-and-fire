@@ -35,7 +35,39 @@ export default function AiCalorieCalculator() {
     setError('');
     
     // Using a more structured prompt for better AI output
-    const geminiPrompt = `Analyze the following food list and provide a detailed nutritional breakdown in a JSON array format. For each item, include the food name, total calories, protein in grams, carbohydrates in grams, and fats in grams. If a food item cannot be identified, return an object for that item with "not found" in the "food" field. The entire response must be a single JSON array, with keys in the following order: 'food', 'calories', 'protein_g', 'carbohydrates_g', 'fat_g'. Here is the list: ${prompt}`;
+    const geminiPrompt = `Analyze the following food list and provide a detailed nutritional breakdown in a JSON array format. For each item, include the food name, total calories, protein in grams, carbohydrates in grams, and fats in grams. 
+
+IMPORTANT: This analysis should recognize Pacific Island and Polynesian foods commonly consumed in New Zealand, including but not limited to:
+- Chop suey (Pacific Island style with cabbage, onions, corned beef/mutton)
+- Lu sipi/Lusipi (taro leaves cooked with lamb/mutton and coconut cream)
+- Povi masima (corned beef, often cooked with vegetables)
+- Oka (raw fish salad with coconut cream)
+- Palusami (taro leaves with coconut cream and meat)
+- Sapasui (Samoan chop suey)
+- Panipopo (coconut bread rolls)
+- Fa'ausi (coconut caramel dumplings)
+- Koko rice (cocoa rice)
+- Umu kai (earth oven cooked foods)
+- Pacific Island-style taro, breadfruit, green bananas
+- Coconut cream-based dishes
+- Traditional Pacific preparations of familiar ingredients
+
+When analyzing these foods, consider:
+
+FOR FAST FOOD: Use official nutritional data from the respective chains when available. Recognize common portion descriptions (e.g., "1 KFC Quarter Pack" includes specific pieces, "Large McDonald's Fries", etc.)
+
+FOR PACIFIC ISLAND FOODS: Consider traditional cooking methods and typical ingredient combinations. For example:
+- Lu sipi typically contains taro leaves, lamb/mutton, coconut cream, onions
+- Pacific chop suey often includes cabbage, onions, corned beef or mutton, sometimes potatoes
+- Povi masima refers to corned beef preparations, often with root vegetables
+
+If a food item cannot be identified or lacks sufficient nutritional data, return an object for that item with "not found" in the "food" field. 
+
+The entire response must be a single JSON array, with keys in the following order: 'food', 'calories', 'protein_g', 'carbohydrates_g', 'fat_g'. 
+
+Nutritional values should be provided per standard serving size (approximately 100g unless the food is typically consumed in significantly different portions).
+
+Here is the list: ${prompt}`
 
     const payload = {
       contents: [{ role: "user", parts: [{ text: geminiPrompt }] }],
