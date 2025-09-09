@@ -59,17 +59,28 @@ export default function AiCalorieCalculator() {
     };
     
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    console.log('Environment check:', {
+      hasApiKey: !!apiKey,
+      apiKeyLength: apiKey ? apiKey.length : 0,
+      apiKeyPrefix: apiKey ? apiKey.substring(0, 10) + '...' : 'none',
+      allEnvVars: import.meta.env
+    });
+    
     if (!apiKey) {
       throw new Error('Gemini API key not found. Please check your environment variables.');
     }
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
     try {
+      console.log('Making API call to:', apiUrl.substring(0, 100) + '...');
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      
+      console.log('API Response status:', response.status);
+      console.log('API Response headers:', response.headers);
 
       if (response.status === 429 && retryCount < 3) {
         const delay = Math.pow(2, retryCount) * 1000;
