@@ -34,7 +34,7 @@ export default function AiCalorieCalculator() {
    * @param {number} retryCount The current retry attempt number.
    */
   const fetchNutritionData = async (prompt, retryCount = 0) => {
-    setLoading(true);
+    // We already set loading to true in the calling function, so no need here.
     setError('');
     
     // Using a more structured prompt for better AI output
@@ -102,6 +102,8 @@ Here is the list: ${prompt}`
     });
     
     if (!apiKey) {
+      setLoading(false);
+      setError('Gemini API key not found. Please check your environment variables.');
       throw new Error('Gemini API key not found. Please check your environment variables.');
     }
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
@@ -162,12 +164,22 @@ Here is the list: ${prompt}`
     return nutritionData.reduce((sum, item) => sum + (item[key] || 0), 0);
   };
 
+  // --- START OF CHANGES ---
   const handleCalculate = (e) => {
     e.preventDefault();
     if (query.trim()) {
+      // 1. Set loading state to true immediately
+      setLoading(true);
+      setNutritionData(null); // Clear previous results
+      setError(''); // Clear previous errors
+      setShowSplitBurnPlan(false); // Hide burn plan
+      setBurnPlanError(''); // Clear burn plan errors
+      
+      // 2. Call the fetch function, which will handle setting loading to false on completion
       fetchNutritionData(query);
     }
   };
+  // --- END OF CHANGES ---
 
   // Handler for selecting/deselecting exercises
   const handleExerciseSelect = (exerciseName) => {
@@ -180,20 +192,17 @@ Here is the list: ${prompt}`
 
   // Handler for the "View Burn Plan" button
   const handleViewBurnPlan = () => {
-    // Hide the burn plan if it's already visible
     if (showSplitBurnPlan) {
       setShowSplitBurnPlan(false);
       setBurnPlanError("");
       return;
     }
 
-    // Check for selected exercises
     if (selectedExercises.length === 0) {
       setBurnPlanError("Please select at least one exercise to view the burn plan.");
       return;
     }
 
-    // Check for a valid weight input and a realistic range
     const userWeight = parseFloat(weight);
     if (!userWeight || userWeight <= 0) {
         setBurnPlanError("Please enter a valid weight in kg to get an accurate burn plan.");
@@ -203,9 +212,8 @@ Here is the list: ${prompt}`
         return;
     }
 
-    // If all checks pass, show the burn plan
     setShowSplitBurnPlan(true);
-    setBurnPlanError(""); // Clear any previous error
+    setBurnPlanError("");
   };
 
   // Calculate split exercises when burn plan is shown
@@ -225,7 +233,7 @@ Here is the list: ${prompt}`
       }
       
       const userWeight = parseFloat(weight);
-      const effectiveWeight = (userWeight > 0) ? userWeight : 70; // Fallback to 70kg if validation somehow fails
+      const effectiveWeight = (userWeight > 0) ? userWeight : 70;
 
       const split = calculateSplitExercises(selectedExercises, totalCalories, effectiveWeight);
       setSplitExercises(split);
@@ -257,12 +265,13 @@ Here is the list: ${prompt}`
           <input
             type="text"
             className="input-field"
-            placeholder="e.g., 1 big mac combo, 1 med steak, 100g spinach"
+            placeholder="e.g., 300g steak, 2 med potatoes, 100g spinach"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <button
             type="submit"
+            // --- START OF CHANGES ---
             disabled={loading}
             className={`calculate-button ${loading ? 'loading-button' : ''}`}
           >
@@ -271,137 +280,142 @@ Here is the list: ${prompt}`
         </form>
       </div>
 
-      {loading && (
+      {/* --- START OF CHANGES --- */}
+      {/* Conditionally render the loading state OR the results/error */}
+      {loading ? (
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p className="loading-text">Analyzing your food items...</p>
         </div>
-      )}
-
-      {error && (
-        <div className="error-message" role="alert">
-          {error}
-        </div>
-      )}
-
-      {nutritionData && (
-        <div ref={resultRef} className="results-card">
-          <h2 className="summary-title">Nutrition Summary</h2>
-          <div className="summary-grid">
-            <div className="summary-item">
-              <div className="summary-value">
-                {calculateTotal('calories').toFixed(1)}
-              </div>
-              <div className="summary-label">Calories</div>
-            </div>
-            <div className="summary-item">
-              <div className="summary-value">
-                {calculateTotal('protein_g').toFixed(1)}g
-              </div>
-              <div className="summary-label">Protein</div>
-            </div>
-            <div className="summary-item">
-              <div className="summary-value">
-                {calculateTotal('carbohydrates_g').toFixed(1)}g
-              </div>
-              <div className="summary-label">Carbs</div>
-            </div>
-            <div className="summary-item">
-              <div className="summary-value">
-                {calculateTotal('fat_g').toFixed(1)}g
-              </div>
-              <div className="summary-label">Fat</div>
-            </div>
-          </div>
-          
-          <h3 className="breakdown-title">Itemized Breakdown</h3>
-          <ul className="breakdown-list">
-            {nutritionData.map((item, index) => (
-              <li key={index} className="breakdown-item">
-                <span className="food-name">{item.food}</span>
-                <div className="nutrition-values">
-                  {item.calories ? (
-                    <>
-                      <span>{item.calories.toFixed(1)} cal</span>
-                      <span>{item.protein_g.toFixed(1)}g P</span>
-                      <span>{item.carbohydrates_g.toFixed(1)}g C</span>
-                      <span>{item.fat_g.toFixed(1)}g F</span>
-                    </>
-                  ) : (
-                    <span className="not-found">Not Found</span>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Exercise Selection Section - Only show when nutrition data is available */}
-      {nutritionData && (
+      ) : (
         <>
-          <ExerciseSelector
-            onSelect={handleExerciseSelect}
-            selected={selectedExercises}
-          />
-
-          {/* New weight input container with label */}
-          <div className="weight-input-container">
-            <label htmlFor="weight-input">Please Enter Your Weight (kg)</label>
-            <input
-              id="weight-input"
-              type="number"
-              className="input-field"
-              placeholder="e.g., 85"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              min="1"
-              max="300"
-            />
-          </div>
-
-          {/* Burn Plan Button */}
-          <button
-            onClick={handleViewBurnPlan}
-            className="cta-button"
-            style={{
-              background: "var(--color-orange-fluorescent)",
-              color: "black",
-              textAlign: "center",
-              marginTop: "1rem",
-              fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
-              transition: "all 2s ease-out",
-            }}
-          >
-            {showSplitBurnPlan ? "Hide Burn Plan" : "View Burn Plan"}
-          </button>
-
-          {/* Burn Plan Error Display */}
-          {burnPlanError && (
-            <p
-              style={{
-                color: "var(--color-orange-fluorescent)",
-                textAlign: "center",
-                marginTop: "1rem",
-                fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
-              }}
-            >
-              {burnPlanError}
-            </p>
+          {error && (
+            <div className="error-message" role="alert">
+              {error}
+            </div>
           )}
 
-          {/* Split Burn Plan Section */}
-          {showSplitBurnPlan && (
-            <div ref={burnPlanSectionRef}>
-              <SplitBurnPlan
-                splitExercises={splitExercises}
-                totalCalories={calculateTotal('calories')}
-                selectedExercises={selectedExercises}
-              />
+          {nutritionData && (
+            <div ref={resultRef} className="results-card">
+              <h2 className="summary-title">Nutrition Summary</h2>
+              <div className="summary-grid">
+                <div className="summary-item">
+                  <div className="summary-value">
+                    {calculateTotal('calories').toFixed(1)}
+                  </div>
+                  <div className="summary-label">Calories</div>
+                </div>
+                <div className="summary-item">
+                  <div className="summary-value">
+                    {calculateTotal('protein_g').toFixed(1)}g
+                  </div>
+                  <div className="summary-label">Protein</div>
+                </div>
+                <div className="summary-item">
+                  <div className="summary-value">
+                    {calculateTotal('carbohydrates_g').toFixed(1)}g
+                  </div>
+                  <div className="summary-label">Carbs</div>
+                </div>
+                <div className="summary-item">
+                  <div className="summary-value">
+                    {calculateTotal('fat_g').toFixed(1)}g
+                  </div>
+                  <div className="summary-label">Fat</div>
+                </div>
+              </div>
+              
+              <h3 className="breakdown-title">Itemized Breakdown</h3>
+              <ul className="breakdown-list">
+                {nutritionData.map((item, index) => (
+                  <li key={index} className="breakdown-item">
+                    <span className="food-name">{item.food}</span>
+                    <div className="nutrition-values">
+                      {item.calories ? (
+                        <>
+                          <span>{item.calories.toFixed(1)} cal</span>
+                          <span>{item.protein_g.toFixed(1)}g P</span>
+                          <span>{item.carbohydrates_g.toFixed(1)}g C</span>
+                          <span>{item.fat_g.toFixed(1)}g F</span>
+                        </>
+                      ) : (
+                        <span className="not-found">Not Found</span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
+          )}
+
+          {/* Exercise Selection Section - Only show when nutrition data is available */}
+          {nutritionData && (
+            <>
+              <ExerciseSelector
+                onSelect={handleExerciseSelect}
+                selected={selectedExercises}
+              />
+
+              {/* New weight input container with label */}
+              <div className="weight-input-container">
+                <label htmlFor="weight-input">Please Enter Your Weight (kg)</label>
+                <input
+                  id="weight-input"
+                  type="number"
+                  className="input-field"
+                  placeholder="e.g., 85"
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                  min="1"
+                  max="300"
+                />
+              </div>
+
+              {/* Burn Plan Button */}
+              <button
+                onClick={handleViewBurnPlan}
+                className="cta-button"
+                style={{
+                  background: "var(--color-orange-fluorescent)",
+                  color: "black",
+                  textAlign: "center",
+                  marginTop: "1rem",
+                  fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                  transition: "all 2s ease-out",
+                }}
+              >
+                {showSplitBurnPlan ? "Hide Burn Plan" : "View Burn Plan"}
+              </button>
+
+              {/* Burn Plan Error Display */}
+              {burnPlanError && (
+                <p
+                  style={{
+                    color: "var(--color-orange-fluorescent)",
+                    textAlign: "center",
+                    marginTop: "1rem",
+                    fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                  }}
+                >
+                  {burnPlanError}
+                </p>
+              )}
+
+              {/* Split Burn Plan Section */}
+              {showSplitBurnPlan && (
+                <div ref={burnPlanSectionRef}>
+                  <SplitBurnPlan
+                    splitExercises={splitExercises}
+                    totalCalories={calculateTotal('calories')}
+                    selectedExercises={selectedExercises}
+                  />
+                </div>
+              )}
+            </>
           )}
         </>
       )}
+      {/* --- END OF CHANGES --- */}
     </div>
   );
 }
