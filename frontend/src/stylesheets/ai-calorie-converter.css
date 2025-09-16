@@ -77,6 +77,11 @@ body {
 }
 
 /* New styles for the weight input container and field */
+/* File: ai-calorie-calculator.css */
+
+/* ... (previous styles remain the same) ... */
+
+/* New styles for the weight input container and field */
 .weight-input-container {
   display: flex;
   flex-direction: column;
@@ -87,14 +92,24 @@ body {
 }
 
 .weight-input-container label {
-  color: var(--color-text-medium);
+  color: var(--color-text-light);
   font-size: clamp(0.9rem, 2.2vw, 1.1rem);
-  font-weight: 500;
+  font-weight: bold;
 }
 
 .weight-input-container .input-field {
   background-color: var(--color-black-gloss-start);
   border: 2px solid var(--color-dark-border);
+  /* Hide the number counter arrows */
+  -moz-appearance: textfield; /* Firefox */
+  appearance: none; /* Modern browsers */
+}
+
+/* For Webkit browsers like Chrome, Safari */
+.weight-input-container .input-field::-webkit-outer-spin-button,
+.weight-input-container .input-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .weight-input-container .input-field:focus {
@@ -102,6 +117,7 @@ body {
   box-shadow: 0 0 10px rgba(255, 102, 0, 0.75);
 }
 
+/* ... (rest of the CSS file remains the same) ... */
 .calculate-button {
   width: 100%;
   padding: 0.8rem 1.5rem;
