@@ -1,7 +1,7 @@
 // File: AiCalorieCalculator.jsx
 
 import { useState, useRef, useEffect } from 'react';
-import '../stylesheets/ai-calorie-converter.css'; // Import the dedicated CSS file
+import '../stylesheets/ai-calorie-converter.css';
 import ExerciseSelector from './ExerciseSelector.jsx';
 import SplitBurnPlan from './SplitBurnPlan.jsx';
 import { calculateSplitExercises } from '../scripts/calculateSplitExercises.js';
@@ -16,6 +16,9 @@ export default function AiCalorieCalculator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const resultRef = useRef(null);
+  
+  // State for user's body weight
+  const [weight, setWeight] = useState('');
   
   // Exercise selection and burn plan state
   const [selectedExercises, setSelectedExercises] = useState([]);
@@ -177,11 +180,32 @@ Here is the list: ${prompt}`
 
   // Handler for the "View Burn Plan" button
   const handleViewBurnPlan = () => {
-    if (!showSplitBurnPlan && selectedExercises.length === 0) {
+    // Hide the burn plan if it's already visible
+    if (showSplitBurnPlan) {
+      setShowSplitBurnPlan(false);
+      setBurnPlanError("");
+      return;
+    }
+
+    // Check for selected exercises
+    if (selectedExercises.length === 0) {
       setBurnPlanError("Please select at least one exercise to view the burn plan.");
       return;
     }
-    setShowSplitBurnPlan((prev) => !prev);
+
+    // Check for a valid weight input and a realistic range
+    const userWeight = parseFloat(weight);
+    if (!userWeight || userWeight <= 0) {
+        setBurnPlanError("Please enter a valid weight in kg to get an accurate burn plan.");
+        return;
+    } else if (userWeight < 20 || userWeight > 300) {
+        setBurnPlanError("Weight must be between 20 kg and 300 kg.");
+        return;
+    }
+
+    // If all checks pass, show the burn plan
+    setShowSplitBurnPlan(true);
+    setBurnPlanError(""); // Clear any previous error
   };
 
   // Calculate split exercises when burn plan is shown
@@ -193,24 +217,24 @@ Here is the list: ${prompt}`
         return;
       }
 
-      // Calculate total calories from nutrition data
       const totalCalories = calculateTotal('calories');
       if (totalCalories <= 0) {
         setBurnPlanError("Please calculate nutrition data first.");
         setSplitExercises([]);
         return;
       }
+      
+      const userWeight = parseFloat(weight);
+      const effectiveWeight = (userWeight > 0) ? userWeight : 70; // Fallback to 70kg if validation somehow fails
 
-      // For AI calculator, we'll use a default weight of 70kg since no weight input
-      const defaultWeight = 70;
-      const split = calculateSplitExercises(selectedExercises, totalCalories, defaultWeight);
+      const split = calculateSplitExercises(selectedExercises, totalCalories, effectiveWeight);
       setSplitExercises(split);
       setBurnPlanError("");
     } else {
       setSplitExercises([]);
       setBurnPlanError("");
     }
-  }, [selectedExercises, nutritionData, showSplitBurnPlan]);
+  }, [selectedExercises, nutritionData, showSplitBurnPlan, weight]);
 
   // Scroll to burn plan section when shown
   useEffect(() => {
@@ -229,10 +253,11 @@ Here is the list: ${prompt}`
       <div className="calculator-card">
         <h1 className="main-title">Custom Food Calculator</h1>
         <form onSubmit={handleCalculate} className="input-form">
+          {/* Main food query input */}
           <input
             type="text"
             className="input-field"
-            placeholder="e.g., 300g steak, 2 med potatoes, 100g spinach"
+            placeholder="e.g., 1 big mac combo, 1 med steak, 100g spinach"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -319,6 +344,21 @@ Here is the list: ${prompt}`
             onSelect={handleExerciseSelect}
             selected={selectedExercises}
           />
+
+          {/* New weight input container with label */}
+          <div className="weight-input-container">
+            <label htmlFor="weight-input">Please Enter Your Weight (kg)</label>
+            <input
+              id="weight-input"
+              type="number"
+              className="input-field"
+              placeholder="e.g., 85"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              min="1"
+              max="300"
+            />
+          </div>
 
           {/* Burn Plan Button */}
           <button
