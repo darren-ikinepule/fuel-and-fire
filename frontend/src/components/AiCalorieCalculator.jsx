@@ -265,7 +265,7 @@ Here is the list: ${prompt}`
           <input
             type="text"
             className="input-field"
-            placeholder="e.g., 300g steak, 2 med potatoes, 100g spinach"
+            placeholder="e.g., 1 big mac combo, 200g steak, 100g spinach"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
