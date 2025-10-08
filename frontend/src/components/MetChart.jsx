@@ -32,17 +32,17 @@ const MetChart = () => {
       <section className="met-explanation-section">
         <h2 className="met-explanation-title">What is a MET?</h2>
         <p className="met-explanation-text">
-          A **MET** (Metabolic Equivalent of Task) measures how much energy your body uses during activities compared to resting. 1 MET is your resting energy. An activity with 5 METs means you burn 5x more energy. For push-ups or burpees, we show **calories per rep** so you can see effort per movement.
+          A **MET** (Metabolic Equivalent of Task) measures how much energy your body uses during activities compared to resting. 1 MET is your resting energy. An activity with 5 METs means you burn 5x more energy. All exercises are now measured in minutes with guidance on reps per minute for bodyweight exercises.
         </p>
        
         {/* Formula transparency - shows users the mathematical basis for calculations */}
         {/* Builds user trust and understanding of the science behind the app */}
         <p className='met-explanation-text'>
-          Our calculations are based on standard MET values and your body weight. For exercises measured in minutes, we use the formula:
+          Our calculations are based on standard MET values and your body weight. We use the formula:
           <br />
           <strong className='met-calculation-text' style={{ color: 'var(--color-orange-fluorescent)' }}>Calories per Minute = (MET * User Weight in kg * 3.5) / 200</strong>.
           <br />
-          For exercises like push-ups and burpees, we use a fixed calorie burn per repetition. This helps you get a personalized estimate of the effort needed to burn off your selected food.
+          All exercises are measured in minutes. For bodyweight exercises like push-ups and burpees, we provide guidance on how many reps to aim for per minute at a slow to medium pace.
         </p>
        
       </section>
@@ -63,11 +63,15 @@ const MetChart = () => {
               />
               <h3 className="met-chart-card-name">{exercise.name}</h3>
               <p className="met-chart-card-value">
-                {/* Conditional value display: Shows MET or calories per rep based on exercise type */}
-                {/* Nullish coalescing (??) provides fallback when MET value doesn't exist */}
-                {exercise.met ?? exercise.caloriesPerRep}
-                {/* Dynamic unit labeling: Adapts display text based on measurement type */}
-                <span className="met-chart-card-unit">{exercise.met ? " METs" : " cal/rep"}</span>
+                {/* All exercises now use MET values */}
+                {exercise.met}
+                <span className="met-chart-card-unit"> METs</span>
+                {/* Show reps per minute guidance if available */}
+                {exercise.repsPerMinute && (
+                  <div className="met-chart-reps-guidance">
+                    <small className="met-chart-reps-text">{exercise.repsPerMinute}</small>
+                  </div>
+                )}
               </p>
             </div>
           ))}
