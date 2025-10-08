@@ -97,6 +97,13 @@ function SplitBurnPlan({ splitExercises, totalCalories, selectedExercises }) {
                 {/* Uses pre-formatted displayValue from calculation logic */}
                 {/* Maintains separation between data formatting and presentation */}
                 {ex.displayValue}
+                {ex.repsPerMinute && (
+                  <div className="reps-guidance">
+                    <small className="reps-per-minute-text">
+                      Aim for {ex.repsPerMinute}
+                    </small>
+                  </div>
+                )}
               </span>
             </div>
             {/* Checkbox positioned at item end for consistent visual hierarchy */}

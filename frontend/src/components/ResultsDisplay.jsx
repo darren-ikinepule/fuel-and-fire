@@ -60,6 +60,13 @@ function ResultsDisplay({ food, user, isContentVisible, toggleContentVisibility 
                     {/* Uses pre-formatted displayValue from calculation module */}
                     {/* Separates data formatting logic from presentation component */}
                     <strong>{ex.displayValue}</strong>
+                    {ex.repsPerMinute && (
+                      <div className="reps-guidance">
+                        <small className="reps-per-minute-text">
+                          Aim for {ex.repsPerMinute}
+                        </small>
+                      </div>
+                    )}
                   </span>
                 </div>
               </div>

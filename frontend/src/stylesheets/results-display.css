@@ -124,6 +124,17 @@
   font-weight: bold;
 }
 
+.reps-guidance {
+  margin-top: 0.3rem;
+}
+
+.reps-per-minute-text {
+  font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+  color: var(--color-text-light);
+  font-style: italic;
+  opacity: 0.8;
+}
+
 /* NEW STYLES for the button at the bottom */
 .toggle-results-btn-bottom {
   background: var(--color-orange-fluorescent);

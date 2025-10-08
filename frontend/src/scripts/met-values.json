@@ -7,7 +7,8 @@
   {
     "name": "Jumping Jacks",
     "met": 8.0,
-    "img": "https://placehold.co/128x128/000/FFF?text=JJ"
+    "img": "https://placehold.co/128x128/000/FFF?text=JJ",
+    "repsPerMinute": "20-30 reps/min (slow-medium pace)"
   },
   {
     "name": "Cycling (moderate)",
@@ -26,13 +27,15 @@
   },
   {
     "name": "Push-ups (vigorous)",
-    "caloriesPerRep": 0.3,
-    "img": "https://placehold.co/128x128/000/FFF?text=PUSH"
+    "met": 3.8,
+    "img": "https://placehold.co/128x128/000/FFF?text=PUSH",
+    "repsPerMinute": "15-20 reps/min (slow-medium pace)"
   },
   {
     "name": "Burpees (moderate-vigorous)",
-    "caloriesPerRep": 0.5,
-    "img": "https://placehold.co/128x128/000/FFF?text=BURPEE"
+    "met": 8.0,
+    "img": "https://placehold.co/128x128/000/FFF?text=BURPEE",
+    "repsPerMinute": "10-15 reps/min (slow-medium pace)"
   },
   {
     "name": "Hiking (moderate terrain)",

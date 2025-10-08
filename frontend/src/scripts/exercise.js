@@ -7,8 +7,9 @@ export function calculateExercises(calories, weightKg) {
       img: "https://placehold.co/128x128/000/FFF?text=RUN",
     },
     "Jumping Jacks": {
-      caloriesPerRep: 0.4, // Now calculated in reps
+      met: 8.0, // High-intensity cardio exercise
       img: "https://placehold.co/128x128/000/FFF?text=JJ",
+      repsPerMinute: "20-30 reps/min (slow-medium pace)",
     },
     "Cycling (moderate)": {
       met: 7.5, // Verified: Good average for moderate cycling.
@@ -22,14 +23,16 @@ export function calculateExercises(calories, weightKg) {
       met: 6.0, // Updated: General moderate swimming, slightly higher than breaststroke.
       img: "https://placehold.co/128x128/000/FFF?text=SWIM",
     },
-    // Exercises with caloriesPerRep:
+    // Exercises converted from reps to minutes:
     "Push-ups (vigorous)": {
-      caloriesPerRep: 0.5, // Based on vigorous calisthenics.
+      met: 3.8, // Moderate to vigorous calisthenics
       img: "https://placehold.co/128x128/000/FFF?text=PUSH",
+      repsPerMinute: "15-20 reps/min (slow-medium pace)",
     },
     "Burpees (moderate-vigorous)": {
-      caloriesPerRep: 0.8, // High-intensity bodyweight exercise.
+      met: 8.0, // High-intensity bodyweight exercise
       img: "https://placehold.co/128x128/000/FFF?text=BURPEE",
+      repsPerMinute: "10-15 reps/min (slow-medium pace)",
     },
     // Other MET-based exercises:
     "Hiking (moderate terrain)": {
@@ -76,7 +79,7 @@ export function calculateExercises(calories, weightKg) {
     let formattedValue = ""; // New variable for the formatted string
     const img = exerciseDetails.img; // Image is always present
 
-    // Check if the exercise has a caloriesPerRep property
+    // Check if the exercise has a caloriesPerRep property (legacy support)
     if (exerciseDetails.caloriesPerRep !== undefined) {
       // Calculate repetitions for exercises like push-ups, burpees, and now Jumping Jacks
       value = Math.round(calories / exerciseDetails.caloriesPerRep);
@@ -133,6 +136,7 @@ export function calculateExercises(calories, weightKg) {
       unit: unit,
       img: img,
       displayValue: formattedValue, // The new formatted string for display
+      repsPerMinute: exerciseDetails.repsPerMinute || null, // Add reps per minute guidance if available
     });
   });
 
