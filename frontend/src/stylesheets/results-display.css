@@ -122,10 +122,14 @@
   font-size: clamp(1.1rem, 2.5vw, 1.2rem);
   color: var(--color-orange-fluorescent);
   font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .reps-guidance {
   margin-top: 0.3rem;
+  width: 100%;
 }
 
 .reps-per-minute-text {
@@ -133,6 +137,7 @@
   color: var(--color-text-light);
   font-style: italic;
   opacity: 0.8;
+  text-align: left;
 }
 
 /* NEW STYLES for the button at the bottom */

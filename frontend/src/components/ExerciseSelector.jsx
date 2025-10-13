@@ -19,7 +19,8 @@ const exerciseOptions = [
   { name: "Yoga (Hatha/General)" },
   { name: "Rowing Machine (moderate)" },
   { name: "Stair Climbing (vigorous)" },
-  { name: "Plank (isometric)" }
+  { name: "Plank (isometric)" },
+  { name: "Make Love (General, Moderate Effort)" }
 ];
 
 /**

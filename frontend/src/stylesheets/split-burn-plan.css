@@ -120,10 +120,14 @@
 .split-plan-value {
   color: var(--color-text-light);
   font-size: clamp(0.95rem, 2vw, 1rem); /* Responsive font size */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .reps-guidance {
   margin-top: 0.3rem;
+  width: 100%;
 }
 
 .reps-per-minute-text {
@@ -131,6 +135,7 @@
   color: var(--color-text-medium);
   font-style: italic;
   opacity: 0.8;
+  text-align: left;
 }
 
 /* Common CTA Button Styles (can be moved to a global CSS file if used elsewhere) */

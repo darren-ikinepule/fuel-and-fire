@@ -63,6 +63,10 @@ export function calculateExercises(calories, weightKg) {
       met: 2.8, // Isometric exercise, lower calorie burn per minute.
       img: "https://placehold.co/128x128/000/FFF?text=PLANK",
     },
+    "Make Love (General, Moderate Effort)": {
+      met: 3.0, // General moderate effort activity
+      img: "https://placehold.co/128x128/000/FFF?text=LOVE",
+    },
   };
 
   const results = [];
