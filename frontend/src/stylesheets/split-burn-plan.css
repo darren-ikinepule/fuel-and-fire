@@ -115,6 +115,7 @@
   color: var(--color-orange-fluorescent);
   font-weight: 600;
   font-size: clamp(1rem, 2.5vw, 1.1rem); /* Responsive font size */
+  text-align: left;
 }
 
 .split-plan-value {

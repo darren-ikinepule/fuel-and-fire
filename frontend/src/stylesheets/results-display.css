@@ -116,6 +116,7 @@
   font-size: clamp(0.9rem, 2.2vw, 1rem);
   font-weight: 500;
   color: var(--color-text-light);
+  text-align: left;
 }
 
 .exercise-value {
@@ -198,6 +199,7 @@
   }
   .exercise-label {
     font-size: clamp(0.85rem, 2vw, 0.95rem);
+    text-align: left;
   }
   .exercise-value {
     font-size: clamp(1rem, 2.2vw, 1.1rem);
@@ -234,6 +236,7 @@
   }
   .exercise-label {
     font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+    text-align: left;
   }
   .exercise-value {
     font-size: clamp(0.9rem, 2vw, 1rem);
@@ -266,6 +269,7 @@
   }
   .exercise-label {
     font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+    text-align: left;
   }
   .exercise-value {
     font-size: clamp(0.8rem, 1.8vw, 0.95rem);
@@ -297,6 +301,7 @@
   }
   .exercise-label {
     font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+    text-align: left;
   }
   .exercise-value {
     font-size: clamp(0.75rem, 1.6vw, 0.9rem);
