@@ -77,4 +77,9 @@ export const metValues = [
     "met": 2.8, // This is inherently light/very light, keeping it as is with this note.
     "img": "https://placehold.co/128x128/000/FFF?text=PLANK"
   },
+  {
+    "name": "Make Love (General, Moderate Effort)",
+    "met": 3.0, // General moderate effort activity
+    "img": "https://placehold.co/128x128/000/FFF?text=LOVE"
+  },
 ];
