@@ -20,7 +20,7 @@ const exerciseOptions = [
   { name: "Rowing Machine (moderate)" },
   { name: "Stair Climbing (vigorous)" },
   { name: "Plank (isometric)" },
-  { name: "Make Love (General, Moderate Effort)" }
+  { name: "Make Love (Active, Vigorous Effort)" }
 ];
 
 /**
