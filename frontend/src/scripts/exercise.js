@@ -64,7 +64,7 @@ export function calculateExercises(calories, weightKg) {
       img: "https://placehold.co/128x128/000/FFF?text=PLANK",
     },
     "Make Love (General, Moderate Effort)": {
-      met: 3.0, // General moderate effort activity
+      met: 5.8, // General moderate effort activity
       img: "https://placehold.co/128x128/000/FFF?text=LOVE",
     },
   };
