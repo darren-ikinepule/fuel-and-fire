@@ -22,12 +22,20 @@ function FoodSelector({ onSelect }) {
       try {
         setIsLoading(true);
         // Use Vite environment variable for API endpoint - supports different environments (dev/prod)
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/food-items`);
+        const apiUrl = import.meta.env.VITE_API_URL || "https://fuel-and-fire.onrender.com";
+        const response = await fetch(`${apiUrl}/food-items`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         setFastFoodInfo(data);
       } catch (err) {
         // Fail silently to prevent crashes - could be enhanced with user-facing error handling
         console.error("Error fetching food data:", err);
+        // Set empty array on error to prevent crashes
+        setFastFoodInfo([]);
       } finally {
         setIsLoading(false);
       }
