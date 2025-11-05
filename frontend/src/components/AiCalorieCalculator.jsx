@@ -6,6 +6,7 @@ import ExerciseSelector from './ExerciseSelector.jsx';
 import SplitBurnPlan from './SplitBurnPlan.jsx';
 import { calculateSplitExercises } from '../scripts/calculateSplitExercises.js';
 import { getStandardizedFood, STANDARDIZED_FOODS } from '../scripts/standardized-foods.js';
+import { getComboItems, expandCombo } from '../scripts/food-combos.js';
 
 /**
  * AiCalorieCalculator is a React component that calculates
@@ -160,6 +161,21 @@ export default function AiCalorieCalculator() {
     const standardizedResults = [];
     const itemsNeedingAPI = [];
     
+    // Format food name for display (capitalize first letter of each word)
+    const formatFoodName = (name) => {
+      if (!name || typeof name !== 'string' || name.length === 0) {
+        return name;
+      }
+      return name
+        .split(' ')
+        .filter(word => word.length > 0) // Remove empty strings
+        .map(word => {
+          if (word.length === 0) return word;
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(' ');
+    };
+
     for (const item of parsedItems) {
       // Ensure foodName is valid and not truncated
       const foodName = String(item.foodName || '').trim();
@@ -169,27 +185,39 @@ export default function AiCalorieCalculator() {
         continue;
       }
       
+      // Check if it's a combo first (before checking standardized foods)
+      const combo = getComboItems(foodName);
+      if (combo && combo.items && Array.isArray(combo.items) && combo.items.length > 0) {
+        // Use combo items directly - they already have nutritional data
+        // Repeat for quantity if needed
+        const quantity = item.quantity || 1;
+        for (let q = 0; q < quantity; q++) {
+          combo.items.forEach((comboItem, index) => {
+            // More defensive checks - ensure we have valid data
+            if (comboItem) {
+              const itemName = comboItem.name || `Item ${index + 1}`;
+              const displayName = formatFoodName(itemName);
+              
+              // Ensure all nutritional values are numbers
+              const itemData = {
+                food: displayName || itemName,
+                calories: Number(comboItem.calories) || 0,
+                protein_g: Number(comboItem.protein_g) || 0,
+                carbohydrates_g: Number(comboItem.carbohydrates_g) || 0,
+                fat_g: Number(comboItem.fat_g) || 0
+              };
+              
+              standardizedResults.push(itemData);
+            }
+          });
+        }
+        continue; // Skip to next parsed item - don't process as regular food
+      }
+      
+      // Check if it's a standardized food item
       const standardized = getStandardizedFood(foodName);
       if (standardized) {
-        // Format food name for display (capitalize first letter of each word)
-        const formatFoodName = (name) => {
-          if (!name || typeof name !== 'string' || name.length === 0) {
-            return name;
-          }
-          return name
-            .split(' ')
-            .filter(word => word.length > 0) // Remove empty strings
-            .map(word => {
-              if (word.length === 0) return word;
-              return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            })
-            .join(' ');
-        };
-        
-        // Use the original foodName for display, not the normalized one
         const displayName = formatFoodName(foodName);
-        
-        // Ensure we have a valid display name
         const finalDisplayName = (displayName && displayName.length > 0) 
           ? displayName 
           : ((foodName && foodName.length > 0) ? foodName : 'Unknown Item');
@@ -218,30 +246,91 @@ export default function AiCalorieCalculator() {
     // Build prompt for items needing API lookup
     const apiPrompt = itemsNeedingAPI.map(item => item.foodName).join(', ');
     
-    // CRITICAL: Use strict prompt with temperature=0 to ensure consistency
-    const geminiPrompt = `You are an expert nutritional data engine. Your ONLY function is to provide accurate, verified calorie counts and macronutrients for restaurant items.
+    // CRITICAL: Database-focused prompt with maximum consistency
+    const geminiPrompt = `You are an expert, highly consistent nutritional data engine designed to operate as a single-use data retrieval tool for a caching layer.
+
+**Core Instruction:** Your output must be used to populate a database. Therefore, the response must be absolutely consistent for the same input and adhere strictly to the JSON schema.
 
 **PRIMARY CONSTRAINT:** Always use globally accepted, standardized average nutritional data for the requested item. Do NOT introduce variation based on location or minor recipe differences. Use OFFICIAL nutritional data from restaurant chains when available.
 
+**FAST FOOD BRAND RECOGNITION:**
+You MUST recognize items from all major fast food brands including but not limited to:
+- McDonald's (McDonalds, Mc Donald's, etc.)
+- KFC (Kentucky Fried Chicken, K.F.C., etc.)
+- Burger King (BK, etc.)
+- Subway
+- Pizza Hut
+- Starbucks
+- Taco Bell
+- Domino's
+- Wendy's
+- And other regional/national fast food chains
+
+When a user mentions a brand name (e.g., "kfc lunch box", "mcdonald's big mac", "burger king whopper"), recognize it as a fast food item from that brand and use official nutritional data from that chain. If the exact item is not in the standardized list above, use your knowledge of official nutritional information from the restaurant's website or official sources.
+
 **CRITICAL CONSISTENCY RULE:** If the same item is requested multiple times, you MUST return IDENTICAL values each time. For example:
-- "Big Mac (McDonald's)" = ALWAYS 550 calories, 25g protein, 45g carbs, 33g fat
-- "Large McDonald's Fries" = ALWAYS 510 calories, 6g protein, 66g carbs, 24g fat
+- "Big Mac (McDonald's)" = ALWAYS 550 calories_kcal (INTEGER), 25.0 protein_grams (FLOAT), 33.0 fat_grams (FLOAT), 90 exercise_minutes_walking (INTEGER)
+- "Large McDonald's Fries" = ALWAYS 510 calories_kcal (INTEGER), 6.0 protein_grams (FLOAT), 24.0 fat_grams (FLOAT), 83 exercise_minutes_walking (INTEGER)
 
 **STANDARDIZED VALUES FOR COMMON ITEMS:**
-- Big Mac (McDonald's): 550 calories, 25g protein, 45g carbs, 33g fat
-- Quarter Pounder with Cheese (McDonald's): 520 calories, 26g protein, 42g carbs, 26g fat
-- Large Fries (McDonald's): 510 calories, 6g protein, 66g carbs, 24g fat
-- McChicken (McDonald's): 400 calories, 14g protein, 39g carbs, 22g fat
-- Filet-O-Fish (McDonald's): 390 calories, 15g protein, 38g carbs, 19g fat
+
+**McDonald's:**
+- Big Mac: 550 calories_kcal, 25.0 protein_grams, 33.0 fat_grams, 90 exercise_minutes_walking
+- Quarter Pounder with Cheese: 520 calories_kcal, 26.0 protein_grams, 26.0 fat_grams, 85 exercise_minutes_walking
+- Large Fries: 510 calories_kcal, 6.0 protein_grams, 24.0 fat_grams, 83 exercise_minutes_walking
+- Medium Fries: 320 calories_kcal, 4.0 protein_grams, 15.0 fat_grams, 52 exercise_minutes_walking
+- McChicken: 400 calories_kcal, 14.0 protein_grams, 22.0 fat_grams, 65 exercise_minutes_walking
+- Filet-O-Fish: 390 calories_kcal, 15.0 protein_grams, 19.0 fat_grams, 64 exercise_minutes_walking
+- Medium Coke: 210 calories_kcal, 0.0 protein_grams, 0.0 fat_grams, 34 exercise_minutes_walking
+
+**KFC (Kentucky Fried Chicken):**
+- Zinger Burger: 450 calories_kcal, 22.0 protein_grams, 22.0 fat_grams, 73 exercise_minutes_walking
+- Original Recipe Chicken (1 piece): 320 calories_kcal, 20.0 protein_grams, 22.0 fat_grams, 52 exercise_minutes_walking
+- 2-Piece Original Recipe Chicken: 480 calories_kcal, 28.0 protein_grams, 32.0 fat_grams, 78 exercise_minutes_walking
+- Wicked Wings (3 piece): 350 calories_kcal, 18.0 protein_grams, 25.0 fat_grams, 57 exercise_minutes_walking
+- Regular Fries: 280 calories_kcal, 3.0 protein_grams, 14.0 fat_grams, 46 exercise_minutes_walking
+- Regular Pepsi: 150 calories_kcal, 0.0 protein_grams, 0.0 fat_grams, 24 exercise_minutes_walking
+- KFC Lunch Box (1 piece chicken, fries, drink): 750 calories_kcal, 23.0 protein_grams, 36.0 fat_grams, 122 exercise_minutes_walking
+
+**Subway:**
+- Footlong BMT: 410 calories_kcal, 20.0 protein_grams, 14.0 fat_grams, 67 exercise_minutes_walking
+- 6 inch BMT: 290 calories_kcal, 14.0 protein_grams, 10.0 fat_grams, 47 exercise_minutes_walking
+- Cookie: 220 calories_kcal, 2.0 protein_grams, 10.0 fat_grams, 36 exercise_minutes_walking
+- Regular Drink: 150 calories_kcal, 0.0 protein_grams, 0.0 fat_grams, 24 exercise_minutes_walking
+
+**Burger King:**
+- Whopper: 660 calories_kcal, 28.0 protein_grams, 40.0 fat_grams, 107 exercise_minutes_walking
+- Medium Fries: 380 calories_kcal, 4.0 protein_grams, 18.0 fat_grams, 62 exercise_minutes_walking
+- Chicken Nuggets (9 piece): 430 calories_kcal, 20.0 protein_grams, 25.0 fat_grams, 70 exercise_minutes_walking
+
+**Starbucks:**
+- Caffe Latte (Grande): 190 calories_kcal, 13.0 protein_grams, 7.0 fat_grams, 31 exercise_minutes_walking
+- Blueberry Muffin: 350 calories_kcal, 5.0 protein_grams, 15.0 fat_grams, 57 exercise_minutes_walking
+
+**Pizza Hut:**
+- Large Pepperoni Pizza (per slice, 8 slices): 300 calories_kcal per slice, 14.0 protein_grams, 12.0 fat_grams, 49 exercise_minutes_walking per slice
 
 **PACIFIC ISLAND FOODS:** For Pacific Island foods (chop suey, lu sipi, povi masima, oka, palusami, sapasui, panipopo, fa'ausi, koko rice, umu kai), use traditional preparation methods and typical ingredient combinations.
 
-**OUTPUT FORMAT:** Return ONLY a valid JSON array. Each object must have EXACTLY these keys in this order: 'food', 'calories', 'protein_g', 'carbohydrates_g', 'fat_g'.
+**EXERCISE CALCULATION:** Calculate exercise_minutes_walking for brisk walking (MET 5.0) at 70kg average weight. Formula: minutes = calories / ((5.0 * 70 * 3.5) / 200). Round to nearest integer.
+
+**OUTPUT FORMAT:** Return ONLY a valid JSON array. Each object must have EXACTLY these keys in this order: 'food_item', 'calories_kcal', 'protein_grams', 'fat_grams', 'exercise_minutes_walking'.
+
+**DATA TYPES:**
+- food_item: STRING (standardized name for database key)
+- calories_kcal: INTEGER (verified, globally standardized calorie count)
+- protein_grams: FLOAT (protein content in grams)
+- fat_grams: FLOAT (fat content in grams)
+- exercise_minutes_walking: INTEGER (minutes of brisk walking, rounded to nearest minute)
 
 **IMPORTANT:** 
-- Use EXACT values from official sources
+- Use EXACT values from official sources (restaurant websites, official nutritional databases)
 - Do NOT approximate or round inconsistently
-- If you cannot identify an item, return {"food": "not found", "calories": 0, "protein_g": 0, "carbohydrates_g": 0, "fat_g": 0}
+- calories_kcal must be INTEGER
+- exercise_minutes_walking must be INTEGER (rounded)
+- For fast food items, ALWAYS try to find official nutritional data - do not return "not found" unless you are absolutely certain the item does not exist
+- For combo meals (e.g., "lunch box", "combo", "meal"), break down into individual components if possible, or provide total nutritional values
+- If you cannot identify an item after reasonable effort, return {"food_item": "not found", "calories_kcal": 0, "protein_grams": 0.0, "fat_grams": 0.0, "exercise_minutes_walking": 0}
 
 **Input food items:** ${apiPrompt}
 
@@ -258,13 +347,14 @@ Return ONLY the JSON array, no other text.`
           "items": {
             "type": "OBJECT",
             "properties": {
-              "food": { "type": "STRING" },
-              "calories": { "type": "NUMBER" },
-              "protein_g": { "type": "NUMBER" },
-              "carbohydrates_g": { "type": "NUMBER" },
-              "fat_g": { "type": "NUMBER" }
+              "food_item": { "type": "STRING" },
+              "calories_kcal": { "type": "INTEGER" },
+              "protein_grams": { "type": "NUMBER" },
+              "fat_grams": { "type": "NUMBER" },
+              "exercise_minutes_walking": { "type": "INTEGER" }
             },
-            "propertyOrdering": ["food", "calories", "protein_g", "carbohydrates_g", "fat_g"]
+            "propertyOrdering": ["food_item", "calories_kcal", "protein_grams", "fat_grams", "exercise_minutes_walking"],
+            "required": ["food_item", "calories_kcal", "protein_grams", "fat_grams", "exercise_minutes_walking"]
           }
         }
       }
@@ -307,18 +397,43 @@ Return ONLY the JSON array, no other text.`
       try {
         const apiData = JSON.parse(jsonText);
         
-        // Combine standardized results with API results
-        const combinedData = [...standardizedResults];
+        // Convert API response format to internal format
+        // API returns: {food_item, calories_kcal, protein_grams, fat_grams, exercise_minutes_walking}
+        // Internal needs: {food, calories, protein_g, carbohydrates_g, fat_g}
+        const convertApiResponse = (apiItem) => {
+          // Calculate carbohydrates from calories if not provided
+          // Formula: carbs = (calories - (protein * 4) - (fat * 9)) / 4
+          const calories = apiItem.calories_kcal || 0;
+          const protein = apiItem.protein_grams || 0;
+          const fat = apiItem.fat_grams || 0;
+          const carbsFromCalculation = calories > 0 && (protein > 0 || fat > 0)
+            ? Math.max(0, (calories - (protein * 4) - (fat * 9)) / 4)
+            : 0;
+          
+          return {
+            food: apiItem.food_item || 'Unknown',
+            calories: calories,
+            protein_g: protein,
+            carbohydrates_g: carbsFromCalculation, // Calculated from calories
+            fat_g: fat,
+            // Store exercise minutes for potential future use
+            exercise_minutes_walking: apiItem.exercise_minutes_walking || 0
+          };
+        };
         
-        // Add API results, ensuring they match the parsed items
+        // Process API results
+        let convertedApiData = [];
         if (Array.isArray(apiData)) {
-          combinedData.push(...apiData);
-        } else if (apiData.food) {
-          combinedData.push(apiData);
+          convertedApiData = apiData.map(convertApiResponse);
+        } else if (apiData.food_item) {
+          convertedApiData = [convertApiResponse(apiData)];
         }
         
-        // If we have standardized results, use those; otherwise use API results
-        const finalData = standardizedResults.length > 0 ? combinedData : apiData;
+        // Combine standardized results with converted API results
+        const combinedData = [...standardizedResults, ...convertedApiData];
+        
+        // If we have standardized results, use combined; otherwise use converted API results
+        const finalData = combinedData.length > 0 ? combinedData : convertedApiData;
         
         setNutritionData(finalData);
         setLoading(false);
@@ -508,23 +623,130 @@ Return ONLY the JSON array, no other text.`
               
               <h3 className="breakdown-title">Itemized Breakdown</h3>
               <ul className="breakdown-list">
-                {nutritionData.map((item, index) => (
-                  <li key={index} className="breakdown-item">
-                    <span className="food-name">{item.food}</span>
+                {(() => {
+                  // Group identical items together
+                  const groupedItems = [];
+                  const itemMap = new Map();
+                  
+                  // First pass: group items by name
+                  if (!nutritionData || !Array.isArray(nutritionData) || nutritionData.length === 0) {
+                    return <li className="breakdown-item">No items to display</li>;
+                  }
+                  
+                  nutritionData.forEach((item) => {
+                    // Ensure item has required fields - be more lenient
+                    if (!item) {
+                      return;
+                    }
+                    
+                    // Use food name or default to a fallback
+                    const foodName = item.food || item.name || 'Unknown Item';
+                    const key = foodName.toLowerCase();
+                    
+                    if (itemMap.has(key)) {
+                      const existing = itemMap.get(key);
+                      existing.count += 1;
+                      existing.totalCalories += Number(item.calories) || 0;
+                      existing.totalProtein += Number(item.protein_g) || 0;
+                      existing.totalCarbs += Number(item.carbohydrates_g) || 0;
+                      existing.totalFat += Number(item.fat_g) || 0;
+                    } else {
+                      itemMap.set(key, {
+                        food: foodName,
+                        count: 1,
+                        calories: Number(item.calories) || 0,
+                        protein_g: Number(item.protein_g) || 0,
+                        carbohydrates_g: Number(item.carbohydrates_g) || 0,
+                        fat_g: Number(item.fat_g) || 0,
+                        totalCalories: Number(item.calories) || 0,
+                        totalProtein: Number(item.protein_g) || 0,
+                        totalCarbs: Number(item.carbohydrates_g) || 0,
+                        totalFat: Number(item.fat_g) || 0,
+                      });
+                    }
+                  });
+                  
+                  // Convert map to array
+                  itemMap.forEach((groupedItem) => {
+                    groupedItems.push(groupedItem);
+                  });
+                  
+                  // If no grouped items, return a message
+                  if (groupedItems.length === 0) {
+                    return <li className="breakdown-item">No items found in breakdown</li>;
+                  }
+                  
+                  // Helper function to convert plural to singular (simple approach)
+                  const toSingular = (word) => {
+                    // Common plural endings
+                    if (word.endsWith('ies')) {
+                      return word.slice(0, -3) + 'y';
+                    }
+                    if (word.endsWith('ches') || word.endsWith('shes') || word.endsWith('xes') || word.endsWith('zes')) {
+                      return word.slice(0, -2);
+                    }
+                    if (word.endsWith('s') && !word.endsWith('ss') && word.length > 1) {
+                      return word.slice(0, -1);
+                    }
+                    return word;
+                  };
+
+                  return groupedItems.map((item, index) => {
+                    // Format food name: show quantity with singular form if count > 1
+                    let displayName = item.food;
+                    if (item.count > 1) {
+                      // Try to convert to singular form
+                      const words = item.food.split(' ');
+                      const lastWord = words[words.length - 1];
+                      const singularLastWord = toSingular(lastWord.toLowerCase());
+                      
+                      // Only convert if the singular form is different
+                      if (singularLastWord !== lastWord.toLowerCase()) {
+                        words[words.length - 1] = singularLastWord.charAt(0).toUpperCase() + singularLastWord.slice(1);
+                        displayName = `${item.count} ${words.join(' ')}`;
+                      } else {
+                        // If singular conversion didn't work, use original format
+                        displayName = `${item.count} ${item.food}`;
+                      }
+                    }
+                    
+                    return (
+                      <li key={index} className="breakdown-item">
+                        <span className="food-name">{displayName}</span>
+                        <div className="nutrition-values">
+                          {/* Show nutrition values even if calories is 0 (e.g., diet drinks) */}
+                          {item.count > 1 ? (
+                            <>
+                              <span>{item.totalCalories.toFixed(1)} cal</span>
+                              <span>{item.totalProtein.toFixed(1)}g P</span>
+                              <span>{item.totalCarbs.toFixed(1)}g C</span>
+                              <span>{item.totalFat.toFixed(1)}g F</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>{item.calories.toFixed(1)} cal</span>
+                              <span>{item.protein_g.toFixed(1)}g P</span>
+                              <span>{item.carbohydrates_g.toFixed(1)}g C</span>
+                              <span>{item.fat_g.toFixed(1)}g F</span>
+                            </>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  });
+                })()}
+                {/* Total Row - Show when there are multiple items OR when there's more than one entry */}
+                {nutritionData.length > 0 && (
+                  <li key="total" className="breakdown-item breakdown-total">
+                    <span className="food-name total-label">Total</span>
                     <div className="nutrition-values">
-                      {item.calories ? (
-                        <>
-                          <span>{item.calories.toFixed(1)} cal</span>
-                          <span>{item.protein_g.toFixed(1)}g P</span>
-                          <span>{item.carbohydrates_g.toFixed(1)}g C</span>
-                          <span>{item.fat_g.toFixed(1)}g F</span>
-                        </>
-                      ) : (
-                        <span className="not-found">Not Found</span>
-                      )}
+                      <span>{calculateTotal('calories').toFixed(1)} cal</span>
+                      <span>{calculateTotal('protein_g').toFixed(1)}g P</span>
+                      <span>{calculateTotal('carbohydrates_g').toFixed(1)}g C</span>
+                      <span>{calculateTotal('fat_g').toFixed(1)}g F</span>
                     </div>
                   </li>
-                ))}
+                )}
               </ul>
             </div>
           )}

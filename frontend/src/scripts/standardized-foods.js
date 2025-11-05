@@ -15,11 +15,12 @@ export const STANDARDIZED_FOODS = {
   "mcdonald's big mac": { calories: 550, protein_g: 25, carbohydrates_g: 45, fat_g: 33, company: "McDonald's" },
   "quarter pounder": { calories: 520, protein_g: 26, carbohydrates_g: 42, fat_g: 26, company: "McDonald's" },
   "quarter pounder with cheese": { calories: 520, protein_g: 26, carbohydrates_g: 42, fat_g: 26, company: "McDonald's" },
-  "mcdonald's fries large": { calories: 510, protein_g: 6, carbohydrates_g: 66, fat_g: 24, company: "McDonald's" },
-  "large fries mcdonald's": { calories: 510, protein_g: 6, carbohydrates_g: 66, fat_g: 24, company: "McDonald's" },
-  "mcdonald's large fries": { calories: 510, protein_g: 6, carbohydrates_g: 66, fat_g: 24, company: "McDonald's" },
-  "mcchicken": { calories: 400, protein_g: 14, carbohydrates_g: 39, fat_g: 22, company: "McDonald's" },
-  "mcdonald's mcchicken": { calories: 400, protein_g: 14, carbohydrates_g: 39, fat_g: 22, company: "McDonald's" },
+  "mcdonald's fries large": { calories: 510, protein_g: 6, carbohydrates_g: 67.5, fat_g: 24, company: "McDonald's" },
+  "large fries mcdonald's": { calories: 510, protein_g: 6, carbohydrates_g: 67.5, fat_g: 24, company: "McDonald's" },
+  "mcdonald's large fries": { calories: 510, protein_g: 6, carbohydrates_g: 67.5, fat_g: 24, company: "McDonald's" },
+  "large fries": { calories: 510, protein_g: 6, carbohydrates_g: 67.5, fat_g: 24, company: "McDonald's" },
+  "mcchicken": { calories: 400, protein_g: 14, carbohydrates_g: 36.5, fat_g: 22, company: "McDonald's" },
+  "mcdonald's mcchicken": { calories: 400, protein_g: 14, carbohydrates_g: 36.5, fat_g: 22, company: "McDonald's" },
   "filet o fish": { calories: 390, protein_g: 15, carbohydrates_g: 38, fat_g: 19, company: "McDonald's" },
   "mcdonald's filet o fish": { calories: 390, protein_g: 15, carbohydrates_g: 38, fat_g: 19, company: "McDonald's" },
   
@@ -36,6 +37,28 @@ export const STANDARDIZED_FOODS = {
   // Starbucks
   "starbucks caffe latte grande": { calories: 190, protein_g: 13, carbohydrates_g: 18, fat_g: 7, company: "Starbucks" },
   "starbucks grande latte": { calories: 190, protein_g: 13, carbohydrates_g: 18, fat_g: 7, company: "Starbucks" },
+  
+  // Combo component items
+  // McDonald's
+  "medium fries": { calories: 320, protein_g: 4, carbohydrates_g: 43, fat_g: 15, company: "McDonald's" },
+  "mcdonald's medium fries": { calories: 320, protein_g: 4, carbohydrates_g: 43, fat_g: 15, company: "McDonald's" },
+  "medium coke": { calories: 210, protein_g: 0, carbohydrates_g: 58, fat_g: 0, company: "McDonald's" },
+  "medium coca cola": { calories: 210, protein_g: 0, carbohydrates_g: 58, fat_g: 0, company: "McDonald's" },
+  "mcdonald's medium coke": { calories: 210, protein_g: 0, carbohydrates_g: 58, fat_g: 0, company: "McDonald's" },
+  
+  // KFC
+  "regular fries": { calories: 280, protein_g: 3, carbohydrates_g: 35, fat_g: 14, company: "KFC" },
+  "kfc regular fries": { calories: 280, protein_g: 3, carbohydrates_g: 35, fat_g: 14, company: "KFC" },
+  "regular pepsi": { calories: 150, protein_g: 0, carbohydrates_g: 41, fat_g: 0, company: "KFC" },
+  "kfc regular pepsi": { calories: 150, protein_g: 0, carbohydrates_g: 41, fat_g: 0, company: "KFC" },
+  "2 piece original recipe chicken": { calories: 480, protein_g: 28, carbohydrates_g: 18, fat_g: 32, company: "KFC" },
+  "kfc 2 piece chicken": { calories: 480, protein_g: 28, carbohydrates_g: 18, fat_g: 32, company: "KFC" },
+  
+  // Subway
+  "cookie": { calories: 220, protein_g: 2, carbohydrates_g: 30, fat_g: 10, company: "Subway" },
+  "subway cookie": { calories: 220, protein_g: 2, carbohydrates_g: 30, fat_g: 10, company: "Subway" },
+  "regular drink": { calories: 150, protein_g: 0, carbohydrates_g: 39, fat_g: 0, company: "Subway" },
+  "subway regular drink": { calories: 150, protein_g: 0, carbohydrates_g: 39, fat_g: 0, company: "Subway" },
 };
 
 /**

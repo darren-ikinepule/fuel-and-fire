@@ -221,6 +221,13 @@ body {
   margin-right: 1rem;
 }
 
+.item-quantity {
+  color: var(--color-text-medium);
+  font-weight: 400;
+  font-size: 0.9em;
+  margin-left: 0.25rem;
+}
+
 .nutrition-values {
   display: flex;
   flex-wrap: wrap;
@@ -231,6 +238,33 @@ body {
 
 .not-found {
   color: #c94b4b; /* A subtle red for not found items */
+}
+
+/* Total row styling */
+.breakdown-total {
+  background: linear-gradient(135deg, var(--color-dark-element), var(--color-black-gloss-start));
+  border: 2px solid var(--color-orange-fluorescent);
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.breakdown-total:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255, 102, 0, 0.7);
+}
+
+.total-label {
+  color: var(--color-orange-fluorescent);
+  font-size: 1.1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.breakdown-total .nutrition-values {
+  color: var(--color-orange-fluorescent);
+  font-weight: bold;
+  font-size: 1em;
 }
 
 /* Loading styles */
