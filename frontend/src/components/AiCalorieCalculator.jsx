@@ -5,6 +5,7 @@ import '../stylesheets/ai-calorie-converter.css';
 import ExerciseSelector from './ExerciseSelector.jsx';
 import SplitBurnPlan from './SplitBurnPlan.jsx';
 import { calculateSplitExercises } from '../scripts/calculateSplitExercises.js';
+import { getStandardizedFood, STANDARDIZED_FOODS } from '../scripts/standardized-foods.js';
 
 /**
  * AiCalorieCalculator is a React component that calculates
@@ -28,54 +29,230 @@ export default function AiCalorieCalculator() {
   const burnPlanSectionRef = useRef(null);
 
   /**
-   * Fetches nutritional data from the Gemini API.
-   * Uses exponential backoff for API retries to handle rate limiting.
+   * Parses user input to extract food items and quantities
+   * Handles patterns like "3x big mac", "1 big mac three times", "big mac three times", etc.
+   * @param {string} input - User input string
+   * @returns {Array} - Array of {quantity, foodName} objects
+   */
+  const parseFoodInput = (input) => {
+    const items = [];
+    const trimmedInput = input.trim();
+    
+    // Number words mapping
+    const numberWords = { 
+      one: 1, two: 2, three: 3, four: 4, five: 5, 
+      six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+      once: 1, twice: 2
+    };
+    
+    // Pattern 1: "3 big mac" (number at start) - CHECK THIS FIRST!
+    // Simple pattern: number followed by space and food name
+    const numberFirstPattern = /^(\d+)\s+(.+)$/i;
+    let numberMatch = trimmedInput.match(numberFirstPattern);
+    
+    if (numberMatch && numberMatch.length >= 3 && numberMatch[2]) {
+      const quantity = parseInt(numberMatch[1], 10);
+      let foodName = String(numberMatch[2]).trim();
+      
+      // Ensure foodName is not empty and quantity is valid
+      if (foodName && foodName.length > 0 && quantity > 0 && !isNaN(quantity)) {
+        // Create multiple entries for the same item
+        for (let i = 0; i < quantity; i++) {
+          items.push({ quantity: 1, foodName });
+        }
+        return items;
+      }
+    }
+    
+    // Pattern 2: "1 big mac three times" or "big mac three times"
+    const timesPattern = /(?:(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+)?(.+?)\s+(?:(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+)?times?$/i;
+    let timesMatch = trimmedInput.match(timesPattern);
+    
+    if (timesMatch) {
+      // Extract the quantity (either before or after the food name)
+      const quantityBefore = timesMatch[1] ? (numberWords[timesMatch[1].toLowerCase()] || parseInt(timesMatch[1])) : 1;
+      const quantityAfter = timesMatch[3] ? (numberWords[timesMatch[3].toLowerCase()] || parseInt(timesMatch[3])) : 1;
+      const quantity = quantityAfter > 1 ? quantityAfter : quantityBefore;
+      const foodName = timesMatch[2].trim();
+      
+      // Create multiple entries for the same item
+      for (let i = 0; i < quantity; i++) {
+        items.push({ quantity: 1, foodName });
+      }
+      return items;
+    }
+    
+    // Pattern 3: "3x big mac" or "big mac x3" (must have 'x' or 'X')
+    const xPattern = /(?:(\d+)\s*x\s*(.+?))|(?:(.+?)\s+x\s*(\d+))/i;
+    let xMatch = trimmedInput.match(xPattern);
+    
+    if (xMatch) {
+      let quantity, foodName;
+      if (xMatch[1] && xMatch[2]) {
+        // "3x big mac"
+        quantity = parseInt(xMatch[1], 10);
+        foodName = xMatch[2].trim();
+      } else if (xMatch[3] && xMatch[4]) {
+        // "big mac x3"
+        quantity = parseInt(xMatch[4], 10);
+        foodName = xMatch[3].trim();
+      }
+      
+      if (quantity && foodName && quantity > 0) {
+        for (let i = 0; i < quantity; i++) {
+          items.push({ quantity: 1, foodName });
+        }
+        return items;
+      }
+    }
+    
+    // Pattern 4: Split by commas, "and", "plus", etc.
+    const parts = trimmedInput.split(/,|\s+and\s+|\s+plus\s+|\s+with\s+/i);
+    
+    for (const part of parts) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+      
+      // Check for "three times" pattern in each part
+      const partTimesMatch = trimmed.match(/(?:(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+)?(.+?)\s+(?:(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+)?times?$/i);
+      
+      if (partTimesMatch) {
+        const qtyBefore = partTimesMatch[1] ? (numberWords[partTimesMatch[1].toLowerCase()] || parseInt(partTimesMatch[1])) : 1;
+        const qtyAfter = partTimesMatch[3] ? (numberWords[partTimesMatch[3].toLowerCase()] || parseInt(partTimesMatch[3])) : 1;
+        const qty = qtyAfter > 1 ? qtyAfter : qtyBefore;
+        const foodName = partTimesMatch[2].trim();
+        
+        for (let i = 0; i < qty; i++) {
+          items.push({ quantity: 1, foodName });
+        }
+        continue;
+      }
+      
+      // Check for number at start of part
+      const partNumberMatch = trimmed.match(/^(\d+)\s+(.+)$/);
+      if (partNumberMatch) {
+        const quantity = parseInt(partNumberMatch[1]);
+        const foodName = partNumberMatch[2].trim();
+        for (let i = 0; i < quantity; i++) {
+          items.push({ quantity: 1, foodName });
+        }
+        continue;
+      }
+      
+      // Single item
+      items.push({ quantity: 1, foodName: trimmed });
+    }
+    
+    return items.length > 0 ? items : [{ quantity: 1, foodName: trimmedInput }];
+  };
+
+  /**
+   * Fetches nutritional data from the Gemini API with strict consistency requirements.
+   * Uses standardized database when possible to ensure identical results.
    * @param {string} prompt The user's input string describing food items.
    * @param {number} retryCount The current retry attempt number.
    */
   const fetchNutritionData = async (prompt, retryCount = 0) => {
-    // We already set loading to true in the calling function, so no need here.
     setError('');
     
-    // Using a more structured prompt for better AI output
-    const geminiPrompt = `Analyze the following food list and provide a detailed nutritional breakdown in a JSON array format. For each item, include the food name, total calories, protein in grams, carbohydrates in grams, and fats in grams. 
+    // First, try to parse and use standardized database
+    const parsedItems = parseFoodInput(prompt);
+    const standardizedResults = [];
+    const itemsNeedingAPI = [];
+    
+    for (const item of parsedItems) {
+      // Ensure foodName is valid and not truncated
+      const foodName = String(item.foodName || '').trim();
+      
+      if (!foodName || foodName.length === 0) {
+        console.warn('Skipping item with empty food name:', item);
+        continue;
+      }
+      
+      const standardized = getStandardizedFood(foodName);
+      if (standardized) {
+        // Format food name for display (capitalize first letter of each word)
+        const formatFoodName = (name) => {
+          if (!name || typeof name !== 'string' || name.length === 0) {
+            return name;
+          }
+          return name
+            .split(' ')
+            .filter(word => word.length > 0) // Remove empty strings
+            .map(word => {
+              if (word.length === 0) return word;
+              return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            })
+            .join(' ');
+        };
+        
+        // Use the original foodName for display, not the normalized one
+        const displayName = formatFoodName(foodName);
+        
+        // Ensure we have a valid display name
+        const finalDisplayName = (displayName && displayName.length > 0) 
+          ? displayName 
+          : ((foodName && foodName.length > 0) ? foodName : 'Unknown Item');
+        
+        // Use standardized value - ensures consistency
+        standardizedResults.push({
+          food: finalDisplayName,
+          calories: standardized.calories,
+          protein_g: standardized.protein_g,
+          carbohydrates_g: standardized.carbohydrates_g,
+          fat_g: standardized.fat_g
+        });
+      } else {
+        itemsNeedingAPI.push(item);
+      }
+    }
+    
+    // If all items were standardized, return immediately
+    if (itemsNeedingAPI.length === 0 && standardizedResults.length > 0) {
+      setNutritionData(standardizedResults);
+      setLoading(false);
+      resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    
+    // Build prompt for items needing API lookup
+    const apiPrompt = itemsNeedingAPI.map(item => item.foodName).join(', ');
+    
+    // CRITICAL: Use strict prompt with temperature=0 to ensure consistency
+    const geminiPrompt = `You are an expert nutritional data engine. Your ONLY function is to provide accurate, verified calorie counts and macronutrients for restaurant items.
 
-IMPORTANT: This analysis should recognize Pacific Island and Polynesian foods commonly consumed in New Zealand, including but not limited to:
-- Chop suey (Pacific Island style with cabbage, onions, corned beef/mutton)
-- Lu sipi/Lusipi (taro leaves cooked with lamb/mutton and coconut cream)
-- Povi masima (corned beef, often cooked with vegetables)
-- Oka (raw fish salad with coconut cream)
-- Palusami (taro leaves with coconut cream and meat)
-- Sapasui (Samoan chop suey)
-- Panipopo (coconut bread rolls)
-- Fa'ausi (coconut caramel dumplings)
-- Koko rice (cocoa rice)
-- Umu kai (earth oven cooked foods)
-- Pacific Island-style taro, breadfruit, green bananas
-- Coconut cream-based dishes
-- Traditional Pacific preparations of familiar ingredients
+**PRIMARY CONSTRAINT:** Always use globally accepted, standardized average nutritional data for the requested item. Do NOT introduce variation based on location or minor recipe differences. Use OFFICIAL nutritional data from restaurant chains when available.
 
-When analyzing these foods, consider:
+**CRITICAL CONSISTENCY RULE:** If the same item is requested multiple times, you MUST return IDENTICAL values each time. For example:
+- "Big Mac (McDonald's)" = ALWAYS 550 calories, 25g protein, 45g carbs, 33g fat
+- "Large McDonald's Fries" = ALWAYS 510 calories, 6g protein, 66g carbs, 24g fat
 
-FOR FAST FOOD: Use official nutritional data from the respective chains when available. Recognize common portion descriptions (e.g., "1 KFC Quarter Pack" includes specific pieces, "Large McDonald's Fries", etc.)
+**STANDARDIZED VALUES FOR COMMON ITEMS:**
+- Big Mac (McDonald's): 550 calories, 25g protein, 45g carbs, 33g fat
+- Quarter Pounder with Cheese (McDonald's): 520 calories, 26g protein, 42g carbs, 26g fat
+- Large Fries (McDonald's): 510 calories, 6g protein, 66g carbs, 24g fat
+- McChicken (McDonald's): 400 calories, 14g protein, 39g carbs, 22g fat
+- Filet-O-Fish (McDonald's): 390 calories, 15g protein, 38g carbs, 19g fat
 
-FOR PACIFIC ISLAND FOODS: Consider traditional cooking methods and typical ingredient combinations. For example:
-- Lu sipi typically contains taro leaves, lamb/mutton, coconut cream, onions
-- Pacific chop suey often includes cabbage, onions, corned beef or mutton, sometimes potatoes
-- Povi masima refers to corned beef preparations, often with root vegetables
+**PACIFIC ISLAND FOODS:** For Pacific Island foods (chop suey, lu sipi, povi masima, oka, palusami, sapasui, panipopo, fa'ausi, koko rice, umu kai), use traditional preparation methods and typical ingredient combinations.
 
-If a food item cannot be identified or lacks sufficient nutritional data, return an object for that item with "not found" in the "food" field. 
+**OUTPUT FORMAT:** Return ONLY a valid JSON array. Each object must have EXACTLY these keys in this order: 'food', 'calories', 'protein_g', 'carbohydrates_g', 'fat_g'.
 
-The entire response must be a single JSON array, with keys in the following order: 'food', 'calories', 'protein_g', 'carbohydrates_g', 'fat_g'. 
+**IMPORTANT:** 
+- Use EXACT values from official sources
+- Do NOT approximate or round inconsistently
+- If you cannot identify an item, return {"food": "not found", "calories": 0, "protein_g": 0, "carbohydrates_g": 0, "fat_g": 0}
 
-Nutritional values should be provided per standard serving size (approximately 100g unless the food is typically consumed in significantly different portions).
+**Input food items:** ${apiPrompt}
 
-Here is the list: ${prompt}`
+Return ONLY the JSON array, no other text.`
 
     const payload = {
       contents: [{ role: "user", parts: [{ text: geminiPrompt }] }],
       generationConfig: {
         responseMimeType: "application/json",
+        temperature: 0, // CRITICAL: Set to 0 for maximum consistency
+        topP: 0.1, // Low value for deterministic responses
         responseSchema: {
           "type": "ARRAY",
           "items": {
@@ -128,8 +305,22 @@ Here is the list: ${prompt}`
       const jsonText = result.candidates[0].content.parts[0].text;
       
       try {
-        const data = JSON.parse(jsonText);
-        setNutritionData(data);
+        const apiData = JSON.parse(jsonText);
+        
+        // Combine standardized results with API results
+        const combinedData = [...standardizedResults];
+        
+        // Add API results, ensuring they match the parsed items
+        if (Array.isArray(apiData)) {
+          combinedData.push(...apiData);
+        } else if (apiData.food) {
+          combinedData.push(apiData);
+        }
+        
+        // If we have standardized results, use those; otherwise use API results
+        const finalData = standardizedResults.length > 0 ? combinedData : apiData;
+        
+        setNutritionData(finalData);
         setLoading(false);
         resultRef.current?.scrollIntoView({ behavior: 'smooth' });
       } catch (parseError) {
