@@ -18,29 +18,79 @@ function FoodSelector({ onSelect }) {
 
   // Fetch food data on component mount - runs once due to empty dependency array
   useEffect(() => {
-    const fetchFood = async () => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const cacheKey = "fuel-fire/food-items";
+
+    const readCache = () => {
       try {
-        setIsLoading(true);
+        const cached = sessionStorage.getItem(cacheKey);
+        if (!cached) return null;
+        const parsed = JSON.parse(cached);
+        return Array.isArray(parsed) ? parsed : null;
+      } catch (err) {
+        console.warn("Failed to parse cached food data, clearing cache.", err);
+        sessionStorage.removeItem(cacheKey);
+        return null;
+      }
+    };
+
+    const writeCache = (data) => {
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(data));
+      } catch (err) {
+        console.warn("Unable to cache food data:", err);
+      }
+    };
+
+    const cachedData = readCache();
+    if (cachedData) {
+      setFastFoodInfo(cachedData);
+      setIsLoading(false);
+    }
+
+    const fetchFood = async (showSpinner) => {
+      try {
+        if (showSpinner) {
+          setIsLoading(true);
+        }
         // Use Vite environment variable for API endpoint - supports different environments (dev/prod)
         const apiUrl = import.meta.env.VITE_API_URL || "https://fuel-and-fire.onrender.com";
-        const response = await fetch(`${apiUrl}/food-items`);
-        
+        const response = await fetch(`${apiUrl}/food-items`, { signal: controller.signal });
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        setFastFoodInfo(data);
+        if (isMounted) {
+          setFastFoodInfo(data);
+          writeCache(data);
+        }
       } catch (err) {
+        if (err.name === "AbortError") {
+          return;
+        }
         // Fail silently to prevent crashes - could be enhanced with user-facing error handling
         console.error("Error fetching food data:", err);
-        // Set empty array on error to prevent crashes
-        setFastFoodInfo([]);
+        if (isMounted && !cachedData) {
+          // Set empty array on error to prevent crashes
+          setFastFoodInfo([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
-    fetchFood();
+
+    // Perform SWR-style fetch: show cached data immediately, refresh in background
+    fetchFood(!cachedData);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   /**

@@ -1,7 +1,6 @@
 // SocialPage.jsx - Brand social media hub with accessibility and performance optimizations
 
 import React from 'react';
-import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import '../stylesheets/social-page.css';
 
 /**
@@ -10,6 +9,33 @@ import '../stylesheets/social-page.css';
  * Serves as a brand hub directing users to external social platforms
  */
 const SocialPage = () => {
+  const socialLinks = [
+    {
+      href: "https://www.facebook.com/login",
+      label: "Facebook",
+      title: "Facebook Login",
+      initials: "F",
+    },
+    {
+      href: "https://www.instagram.com/accounts/login",
+      label: "Instagram",
+      title: "Instagram Login",
+      initials: "IG",
+    },
+    {
+      href: "https://twitter.com/i/flow/login",
+      label: "Twitter",
+      title: "Twitter Login",
+      initials: "X",
+    },
+    {
+      href: "https://accounts.google.com/signin",
+      label: "YouTube",
+      title: "YouTube Login",
+      initials: "YT",
+    },
+  ];
+
   return (
     <div className="social-page-container">
       <div className="social-card">
@@ -22,46 +48,20 @@ const SocialPage = () => {
         />
         <p className="social-tagline">Fast Food Burner</p>
         <div className="social-icons">
-          {/* Security implementation: target="_blank" with rel="noopener noreferrer" */}
-          {/* Prevents window.opener exploitation and referrer information leakage */}
-          <a
-            href="https://www.facebook.com/login"
-            target="_blank"
-            rel="noopener noreferrer"
-            // Accessibility: Provides context for screen readers when visual icons aren't descriptive
-            aria-label="Login to Facebook"
-            // Enhanced UX: Tooltip for mouse users while maintaining accessibility
-            title="Facebook Login"
-          >
-            <FaFacebookF />
-          </a>
-          <a
-            href="https://www.instagram.com/accounts/login"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Login to Instagram"
-            title="Instagram Login"
-          >
-            <FaInstagram />
-          </a>
-          <a
-            href="https://twitter.com/i/flow/login"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Login to Twitter"
-            title="Twitter Login"
-          >
-            <FaTwitter />
-          </a>
-          <a
-            href="https://accounts.google.com/signin"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Login to YouTube"
-            title="YouTube Login"
-          >
-            <FaYoutube />
-          </a>
+          {socialLinks.map(({ href, label, title, initials }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Login to ${label}`}
+              title={title}
+            >
+              <span className="social-icon-letter" aria-hidden="true">
+                {initials}
+              </span>
+            </a>
+          ))}
         </div>
       </div>
     </div>
