@@ -63,6 +63,19 @@
   transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
 }
 
+.social-icon-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(2.25rem, 6vw, 2.75rem);
+  height: clamp(2.25rem, 6vw, 2.75rem);
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .social-icons a:hover {
   transform: scale(1.2);
   color: var(--glowing-orange-dark);

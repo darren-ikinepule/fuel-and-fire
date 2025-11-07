@@ -1,23 +1,80 @@
 // App.jsx - Fuel & Fire Application Core Logic
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Import UI Components
+// Lazy-load UI Components to reduce initial bundle size
 import Layout from "./components/Layout.jsx";
-import HomePage from "./components/HomePage.jsx";
-import FoodSelector from "./components/FoodSelector.jsx";
-import UserInputForm from "./components/UserInputForm.jsx";
-import ResultsDisplay from "./components/ResultsDisplay.jsx";
-import SplitBurnPlan from "./components/SplitBurnPlan.jsx";
-import ExerciseSelector from "./components/ExerciseSelector.jsx";
-import IntroFuelAndFire from "./components/IntroFuelAndFire.jsx";
-import MetChart from "./components/MetChart.jsx";
-import SocialPage from "./components/SocialPage.jsx";
-import NotFound from "./components/NotFound.jsx";
-
-// Import Utility Functions
 import { calculateSplitExercises } from "./scripts/calculateSplitExercises.js";
-import AiCalorieCalculator from "./components/AiCalorieCalculator.jsx";
+
+const HomePage = lazy(() => import("./components/HomePage.jsx"));
+const FoodSelector = lazy(() => import("./components/FoodSelector.jsx"));
+const UserInputForm = lazy(() => import("./components/UserInputForm.jsx"));
+const ResultsDisplay = lazy(() => import("./components/ResultsDisplay.jsx"));
+const SplitBurnPlan = lazy(() => import("./components/SplitBurnPlan.jsx"));
+const ExerciseSelector = lazy(() => import("./components/ExerciseSelector.jsx"));
+const IntroFuelAndFire = lazy(() => import("./components/IntroFuelAndFire.jsx"));
+const MetChart = lazy(() => import("./components/MetChart.jsx"));
+const SocialPage = lazy(() => import("./components/SocialPage.jsx"));
+const NotFound = lazy(() => import("./components/NotFound.jsx"));
+const AiCalorieCalculator = lazy(() => import("./components/AiCalorieCalculator.jsx"));
+
+const SectionFallback = ({ message }) => (
+  <div
+    role="status"
+    aria-live="polite"
+    style={{
+      minHeight: "30vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "0.75rem",
+      color: "var(--color-orange-fluorescent)",
+      textAlign: "center",
+      padding: "1.5rem",
+    }}
+  >
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ opacity: 0.9 }}
+    >
+      <circle cx="12" cy="12" r="10" style={{ opacity: 0.25 }} />
+      <path d="M22 12c0-5.52-4.48-10-10-10">
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          from="0 12 12"
+          to="360 12 12"
+          dur="1s"
+          repeatCount="indefinite"
+        />
+      </path>
+    </svg>
+    <span style={{ fontSize: "clamp(0.95rem, 2.5vw, 1.1rem)" }}>{message}</span>
+  </div>
+);
+
+const InlineFallback = ({ message }) => (
+  <div
+    role="status"
+    aria-live="polite"
+    style={{
+      textAlign: "center",
+      padding: "1.25rem 0",
+      color: "var(--color-orange-fluorescent)",
+      fontSize: "clamp(0.9rem, 2.4vw, 1rem)",
+    }}
+  >
+    {message}
+  </div>
+);
 
 function App() {
   // useState hooks for managing the application's state.
@@ -36,6 +93,11 @@ function App() {
   const [validationError, setValidationError] = useState("");
   const [burnPlanError, setBurnPlanError] = useState("");
   const [isResultsContentVisible, setIsResultsContentVisible] = useState(true);
+
+  const totalSelectedCalories = useMemo(
+    () => selectedFood.reduce((sum, f) => sum + (f?.calories ?? 0), 0),
+    [selectedFood]
+  );
 
   // useRef hooks to get direct access to DOM elements for scrolling.
   const resultsSectionRef = useRef(null);
@@ -69,11 +131,10 @@ function App() {
       }
 
       // Calculate the total calories from the selected food items.
-      const totalCalories = selectedFood.reduce((sum, f) => sum + f.calories, 0);
       // Call the utility function to split exercises and get the plan.
       const split = calculateSplitExercises(
         selectedExercises,
-        totalCalories,
+        totalSelectedCalories,
         Number(user.weight)
       );
       setSplitExercises(split);
@@ -83,7 +144,7 @@ function App() {
       setSplitExercises([]);
       setBurnPlanError("");
     }
-  }, [selectedExercises, selectedFood, user.weight, showSplitBurnPlan]);
+  }, [selectedExercises, totalSelectedCalories, user.weight, showSplitBurnPlan]);
 
   // useEffect hook to scroll to the SplitBurnPlan section.
   // A timeout is used to ensure the component has rendered before attempting to scroll.
@@ -157,61 +218,57 @@ function App() {
         {/* The Layout component provides a consistent header and footer for all pages. */}
         <Route element={<Layout />}>
           {/* Defines the routes for each page. */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/intro" element={<IntroFuelAndFire />} />
-          <Route path="/met" element={<MetChart />} />
-          <Route path="/social" element={<SocialPage />} />
-          <Route path="/aicaloriecalculator" element={<AiCalorieCalculator />} />
+            <Route
+              path="/"
+              element={
+                <Suspense fallback={<SectionFallback message="Loading home..." />}>
+                  <HomePage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/intro"
+              element={
+                <Suspense fallback={<SectionFallback message="Loading about page..." />}>
+                  <IntroFuelAndFire />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/met"
+              element={
+                <Suspense fallback={<SectionFallback message="Loading MET chart..." />}>
+                  <MetChart />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/social"
+              element={
+                <Suspense fallback={<SectionFallback message="Loading social links..." />}>
+                  <SocialPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/aicaloriecalculator"
+              element={
+                <Suspense fallback={<SectionFallback message="Preparing custom calculator..." />}>
+                  <AiCalorieCalculator />
+                </Suspense>
+              }
+            />
           <Route
             path="/calculator"
             element={
-              <>
-                {/* Renders the components for the main calculator page. */}
-                <FoodSelector onSelect={setSelectedFood} />
-                <UserInputForm user={user} onChange={setUser} onSubmit={handleCalculate} />
+                <Suspense fallback={<SectionFallback message="Loading calculator..." />}>
+                  <>
+                    {/* Renders the components for the main calculator page. */}
+                    <FoodSelector onSelect={setSelectedFood} />
+                    <UserInputForm user={user} onChange={setUser} onSubmit={handleCalculate} />
 
-                {/* Conditional rendering of validation errors. */}
-                {validationError && (
-                  <p
-                    style={{
-                      color: "var(--color-orange-fluorescent)",
-                      textAlign: "center",
-                      marginTop: "1rem",
-                      fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
-                    }}
-                  >
-                    {validationError}
-                  </p>
-                )}
-
-                {/* Conditional rendering for the results section. */}
-                {showResults && (
-                  <div ref={resultsSectionRef}>
-                    <ResultsDisplay
-                      food={selectedFood}
-                      user={user}
-                      isContentVisible={isResultsContentVisible}
-                      toggleContentVisibility={toggleResultsContentVisibility}
-                    />
-
-                    <ExerciseSelector
-                      onSelect={handleExerciseSelect}
-                      selected={selectedExercises}
-                    />
-
-                    {/* Conditional rendering for the SplitBurnPlan. */}
-                    {showSplitBurnPlan && (
-                      <div ref={burnPlanSectionRef}>
-                        <SplitBurnPlan
-                          splitExercises={splitExercises}
-                          totalCalories={selectedFood.reduce((sum, f) => sum + f.calories, 0)}
-                          selectedExercises={selectedExercises}
-                        />
-                      </div>
-                    )}
-
-                    {/* Conditional rendering for burn plan errors. */}
-                    {burnPlanError && (
+                    {/* Conditional rendering of validation errors. */}
+                    {validationError && (
                       <p
                         style={{
                           color: "var(--color-orange-fluorescent)",
@@ -220,33 +277,87 @@ function App() {
                           fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
                         }}
                       >
-                        {burnPlanError}
+                        {validationError}
                       </p>
                     )}
 
-                    {/* Button to toggle the burn plan visibility. */}
-                    <button
-                      onClick={handleViewBurnPlan}
-                      className="cta-button"
-                      style={{
-                        background: "var(--color-orange-fluorescent)",
-                        color: "black",
-                        textAlign: "center",
-                        marginTop: "1rem",
-                        fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
-                        transition: "all 2s ease-out",
-                      }}
-                    >
-                      {showSplitBurnPlan ? "Hide Burn Plan" : "View Burn Plan"}
-                    </button>
-                  </div>
-                )}
-                
-              </>
+                    {/* Conditional rendering for the results section. */}
+                    {showResults && (
+                      <div ref={resultsSectionRef}>
+                        <Suspense fallback={<InlineFallback message="Preparing results..." />}>
+                          <ResultsDisplay
+                            food={selectedFood}
+                            user={user}
+                            isContentVisible={isResultsContentVisible}
+                            toggleContentVisibility={toggleResultsContentVisibility}
+                          />
+                        </Suspense>
+
+                        <Suspense fallback={<InlineFallback message="Loading exercises..." />}>
+                          <ExerciseSelector
+                            onSelect={handleExerciseSelect}
+                            selected={selectedExercises}
+                          />
+                        </Suspense>
+
+                        {/* Conditional rendering for the SplitBurnPlan. */}
+                        {showSplitBurnPlan && (
+                          <div ref={burnPlanSectionRef}>
+                            <Suspense fallback={<InlineFallback message="Calculating burn plan..." />}>
+                              <SplitBurnPlan
+                                splitExercises={splitExercises}
+                                totalCalories={totalSelectedCalories}
+                                selectedExercises={selectedExercises}
+                              />
+                            </Suspense>
+                          </div>
+                        )}
+
+                        {/* Conditional rendering for burn plan errors. */}
+                        {burnPlanError && (
+                          <p
+                            style={{
+                              color: "var(--color-orange-fluorescent)",
+                              textAlign: "center",
+                              marginTop: "1rem",
+                              fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                            }}
+                          >
+                            {burnPlanError}
+                          </p>
+                        )}
+
+                        {/* Button to toggle the burn plan visibility. */}
+                        <button
+                          onClick={handleViewBurnPlan}
+                          className="cta-button"
+                          style={{
+                            background: "var(--color-orange-fluorescent)",
+                            color: "black",
+                            textAlign: "center",
+                            marginTop: "1rem",
+                            fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)",
+                            transition: "all 2s ease-out",
+                          }}
+                        >
+                          {showSplitBurnPlan ? "Hide Burn Plan" : "View Burn Plan"}
+                        </button>
+                      </div>
+                    )}
+                    
+                  </>
+                </Suspense>
             }
           />
           {/* Fallback route for any unknown paths. */}
-          <Route path="*" element={<NotFound />} />
+            <Route
+              path="*"
+              element={
+                <Suspense fallback={<SectionFallback message="Loading page..." />}>
+                  <NotFound />
+                </Suspense>
+              }
+            />
         </Route>
       </Routes>
     </Router>
