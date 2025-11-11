@@ -6,7 +6,7 @@ import ExerciseSelector from './ExerciseSelector.jsx';
 import SplitBurnPlan from './SplitBurnPlan.jsx';
 import { calculateSplitExercises } from '../scripts/calculateSplitExercises.js';
 // Removed standardized foods import - all items now go through API for consistency
-import { getComboItems, expandCombo } from '../scripts/food-combos.js';
+import { getComboItems } from '../scripts/food-combos.js';
 
 /**
  * AiCalorieCalculator is a React component that calculates
@@ -149,16 +149,16 @@ export default function AiCalorieCalculator() {
 
   /**
    * Fetches nutritional data from the Gemini API with strict consistency requirements.
-   * Uses standardized database when possible to ensure identical results.
+   * Combos are handled locally, all other items are processed through the API.
    * @param {string} prompt The user's input string describing food items.
    * @param {number} retryCount The current retry attempt number.
    */
   const fetchNutritionData = async (prompt, retryCount = 0) => {
     setError('');
     
-    // First, try to parse and use standardized database
+    // Parse input and separate combos from items needing API
     const parsedItems = parseFoodInput(prompt);
-    const standardizedResults = [];
+    const comboResults = []; // Results from combo meals (handled locally)
     const itemsNeedingAPI = [];
     
     // Format food name for display (capitalize first letter of each word)
@@ -207,7 +207,7 @@ export default function AiCalorieCalculator() {
                 fat_g: Number(comboItem.fat_g) || 0
               };
               
-              standardizedResults.push(itemData);
+              comboResults.push(itemData);
             }
           });
         }
@@ -219,8 +219,8 @@ export default function AiCalorieCalculator() {
     }
     
     // If all items were combos, return immediately
-    if (itemsNeedingAPI.length === 0 && standardizedResults.length > 0) {
-      setNutritionData(standardizedResults);
+    if (itemsNeedingAPI.length === 0 && comboResults.length > 0) {
+      setNutritionData(comboResults);
       setLoading(false);
       resultRef.current?.scrollIntoView({ behavior: 'smooth' });
       return;
@@ -507,7 +507,7 @@ Return ONLY the JSON array, no other text.`
         }
         
         // Combine combo results (if any) with converted API results
-        const combinedData = [...standardizedResults, ...convertedApiData];
+        const combinedData = [...comboResults, ...convertedApiData];
         
         // Use combined data (combos + API results) or just API results if no combos
         const finalData = combinedData.length > 0 ? combinedData : convertedApiData;
