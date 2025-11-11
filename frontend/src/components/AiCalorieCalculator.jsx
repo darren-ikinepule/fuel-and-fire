@@ -5,7 +5,7 @@ import '../stylesheets/ai-calorie-converter.css';
 import ExerciseSelector from './ExerciseSelector.jsx';
 import SplitBurnPlan from './SplitBurnPlan.jsx';
 import { calculateSplitExercises } from '../scripts/calculateSplitExercises.js';
-import { getStandardizedFood, STANDARDIZED_FOODS } from '../scripts/standardized-foods.js';
+// Removed standardized foods import - all items now go through API for consistency
 import { getComboItems, expandCombo } from '../scripts/food-combos.js';
 
 /**
@@ -185,7 +185,7 @@ export default function AiCalorieCalculator() {
         continue;
       }
       
-      // Check if it's a combo first (before checking standardized foods)
+      // Check if it's a combo first - combos are still handled locally for accuracy
       const combo = getComboItems(foodName);
       if (combo && combo.items && Array.isArray(combo.items) && combo.items.length > 0) {
         // Use combo items directly - they already have nutritional data
@@ -214,28 +214,11 @@ export default function AiCalorieCalculator() {
         continue; // Skip to next parsed item - don't process as regular food
       }
       
-      // Check if it's a standardized food item
-      const standardized = getStandardizedFood(foodName);
-      if (standardized) {
-        const displayName = formatFoodName(foodName);
-        const finalDisplayName = (displayName && displayName.length > 0) 
-          ? displayName 
-          : ((foodName && foodName.length > 0) ? foodName : 'Unknown Item');
-        
-        // Use standardized value - ensures consistency
-        standardizedResults.push({
-          food: finalDisplayName,
-          calories: standardized.calories,
-          protein_g: standardized.protein_g,
-          carbohydrates_g: standardized.carbohydrates_g,
-          fat_g: standardized.fat_g
-        });
-      } else {
-        itemsNeedingAPI.push(item);
-      }
+      // All other items go to API for processing
+      itemsNeedingAPI.push(item);
     }
     
-    // If all items were standardized, return immediately
+    // If all items were combos, return immediately
     if (itemsNeedingAPI.length === 0 && standardizedResults.length > 0) {
       setNutritionData(standardizedResults);
       setLoading(false);
@@ -243,8 +226,26 @@ export default function AiCalorieCalculator() {
       return;
     }
     
-    // Build prompt for items needing API lookup
-    const apiPrompt = itemsNeedingAPI.map(item => item.foodName).join(', ');
+    // Group items needing API by foodName to preserve quantity information
+    const itemsNeedingAPIGrouped = new Map();
+    itemsNeedingAPI.forEach(item => {
+      const foodName = String(item.foodName || '').trim();
+      if (foodName) {
+        const normalizedName = foodName.toLowerCase();
+        if (itemsNeedingAPIGrouped.has(normalizedName)) {
+          itemsNeedingAPIGrouped.get(normalizedName).quantity += (item.quantity || 1);
+        } else {
+          itemsNeedingAPIGrouped.set(normalizedName, {
+            foodName: foodName,
+            quantity: item.quantity || 1
+          });
+        }
+      }
+    });
+    
+    // Build prompt for items needing API lookup (unique food names only)
+    const uniqueFoodNames = Array.from(itemsNeedingAPIGrouped.values()).map(item => item.foodName);
+    const apiPrompt = uniqueFoodNames.join(', ');
     
     // CRITICAL: Database-focused prompt with maximum consistency
     const geminiPrompt = `You are an expert, highly consistent nutritional data engine designed to operate as a single-use data retrieval tool for a caching layer.
@@ -421,18 +422,94 @@ Return ONLY the JSON array, no other text.`
           };
         };
         
-        // Process API results
+        // Process API results and repeat based on original quantities
+        // Create an array of grouped items in the order they were sent to API for easier matching
+        const groupedItemsArray = Array.from(itemsNeedingAPIGrouped.values());
+        
         let convertedApiData = [];
         if (Array.isArray(apiData)) {
-          convertedApiData = apiData.map(convertApiResponse);
+          // Match API responses to original items
+          // Try to match by index first (API should return items in same order as sent)
+          apiData.forEach((apiItem, index) => {
+            const apiFoodName = (apiItem.food_item || '').trim();
+            if (!apiFoodName || apiFoodName.toLowerCase() === 'not found') {
+              return; // Skip "not found" items
+            }
+            
+            let matchedItem = null;
+            
+            // First, try matching by index (most reliable if API preserves order)
+            if (index < groupedItemsArray.length) {
+              matchedItem = groupedItemsArray[index];
+            }
+            
+            // If index match doesn't work or seems wrong, try name matching
+            if (!matchedItem || 
+                !apiFoodName.toLowerCase().includes(matchedItem.foodName.toLowerCase()) &&
+                !matchedItem.foodName.toLowerCase().includes(apiFoodName.toLowerCase())) {
+              // Try to find by name matching
+              for (const item of groupedItemsArray) {
+                const apiNormalized = apiFoodName.toLowerCase();
+                const originalNormalized = item.foodName.toLowerCase();
+                // Remove common words for better matching
+                const apiWords = apiNormalized.split(/\s+/).filter(w => w.length > 2);
+                const originalWords = originalNormalized.split(/\s+/).filter(w => w.length > 2);
+                
+                // Check if significant words match
+                const hasMatchingWords = apiWords.some(w => originalWords.includes(w)) ||
+                                        originalWords.some(w => apiWords.includes(w));
+                
+                if (apiNormalized === originalNormalized || 
+                    apiNormalized.includes(originalNormalized) || 
+                    originalNormalized.includes(apiNormalized) ||
+                    hasMatchingWords) {
+                  matchedItem = item;
+                  break;
+                }
+              }
+            }
+            
+            // Use matched quantity or default to 1
+            const quantity = matchedItem ? matchedItem.quantity : 1;
+            const convertedItem = convertApiResponse(apiItem);
+            
+            // Repeat the item based on quantity
+            for (let i = 0; i < quantity; i++) {
+              convertedApiData.push({ ...convertedItem });
+            }
+          });
         } else if (apiData.food_item) {
-          convertedApiData = [convertApiResponse(apiData)];
+          // Single item response
+          const convertedItem = convertApiResponse(apiData);
+          // Try to find matching quantity
+          const apiFoodName = (apiData.food_item || '').trim().toLowerCase();
+          let quantity = 1;
+          
+          if (groupedItemsArray.length === 1) {
+            // Only one item was sent, use its quantity
+            quantity = groupedItemsArray[0].quantity;
+          } else {
+            // Try to match by name
+            for (const item of groupedItemsArray) {
+              const originalNormalized = item.foodName.toLowerCase();
+              if (apiFoodName === originalNormalized || 
+                  apiFoodName.includes(originalNormalized) || 
+                  originalNormalized.includes(apiFoodName)) {
+                quantity = item.quantity;
+                break;
+              }
+            }
+          }
+          
+          for (let i = 0; i < quantity; i++) {
+            convertedApiData.push({ ...convertedItem });
+          }
         }
         
-        // Combine standardized results with converted API results
+        // Combine combo results (if any) with converted API results
         const combinedData = [...standardizedResults, ...convertedApiData];
         
-        // If we have standardized results, use combined; otherwise use converted API results
+        // Use combined data (combos + API results) or just API results if no combos
         const finalData = combinedData.length > 0 ? combinedData : convertedApiData;
         
         setNutritionData(finalData);

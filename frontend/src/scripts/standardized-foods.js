@@ -41,7 +41,11 @@ export const STANDARDIZED_FOODS = {
   // Combo component items
   // McDonald's
   "medium fries": { calories: 320, protein_g: 4, carbohydrates_g: 43, fat_g: 15, company: "McDonald's" },
+  "med fries": { calories: 320, protein_g: 4, carbohydrates_g: 43, fat_g: 15, company: "McDonald's" },
+  "medium fry": { calories: 320, protein_g: 4, carbohydrates_g: 43, fat_g: 15, company: "McDonald's" },
+  "med fry": { calories: 320, protein_g: 4, carbohydrates_g: 43, fat_g: 15, company: "McDonald's" },
   "mcdonald's medium fries": { calories: 320, protein_g: 4, carbohydrates_g: 43, fat_g: 15, company: "McDonald's" },
+  "mcdonald's med fries": { calories: 320, protein_g: 4, carbohydrates_g: 43, fat_g: 15, company: "McDonald's" },
   "medium coke": { calories: 210, protein_g: 0, carbohydrates_g: 58, fat_g: 0, company: "McDonald's" },
   "medium coca cola": { calories: 210, protein_g: 0, carbohydrates_g: 58, fat_g: 0, company: "McDonald's" },
   "mcdonald's medium coke": { calories: 210, protein_g: 0, carbohydrates_g: 58, fat_g: 0, company: "McDonald's" },
