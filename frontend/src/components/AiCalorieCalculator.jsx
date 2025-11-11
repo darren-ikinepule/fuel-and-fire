@@ -425,6 +425,8 @@ Return ONLY the JSON array, no other text.`
         // Process API results and repeat based on original quantities
         // Create an array of grouped items in the order they were sent to API for easier matching
         const groupedItemsArray = Array.from(itemsNeedingAPIGrouped.values());
+        // Track which items have been matched to prevent double-counting
+        const matchedItems = new Set();
         
         let convertedApiData = [];
         if (Array.isArray(apiData)) {
@@ -437,20 +439,34 @@ Return ONLY the JSON array, no other text.`
             }
             
             let matchedItem = null;
+            let matchedIndex = -1;
             
             // First, try matching by index (most reliable if API preserves order)
-            if (index < groupedItemsArray.length) {
+            // Trust index matching more - API usually returns items in the same order
+            if (index < groupedItemsArray.length && !matchedItems.has(index)) {
               matchedItem = groupedItemsArray[index];
+              matchedIndex = index;
             }
             
-            // If index match doesn't work or seems wrong, try name matching
-            if (!matchedItem || 
-                !apiFoodName.toLowerCase().includes(matchedItem.foodName.toLowerCase()) &&
-                !matchedItem.foodName.toLowerCase().includes(apiFoodName.toLowerCase())) {
-              // Try to find by name matching
-              for (const item of groupedItemsArray) {
-                const apiNormalized = apiFoodName.toLowerCase();
-                const originalNormalized = item.foodName.toLowerCase();
+            // If index match doesn't work or item already matched, try name matching
+            if (!matchedItem || matchedItems.has(matchedIndex)) {
+              matchedItem = null;
+              matchedIndex = -1;
+              
+              for (let i = 0; i < groupedItemsArray.length; i++) {
+                // Skip if this item was already matched
+                if (matchedItems.has(i)) continue;
+                
+                const item = groupedItemsArray[i];
+                const apiNormalized = apiFoodName.toLowerCase()
+                  .replace(/\([^)]*\)/g, '') // Remove parentheses and content
+                  .replace(/[^\w\s]/g, '') // Remove special characters
+                  .trim();
+                const originalNormalized = item.foodName.toLowerCase()
+                  .replace(/\([^)]*\)/g, '') // Remove parentheses and content
+                  .replace(/[^\w\s]/g, '') // Remove special characters
+                  .trim();
+                
                 // Remove common words for better matching
                 const apiWords = apiNormalized.split(/\s+/).filter(w => w.length > 2);
                 const originalWords = originalNormalized.split(/\s+/).filter(w => w.length > 2);
@@ -459,22 +475,33 @@ Return ONLY the JSON array, no other text.`
                 const hasMatchingWords = apiWords.some(w => originalWords.includes(w)) ||
                                         originalWords.some(w => apiWords.includes(w));
                 
+                // More lenient matching - check if key words match
                 if (apiNormalized === originalNormalized || 
                     apiNormalized.includes(originalNormalized) || 
                     originalNormalized.includes(apiNormalized) ||
                     hasMatchingWords) {
                   matchedItem = item;
+                  matchedIndex = i;
                   break;
                 }
               }
             }
             
-            // Use matched quantity or default to 1
-            const quantity = matchedItem ? matchedItem.quantity : 1;
-            const convertedItem = convertApiResponse(apiItem);
-            
-            // Repeat the item based on quantity
-            for (let i = 0; i < quantity; i++) {
+            // Process the item if we found a match and haven't processed it yet
+            if (matchedItem && matchedIndex >= 0 && !matchedItems.has(matchedIndex)) {
+              matchedItems.add(matchedIndex);
+              const quantity = matchedItem.quantity;
+              const convertedItem = convertApiResponse(apiItem);
+              
+              // Repeat the item based on quantity
+              for (let i = 0; i < quantity; i++) {
+                convertedApiData.push({ ...convertedItem });
+              }
+            } else if (!matchedItem) {
+              // If no match found, still add the item with quantity 1 as fallback
+              // This ensures we don't lose API data even if matching fails
+              console.warn(`No match found for API item: ${apiFoodName}, adding with quantity 1`);
+              const convertedItem = convertApiResponse(apiItem);
               convertedApiData.push({ ...convertedItem });
             }
           });
