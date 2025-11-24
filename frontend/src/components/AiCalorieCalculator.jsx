@@ -368,7 +368,8 @@ Return ONLY the JSON array, no other text.`
       setError('Gemini API key not found. Please check your environment variables.');
       throw new Error('Gemini API key not found. Please check your environment variables.');
     }
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    // Use a valid Gemini model name - gemini-1.5-flash is stable and fast
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -384,7 +385,15 @@ Return ONLY the JSON array, no other text.`
         return;
       }
       if (!response.ok) {
-        throw new Error(`API call failed with status: ${response.status}`);
+        let errorMessage = `API call failed with status: ${response.status}`;
+        if (response.status === 404) {
+          errorMessage += ' - The API endpoint or model may not be available. Please check your API configuration.';
+        } else if (response.status === 401) {
+          errorMessage += ' - Invalid API key. Please check your environment variables.';
+        } else if (response.status === 403) {
+          errorMessage += ' - API access forbidden. Please check your API key permissions.';
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
