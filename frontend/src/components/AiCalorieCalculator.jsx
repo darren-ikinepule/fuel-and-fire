@@ -337,25 +337,26 @@ When a user mentions a brand name (e.g., "kfc lunch box", "mcdonald's big mac", 
 
 Return ONLY the JSON array, no other text.`
 
+    // Build payload with structured JSON output for Gemini 2.5
+    // responseSchema must be properly structured for v1beta API
     const payload = {
       contents: [{ role: "user", parts: [{ text: geminiPrompt }] }],
       generationConfig: {
-        responseMimeType: "application/json",
         temperature: 0, // CRITICAL: Set to 0 for maximum consistency
         topP: 0.1, // Low value for deterministic responses
+        responseMimeType: "application/json",
         responseSchema: {
-          "type": "ARRAY",
-          "items": {
-            "type": "OBJECT",
-            "properties": {
-              "food_item": { "type": "STRING" },
-              "calories_kcal": { "type": "INTEGER" },
-              "protein_grams": { "type": "NUMBER" },
-              "fat_grams": { "type": "NUMBER" },
-              "exercise_minutes_walking": { "type": "INTEGER" }
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              food_item: { type: "string" },
+              calories_kcal: { type: "integer" },
+              protein_grams: { type: "number" },
+              fat_grams: { type: "number" },
+              exercise_minutes_walking: { type: "integer" }
             },
-            "propertyOrdering": ["food_item", "calories_kcal", "protein_grams", "fat_grams", "exercise_minutes_walking"],
-            "required": ["food_item", "calories_kcal", "protein_grams", "fat_grams", "exercise_minutes_walking"]
+            required: ["food_item", "calories_kcal", "protein_grams", "fat_grams", "exercise_minutes_walking"]
           }
         }
       }
@@ -368,15 +369,98 @@ Return ONLY the JSON array, no other text.`
       setError('Gemini API key not found. Please check your environment variables.');
       throw new Error('Gemini API key not found. Please check your environment variables.');
     }
-    // Use a valid Gemini model name - gemini-1.5-flash is stable and fast
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    
+    // Validate API key format (should be a non-empty string)
+    if (typeof apiKey !== 'string' || apiKey.trim().length === 0) {
+      setLoading(false);
+      setError('Invalid API key format. Please check your VITE_GEMINI_API_KEY environment variable.');
+      throw new Error('Invalid API key format.');
+    }
+    
+    // Use gemini-2.5-flash with v1beta endpoint (required for structured output)
+    // Try multiple endpoints as fallback in case of availability issues
+    const apiEndpoints = [
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
+    ];
+    
+    let lastError = null;
+    let response = null;
+    
+    // Try each endpoint until one works
+    // If we get a 400 error about responseSchema, we'll retry with a simpler payload
+    let useStructuredOutput = true;
+    let attemptedEndpoints = new Set();
+    
+    for (let i = 0; i < apiEndpoints.length; i++) {
+      const apiUrl = apiEndpoints[i];
+      const endpointKey = `${apiUrl}_${useStructuredOutput ? 'structured' : 'simple'}`;
+      
+      // Skip if we've already tried this endpoint with this payload type
+      if (attemptedEndpoints.has(endpointKey)) {
+        continue;
+      }
+      attemptedEndpoints.add(endpointKey);
+      
+      try {
+        // Clone payload to avoid modifying the original
+        let currentPayload = useStructuredOutput ? payload : {
+          contents: payload.contents,
+          generationConfig: {
+            temperature: 0,
+            topP: 0.1,
+            responseMimeType: "application/json"
+            // No responseSchema for fallback
+          }
+        };
+        
+        response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentPayload)
+        });
+        
+        // If successful, break
+        if (response.ok) {
+          break;
+        }
+        
+        // If 400 and it's about responseSchema, try without structured output
+        if (response.status === 400 && useStructuredOutput) {
+          const errorText = await response.clone().text().catch(() => '');
+          if (errorText.includes('responseSchema') || errorText.includes('responseMimeType') || errorText.includes('generation_config') || errorText.includes('unknown field')) {
+            console.warn('Structured output not supported, retrying without responseSchema...');
+            useStructuredOutput = false;
+            // Retry with the same endpoint but without structured output
+            i--; // Go back one iteration to retry
+            continue;
+          }
+        }
+        
+        // If 404, try next endpoint
+        if (response.status === 404 && i < apiEndpoints.length - 1) {
+          console.warn(`Endpoint ${i + 1} returned 404, trying next endpoint...`);
+          continue;
+        }
+        
+        // For other errors, break and handle in error handler
+        if (response.status !== 404) {
+          break;
+        }
+      } catch (fetchError) {
+        lastError = fetchError;
+        if (i < apiEndpoints.length - 1) {
+          console.warn(`Endpoint ${i + 1} failed, trying next endpoint...`, fetchError);
+          continue;
+        }
+      }
+    }
 
     try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      if (!response) {
+        throw new Error('Failed to get response from any API endpoint. Please check your API key and network connection.');
+      }
 
       if (response.status === 429 && retryCount < 3) {
         const delay = Math.pow(2, retryCount) * 1000;
@@ -385,13 +469,32 @@ Return ONLY the JSON array, no other text.`
         return;
       }
       if (!response.ok) {
+        // Try to get error details from response
+        let errorDetails = '';
+        try {
+          const errorData = await response.json();
+          errorDetails = errorData.error?.message || JSON.stringify(errorData);
+        } catch (e) {
+          errorDetails = await response.text().catch(() => 'No error details available');
+        }
+        
         let errorMessage = `API call failed with status: ${response.status}`;
         if (response.status === 404) {
-          errorMessage += ' - The API endpoint or model may not be available. Please check your API configuration.';
+          errorMessage += ` - None of the API endpoints are available. This may indicate:\n1. Invalid API key\n2. Model names have changed\n3. API endpoint structure has changed\n\nError details: ${errorDetails}\n\nPlease verify your VITE_GEMINI_API_KEY environment variable is set correctly.`;
+          console.error('404 Error - Tried all endpoints:', apiEndpoints.map(url => url.replace(apiKey, 'API_KEY_HIDDEN')));
+          console.error('404 Error - Response:', errorDetails);
+        } else if (response.status === 400) {
+          if (errorDetails.includes('responseSchema') || errorDetails.includes('responseMimeType')) {
+            errorMessage += ' - The API does not support structured output with this configuration. Please check the API version and model compatibility.';
+          } else {
+            errorMessage += ` - Bad request. Error details: ${errorDetails}`;
+          }
         } else if (response.status === 401) {
           errorMessage += ' - Invalid API key. Please check your environment variables.';
         } else if (response.status === 403) {
           errorMessage += ' - API access forbidden. Please check your API key permissions.';
+        } else {
+          errorMessage += ` - ${errorDetails}`;
         }
         throw new Error(errorMessage);
       }
@@ -402,6 +505,8 @@ Return ONLY the JSON array, no other text.`
       }
 
       // Extract the JSON string from the response
+      // For structured output, the text will be the JSON array
+      // For non-structured output, we still get JSON but need to parse it
       const jsonText = result.candidates[0].content.parts[0].text;
       
       try {
