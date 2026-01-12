@@ -18,6 +18,7 @@ import NotFound from "./components/NotFound.jsx";
 // Import Utility Functions
 import { calculateSplitExercises } from "./scripts/calculateSplitExercises.js";
 import AiCalorieCalculator from "./components/AiCalorieCalculator.jsx";
+import Decider from "./components/Decider.jsx";
 
 function App() {
   // useState hooks for managing the application's state.
@@ -162,6 +163,7 @@ function App() {
           <Route path="/met" element={<MetChart />} />
           <Route path="/social" element={<SocialPage />} />
           <Route path="/aicaloriecalculator" element={<AiCalorieCalculator />} />
+          <Route path="/decider" element={<Decider />} />
           <Route
             path="/calculator"
             element={

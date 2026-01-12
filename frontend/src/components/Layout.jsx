@@ -55,6 +55,7 @@ const Layout = () => {
           <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/intro")}>About</a></li>
           <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/social")}>Social</a></li>
           <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/aicaloriecalculator")}>Custom Food Selector</a></li>
+          <li className="nav-link"><a href="#" onClick={() => handleNavLinkClick("/decider")}>Decision Selector</a></li>
         </ul>
 
         {/* Mobile navigation - conditionally visible overlay menu */}
@@ -66,6 +67,7 @@ const Layout = () => {
           <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/intro")}>About</a></li>
           <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/social")}>Social</a></li>
           <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/aicaloriecalculator")}>Custom Food Selector</a></li>
+          <li className="mobile-nav-link"><a href="#" onClick={() => handleNavLinkClick("/decider")}>Decision Selector</a></li>
         </ul>
       </nav>
 
