@@ -3,16 +3,32 @@ import '../stylesheets/decider.css';
 
 // --- OPTIONS & DATA ---
 
-// 1. Food Decider Options
-const FOOD_OPTIONS = [
-  'Pizza (Any)', 'Burger King', 'McDonald\'s', 'KFC', 'Starbucks',
-  'Chinese Takeout', 'Vietnamese Pho', 'Italian Pasta', 'Thai Curry',
-  'Japanese Sushi', 'Indian Cuisine', 'Mexican Tacos', 'Greek Gyros',
-  'Korean BBQ', 'Mediterranean Food', 'Fried Chicken', 'Steakhouse',
-  'Seafood Grill', 'BBQ Ribs', 'Sandwiches/Deli', 'Soup & Salad',
-  'Breakfast for Dinner', 'Home Cooking - Comfort', 'Local Diner', 
-  'Something Healthy', 'Something Spicy', 'A New Place'
+
+
+// 1. Workout Decider Options
+const WORKOUT_OPTIONS = [
+  'Burpees (3 sets of 10)', 
+  'Push-Ups (Max Reps)', 
+  'Jumping Jacks (60 seconds)', 
+  'High Knees (45 seconds)',
+  'Squats (3 sets of 15)',
+  'Plank (60 seconds)',
+  'Mountain Climbers (45 seconds)',
+  'Crunches (3 sets of 20)',
+  'Lunges (10 per leg)',
+  'Tricep Dips (3 sets of 12)',
+  'Wall Sit (60 seconds)',
+  'Box Jumps (3 sets of 10)',
+  'Leg Raises (3 sets of 15)',
+  'Supermans (3 sets of 12)',
+  'Side Plank (30 seconds per side)',
+  'Navy Seal Burpees (3 sets of 5)', 
+  'Hindu Pushups (3 sets of 10)',
+  'Tuck Jumps (3 sets of 10)',
+  'Pistol Squats (3 sets of 5 per leg)'
 ];
+
+
 
 // 2. Travel Decider Options
 const TRAVEL_OPTIONS = ['Walk', 'Bike', 'Drive', 'Bus', 'Run'];
@@ -66,34 +82,23 @@ const TRAVEL_ICONS = {
   )
 };
 
-// 3. Workout Decider Options
-const WORKOUT_OPTIONS = [
-  'Burpees (3 sets of 10)', 
-  'Push-Ups (Max Reps)', 
-  'Jumping Jacks (60 seconds)', 
-  'High Knees (45 seconds)',
-  'Squats (3 sets of 15)',
-  'Plank (60 seconds)',
-  'Mountain Climbers (45 seconds)',
-  'Crunches (3 sets of 20)',
-  'Lunges (10 per leg)',
-  'Tricep Dips (3 sets of 12)',
-  'Wall Sit (60 seconds)',
-  'Box Jumps (3 sets of 10)',
-  'Leg Raises (3 sets of 15)',
-  'Supermans (3 sets of 12)',
-  'Side Plank (30 seconds per side)',
-  'Navy Seal Burpees (3 sets of 5)', 
-  'Hindu Pushups (3 sets of 10)',
-  'Tuck Jumps (3 sets of 10)',
-  'Man Makers (3 sets of 5)',
-  'Pistol Squats (3 sets of 5 per leg)'
+// 3. Food Decider Options
+const FOOD_OPTIONS = [
+  'Pizza (Any)', 'Burger King', 'McDonald\'s', 'KFC', 'Starbucks',
+  'Chinese Takeout', 'Vietnamese Pho', 'Italian Pasta', 'Thai Curry',
+  'Japanese Sushi', 'Indian Cuisine', 'Mexican Tacos', 'Greek Gyros',
+  'Korean BBQ', 'Mediterranean Food', 'Fried Chicken', 'Steakhouse',
+  'Seafood Grill', 'BBQ Ribs', 'Sandwiches/Deli', 'Soup & Salad',
+  'Breakfast for Dinner', 'Home Cooking - Comfort', 'Local Diner', 
+  'Something Healthy', 'Something Spicy', 'A New Place'
 ];
 
-// 4. Simple Options (Coin Flip & Red/Black)
+
+// 4. Simple Options (Coin Flip, Red/Black, & Yes/No)
 const SIMPLE_OPTIONS = {
   'COIN_FLIP': ['Heads', 'Tails'],
-  'RED_OR_BLACK': ['Red', 'Black']
+  'RED_OR_BLACK': ['Red', 'Black'],
+  'YES_OR_NO': ['Yes', 'No']
 };
 
 // 5. Random Color Options
@@ -108,11 +113,12 @@ const MEDIA_OPTIONS = [
 
 // Define all possible decision modes
 const DECISION_MODES = {
+  WORKOUT: { id: 'WORKOUT', title: "Quick Workout", description: "No excuses! Decide your next exercise.", options: WORKOUT_OPTIONS, selectionRequired: false },
   FOOD: { id: 'FOOD', title: "What To Eat?", description: "Let fate choose your next meal.", options: FOOD_OPTIONS, selectionRequired: true },
   TRAVEL: { id: 'TRAVEL', title: "Travel Mode", description: "How should you get there?", options: TRAVEL_OPTIONS, selectionRequired: true },
-  WORKOUT: { id: 'WORKOUT', title: "Quick Workout", description: "No excuses! Decide your next exercise.", options: WORKOUT_OPTIONS, selectionRequired: false },
   COIN_FLIP: { id: 'COIN_FLIP', title: "Coin Flip", description: "Heads or Tails.", options: SIMPLE_OPTIONS.COIN_FLIP, selectionRequired: false },
   RED_OR_BLACK: { id: 'RED_OR_BLACK', title: "Red or Black", description: "Bet on the color.", options: SIMPLE_OPTIONS.RED_OR_BLACK, selectionRequired: false },
+  YES_OR_NO: { id: 'YES_OR_NO', title: "Yes or No", description: "Decide on a yes or no question.", options: SIMPLE_OPTIONS.YES_OR_NO, selectionRequired: false },
   COLOR: { id: 'COLOR', title: "Random Color", description: "Pick a random color.", options: COLOR_OPTIONS, selectionRequired: false },
   MEDIA: { id: 'MEDIA', title: "Book or Movie", description: "Decide your downtime.", options: MEDIA_OPTIONS, selectionRequired: false }
 };
@@ -245,6 +251,20 @@ const Decider = () => {
     }
 
     if (decision) {
+      // Special handling for COIN_FLIP mode - show a visual coin
+      if (chosenModeId === 'COIN_FLIP') {
+        return (
+          <div className="coin-result-container">
+            <div className={`coin-visualization ${decision.toLowerCase()}`}>
+              <div className="coin-inner">
+                <span className="coin-text">{decision === 'Heads' ? 'H' : 'T'}</span>
+              </div>
+            </div>
+            <p className="coin-label">{decision}</p>
+          </div>
+        );
+      }
+      
       // Use chosenModeId to handle dynamic color background for RED_OR_BLACK and COLOR modes
       const resultClass = `result-text result-text-${chosenModeId.toLowerCase().replace(/_/g, '-')}`;
       
