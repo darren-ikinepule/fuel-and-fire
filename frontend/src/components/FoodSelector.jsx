@@ -3,17 +3,9 @@
 import React, { useState, useEffect } from "react";
 import "../stylesheets/food-selector.css";
 
-/**
- * FoodSelector - Dynamic multi-select food component that fetches items from API
- * Manages selection state internally and communicates changes to parent via callback
- * Implements accessibility features and UX optimizations for touch/click interactions
- */
 function FoodSelector({ onSelect }) {
-  // Track selected food indices - using indices instead of objects for efficient comparison
   const [foodSelector, setFoodSelector] = useState([]);
-  // Store complete food data from API including images, names, and calorie information
   const [fastFoodInfo, setFastFoodInfo] = useState([]);
-  // Track loading state for food data
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch food data on component mount - runs once due to empty dependency array
@@ -43,24 +35,13 @@ function FoodSelector({ onSelect }) {
     fetchFood();
   }, []);
 
-  /**
-   * Handles toggle selection logic with UX optimizations
-   * Uses index-based selection for performance and immutable state updates
-   */
   const handleSelect = (index, e) => {
-    // Toggle logic: remove if already selected, add if not selected
-    // Using filter() and spread operator for immutable state updates
     const newSelected = foodSelector.includes(index)
       ? foodSelector.filter((i) => i !== index)
       : [...foodSelector, index];
 
     setFoodSelector(newSelected);
-    // Map indices back to full food objects for parent component
-    // Optional chaining (?.) prevents errors if onSelect is undefined
     onSelect?.(newSelected.map((i) => fastFoodInfo[i]));
-
-    // UX enhancement: Remove focus ring after click to prevent sticky hover states
-    // Particularly important for touch devices where focus can persist after tap
     e?.currentTarget?.blur();
   };
 
@@ -81,10 +62,8 @@ function FoodSelector({ onSelect }) {
             {fastFoodInfo.map((food, index) => (
               <div
                 key={food.name}
-                // Dynamic CSS class construction for selection state visual feedback
                 className={`food-item${foodSelector.includes(index) ? " selected" : ""}`}
                 onClick={(e) => handleSelect(index, e)}
-                // Accessibility: Make div keyboard navigable and screen reader friendly
                 role="button"
                 tabIndex={0}
                 aria-label={food.name}

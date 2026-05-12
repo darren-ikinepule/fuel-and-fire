@@ -4,11 +4,6 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import '../stylesheets/intro-fuel-and-fire.css';
 
-/**
- * IntroFuelAndFire - Enhanced about page that tells the Fuel & Fire story
- * Features compelling narrative, problem statement, wow-factor, and interactive elements
- * Combines storytelling with clear value proposition and call-to-action
- */
 function IntroFuelAndFire() {
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -24,7 +19,6 @@ function IntroFuelAndFire() {
   return (
     <div className="intro-bg">
       <div className="intro-container">
-        {/* Hero Section */}
         <div className="hero-section">
           <h1 className="intro-title">Fuel & Fire</h1>
           <p className="intro-subtitle">Ignite Your Fitness Awareness</p>
@@ -33,7 +27,6 @@ function IntroFuelAndFire() {
           </div>
         </div>
 
-        {/* Problem Statement Section */}
         <div className="story-section problem-section">
           <div className="section-header">
             <span className="section-icon" role="img" aria-label="problem">🤔</span>
@@ -48,7 +41,6 @@ function IntroFuelAndFire() {
           </div>
         </div>
 
-        {/* Wow Factor Section */}
         <div className="story-section wow-section">
           <div className="section-header">
             <span className="section-icon" role="img" aria-label="wow">✨</span>
@@ -59,7 +51,6 @@ function IntroFuelAndFire() {
           </div>
         </div>
 
-        {/* How It Works Section */}
         <div className="story-section how-it-works">
           <div className="section-header">
             <span className="section-icon" role="img" aria-label="process">⚡</span>
@@ -92,7 +83,6 @@ function IntroFuelAndFire() {
           </div>
         </div>
 
-        {/* Features Section - Expandable */}
         <div className="story-section features-section">
           <div className="section-header" onClick={toggleExpanded} style={{ cursor: 'pointer' }}>
             <span className="section-icon" role="img" aria-label="features">🚀</span>

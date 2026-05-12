@@ -23,19 +23,7 @@ const exerciseOptions = [
   { name: "Make Love (Active, Vigorous Effort)" }
 ];
 
-/**
- * ExerciseSelector - Multi-select component for choosing exercises to split calorie burn
- * Implements toggle selection pattern with persistent visual feedback
- * 
- * @param {Function} onSelect - Callback fired when exercise is selected/deselected
- * @param {Array} selected - Array of currently selected exercise names for controlled state
- */
 function ExerciseSelector({ onSelect, selected = [] }) {
-  /**
-   * Handles exercise selection toggle logic
-   * Delegates state management to parent component via callback pattern
-   * This keeps the component stateless and reusable across different contexts
-   */
   const handleToggle = (exerciseName) => {
     if (onSelect) {
       onSelect(exerciseName);
