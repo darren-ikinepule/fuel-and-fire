@@ -362,99 +362,29 @@ Return ONLY the JSON array, no other text.`
       }
     };
     
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    
-    if (!apiKey) {
-      setLoading(false);
-      setError('Gemini API key not found. Please check your environment variables.');
-      throw new Error('Gemini API key not found. Please check your environment variables.');
-    }
-    
-    // Validate API key format (should be a non-empty string)
-    if (typeof apiKey !== 'string' || apiKey.trim().length === 0) {
-      setLoading(false);
-      setError('Invalid API key format. Please check your VITE_GEMINI_API_KEY environment variable.');
-      throw new Error('Invalid API key format.');
-    }
-    
-    // Use gemini-2.5-flash with v1beta endpoint (required for structured output)
-    // Try multiple endpoints as fallback in case of availability issues
-    const apiEndpoints = [
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
-    ];
-    
-    let lastError = null;
+    // Use a backend proxy to avoid exposing API key in the frontend
     let response = null;
-    
-    // Try each endpoint until one works
-    // If we get a 400 error about responseSchema, we'll retry with a simpler payload
     let useStructuredOutput = true;
-    let attemptedEndpoints = new Set();
-    
-    for (let i = 0; i < apiEndpoints.length; i++) {
-      const apiUrl = apiEndpoints[i];
-      const endpointKey = `${apiUrl}_${useStructuredOutput ? 'structured' : 'simple'}`;
-      
-      // Skip if we've already tried this endpoint with this payload type
-      if (attemptedEndpoints.has(endpointKey)) {
-        continue;
-      }
-      attemptedEndpoints.add(endpointKey);
-      
-      try {
-        // Clone payload to avoid modifying the original
-        let currentPayload = useStructuredOutput ? payload : {
-          contents: payload.contents,
-          generationConfig: {
-            temperature: 0,
-            topP: 0.1,
-            responseMimeType: "application/json"
-            // No responseSchema for fallback
-          }
-        };
-        
-        response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(currentPayload)
-        });
-        
-        // If successful, break
-        if (response.ok) {
-          break;
-        }
-        
-        // If 400 and it's about responseSchema, try without structured output
-        if (response.status === 400 && useStructuredOutput) {
-          const errorText = await response.clone().text().catch(() => '');
-          if (errorText.includes('responseSchema') || errorText.includes('responseMimeType') || errorText.includes('generation_config') || errorText.includes('unknown field')) {
-            console.warn('Structured output not supported, retrying without responseSchema...');
-            useStructuredOutput = false;
-            // Retry with the same endpoint but without structured output
-            i--; // Go back one iteration to retry
-            continue;
-          }
-        }
-        
-        // If 404, try next endpoint
-        if (response.status === 404 && i < apiEndpoints.length - 1) {
-          console.warn(`Endpoint ${i + 1} returned 404, trying next endpoint...`);
-          continue;
-        }
-        
-        // For other errors, break and handle in error handler
-        if (response.status !== 404) {
-          break;
-        }
-      } catch (fetchError) {
-        lastError = fetchError;
-        if (i < apiEndpoints.length - 1) {
-          console.warn(`Endpoint ${i + 1} failed, trying next endpoint...`, fetchError);
-          continue;
-        }
-      }
+    try {
+      const currentPayload = useStructuredOutput
+        ? payload
+        : {
+            contents: payload.contents,
+            generationConfig: {
+              temperature: 0,
+              topP: 0.1,
+              responseMimeType: 'application/json'
+            }
+          };
+
+      response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payload: currentPayload, useStructuredOutput })
+      });
+    } catch (fetchError) {
+      console.error('Proxy fetch failed:', fetchError);
+      response = null;
     }
 
     try {
