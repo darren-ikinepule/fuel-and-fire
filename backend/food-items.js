@@ -119,7 +119,7 @@ app.post('/api/generate', async (req, res) => {
 
   const apiEndpoints = [
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`
   ];
 
@@ -148,19 +148,27 @@ app.post('/api/generate', async (req, res) => {
         body: JSON.stringify(currentPayload)
       });
 
+      // Read body text for logging and forwarding
+      const bodyText = await upstream.text().catch(() => '');
+
       // If structured output unsupported, adjust and retry same endpoint
       if (upstream.status === 400 && useStructuredOutput) {
-        const text = await upstream.clone().text().catch(() => '');
-        if (text.includes('responseSchema') || text.includes('responseMimeType') || text.includes('generation_config') || text.includes('unknown field')) {
+        if (bodyText.includes('responseSchema') || bodyText.includes('responseMimeType') || bodyText.includes('generation_config') || bodyText.includes('unknown field')) {
+          console.warn('Structured output unsupported by upstream endpoint, retrying without responseSchema...');
           useStructuredOutput = false;
-          // retry same endpoint with non-structured payload
-          i--; // decrement to retry same endpoint
+          i--; // retry same endpoint with non-structured payload
           continue;
         }
       }
 
+      // If 404 try the next endpoint (may indicate model name or key issue)
+      if (upstream.status === 404 && i < apiEndpoints.length - 1) {
+        console.error('Upstream endpoint returned 404; trying next endpoint. Endpoint:', url.replace(geminiKey, 'API_KEY_HIDDEN'));
+        console.error('Upstream 404 response body:', bodyText || '<empty>');
+        continue; // try next endpoint
+      }
+
       // Forward the upstream response (status and body) back to client
-      const bodyText = await upstream.text().catch(() => '');
       const contentType = upstream.headers.get('content-type') || 'application/json';
       res.setHeader('Content-Type', contentType);
       return res.status(upstream.status).send(bodyText);

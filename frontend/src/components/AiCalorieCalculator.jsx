@@ -377,6 +377,7 @@ Return ONLY the JSON array, no other text.`
             }
           };
 
+      // Always use same-origin /api/generate (Vercel serverless). Food data uses VITE_API_URL separately.
       response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -410,9 +411,8 @@ Return ONLY the JSON array, no other text.`
         
         let errorMessage = `API call failed with status: ${response.status}`;
         if (response.status === 404) {
-          errorMessage += ` - None of the API endpoints are available. This may indicate:\n1. Invalid API key\n2. Model names have changed\n3. API endpoint structure has changed\n\nError details: ${errorDetails}\n\nPlease verify your VITE_GEMINI_API_KEY environment variable is set correctly.`;
-          console.error('404 Error - Tried all endpoints:', apiEndpoints.map(url => url.replace(apiKey, 'API_KEY_HIDDEN')));
-          console.error('404 Error - Response:', errorDetails);
+          errorMessage += ` - API route not found. If using the Render backend, redeploy it with the latest code. On Vercel, set GEMINI_API_KEY in project settings.\n\nError details: ${errorDetails}`;
+          console.error('404 Error - Upstream response:', errorDetails);
         } else if (response.status === 400) {
           if (errorDetails.includes('responseSchema') || errorDetails.includes('responseMimeType')) {
             errorMessage += ' - The API does not support structured output with this configuration. Please check the API version and model compatibility.';
