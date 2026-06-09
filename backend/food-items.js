@@ -118,10 +118,9 @@ app.post('/api/generate', async (req, res) => {
   }
 
   const apiEndpoints = [
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`
-  ];
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${geminiKey}`
+];
 
   let useStructuredOutput = req.body.useStructuredOutput !== undefined ? Boolean(req.body.useStructuredOutput) : true;
   let lastError = null;
