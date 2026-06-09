@@ -1,18 +1,22 @@
-# Backend proxy for Gemini API
+# Backend API
 
-This backend provides a secure proxy endpoint to call the Google Generative Language (Gemini) API without exposing the API key in the frontend.
+Express server for food-item CRUD and a secure Gemini proxy used during local development.
 
-Environment variables (set in `.env`):
+Environment variables (copy `.env.example` to `.env`):
 
-- `MONGODB_URI` - existing MongoDB connection string
-- `GEMINI_API_KEY` - your Google Generative Language API key (preferred). The server will also accept `GENERATIVE_API_KEY` or `GOOGLE_API_KEY`.
+- `MONGODB_URI` - MongoDB connection string
+- `GEMINI_API_KEY` - API key from [Google AI Studio](https://aistudio.google.com/apikey) (also accepts `GENERATIVE_API_KEY` or `GOOGLE_API_KEY`)
+- `PORT` - optional, defaults to `3000`
 
-Endpoint:
+Endpoints:
 
-- `POST /api/generate` - forwards the request to Gemini models. JSON body should include:
-  - `payload` - the request payload to send to the Gemini endpoint (same format the frontend previously built)
-  - `useStructuredOutput` (optional) - boolean, whether to request structured output (default: true)
+- `GET /food-items` - list food items
+- `POST /api/generate` - Gemini nutrition proxy. Body:
+  - `payload` - Gemini request shape built by the frontend (`contents` + `generationConfig`)
+  - `useStructuredOutput` (optional, default `true`)
 
-Responses from the Gemini API are proxied back with the same status code and body where possible.
+Local dev: run this server on port 3000, then `npm run dev` in `frontend/` (Vite proxies `/api` here).
 
-Security note: keep `GEMINI_API_KEY` secret and do not commit it to source control.
+Production: Vercel serves `frontend/api/generate` with the same SDK-based logic. Set `GEMINI_API_KEY` in Vercel project settings.
+
+Security: never commit API keys. New Google keys often start with `AQ.` and require the `@google/genai` SDK (not raw REST `?key=` URLs).

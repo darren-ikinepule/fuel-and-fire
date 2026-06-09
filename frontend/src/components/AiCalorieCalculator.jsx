@@ -422,7 +422,7 @@ Return ONLY the JSON array, no other text.`
         } else if (response.status === 401) {
           errorMessage += ' - Invalid API key. Please check your environment variables.';
         } else if (response.status === 403) {
-          errorMessage += ' - API key rejected or suspended. Create a new key at Google AI Studio and update GEMINI_API_KEY in Vercel.';
+          errorMessage += ' - API key rejected or suspended. Create a new key at Google AI Studio (use a new project if keys keep failing), then set GEMINI_API_KEY in Vercel and in frontend/.env for local dev.';
           if (errorDetails) {
             errorMessage += `\n\nDetails: ${errorDetails}`;
           }

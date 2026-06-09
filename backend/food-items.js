@@ -10,12 +10,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Initialize Google Gen AI with the new AQ-supported SDK
-const geminiKey = process.env.GEMINI_API_KEY || process.env.GENERATIVE_API_KEY || process.env.GOOGLE_API_KEY;
+const geminiKey =
+  process.env.GEMINI_API_KEY ||
+  process.env.GENERATIVE_API_KEY ||
+  process.env.GOOGLE_API_KEY;
+
 if (!geminiKey) {
   console.error("Server missing GEMINI_API_KEY environment variable");
   process.exit(1);
 }
+
 const ai = new GoogleGenAI({ apiKey: geminiKey });
 
 // Connect to MongoDB Atlas with error handling
@@ -30,7 +34,6 @@ mongoose.connect(uri).catch((err) => {
   process.exit(1);
 });
 
-// Handle connection events
 mongoose.connection.on("connected", () => {
   console.log("MongoDB connected successfully");
 });
@@ -39,22 +42,72 @@ mongoose.connection.on("error", (err) => {
   console.error("MongoDB connection error:", err);
 });
 
-// Food schema and model
 const FoodSchema = new mongoose.Schema({
   img: { type: String },
   name: { type: String, required: true },
   calories: { type: Number, required: true },
-  company: { type: String, required: true }
+  company: { type: String, required: true },
 });
 
 const Food = mongoose.model("Food", FoodSchema);
 
-// ✅ Root route
+function extractPrompt(clientPayload) {
+  const text = clientPayload?.contents?.[0]?.parts?.[0]?.text;
+  return typeof text === "string" && text.length > 0 ? text : null;
+}
+
+function buildGenerationConfig(clientPayload, useStructuredOutput) {
+  const generationConfig = clientPayload?.generationConfig || {};
+  const config = {
+    temperature: generationConfig.temperature ?? 0,
+    topP: generationConfig.topP ?? 0.1,
+  };
+
+  if (!useStructuredOutput) {
+    return config;
+  }
+
+  config.responseMimeType = generationConfig.responseMimeType || "application/json";
+  if (generationConfig.responseSchema) {
+    config.responseJsonSchema = generationConfig.responseSchema;
+  }
+
+  return config;
+}
+
+function toClientResponse(text) {
+  return {
+    candidates: [
+      {
+        content: {
+          parts: [{ text }],
+        },
+      },
+    ],
+  };
+}
+
+function parseGeminiError(err) {
+  const raw = String(err?.message || err);
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed?.error) {
+      return { status: parsed.error.code || 502, body: parsed };
+    }
+  } catch {
+    // not JSON
+  }
+
+  return {
+    status: 502,
+    body: { error: { message: raw } },
+  };
+}
+
 app.get("/", (req, res) => {
   res.send("🔥 Fuel & Fire API is running successfully!");
 });
 
-// CRUD routes
 app.get("/food-items", async (req, res) => {
   try {
     const items = await Food.find();
@@ -115,58 +168,72 @@ app.delete("/food-items/:id", async (req, res) => {
   }
 });
 
-// ✅ SDK-Powered secure proxy route supporting new AQ API keys
-app.post('/api/generate', async (req, res) => {
-  const clientPayload = req.body && req.body.payload ? req.body.payload : null;
+app.post("/api/generate", async (req, res) => {
+  const clientPayload = req.body?.payload ?? null;
   if (!clientPayload) {
-    return res.status(400).json({ error: 'Missing payload in request body' });
+    return res.status(400).json({ error: "Missing payload in request body" });
   }
 
-  // Extract text prompt from your existing frontend client structure
-  let userPrompt = "";
-  try {
-    if (clientPayload.contents && clientPayload.contents[0] && clientPayload.contents[0].parts) {
-      userPrompt = clientPayload.contents[0].parts[0].text;
-    } else {
-      userPrompt = JSON.stringify(clientPayload);
-    }
-  } catch (e) {
-    return res.status(400).json({ error: 'Invalid payload structure' });
+  const useStructuredOutput =
+    req.body.useStructuredOutput !== undefined
+      ? Boolean(req.body.useStructuredOutput)
+      : true;
+
+  const prompt = extractPrompt(clientPayload);
+  if (!prompt) {
+    return res.status(400).json({ error: "Invalid payload: missing prompt text" });
   }
 
+  let structured = useStructuredOutput;
+
   try {
-    // Generate text directly using the official client architecture
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: userPrompt,
-      generationConfig: {
-        responseMimeType: req.body.useStructuredOutput !== false ? "application/json" : "text/plain"
-      }
+      contents: prompt,
+      config: buildGenerationConfig(clientPayload, structured),
     });
 
-    // Mirror the format expected by your existing frontend parsing logic
-    const structuredResponse = {
-      candidates: [
-        {
-          content: {
-            parts: [
-              { text: response.text }
-            ]
-          }
-        }
-      ]
-    };
+    const text = response.text;
+    if (!text) {
+      return res.status(502).json({ error: { message: "Empty response from Gemini" } });
+    }
 
-    res.setHeader('Content-Type', 'application/json');
-    return res.status(200).json(structuredResponse);
-
+    res.setHeader("Content-Type", "application/json");
+    return res.status(200).json(toClientResponse(text));
   } catch (err) {
-    console.error("Gemini SDK Generation Error:", err);
-    return res.status(502).json({ error: 'Failed to complete generation upstream', details: String(err) });
+    const message = String(err?.message || err);
+
+    if (
+      structured &&
+      (message.includes("responseSchema") ||
+        message.includes("responseJsonSchema") ||
+        message.includes("responseMimeType"))
+    ) {
+      try {
+        structured = false;
+        const response = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: prompt,
+          config: buildGenerationConfig(clientPayload, false),
+        });
+
+        if (response.text) {
+          res.setHeader("Content-Type", "application/json");
+          return res.status(200).json(toClientResponse(response.text));
+        }
+      } catch (retryErr) {
+        console.error("Gemini SDK retry error:", retryErr);
+        const parsed = parseGeminiError(retryErr);
+        return res.status(parsed.status).json(parsed.body);
+      }
+    }
+
+    console.error("Gemini SDK generation error:", err);
+    const parsed = parseGeminiError(err);
+    return res.status(parsed.status).json(parsed.body);
   }
 });
 
-// ✅ Render-friendly port binding
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
