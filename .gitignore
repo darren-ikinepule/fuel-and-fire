@@ -73,4 +73,6 @@ frontend/dist/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.vercel.local
+frontend/.env.vercel.local
 .vercel
