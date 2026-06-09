@@ -2,11 +2,21 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import { GoogleGenAI } from "@google/genai";
+
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Initialize Google Gen AI with the new AQ-supported SDK
+const geminiKey = process.env.GEMINI_API_KEY || process.env.GENERATIVE_API_KEY || process.env.GOOGLE_API_KEY;
+if (!geminiKey) {
+  console.error("Server missing GEMINI_API_KEY environment variable");
+  process.exit(1);
+}
+const ai = new GoogleGenAI({ apiKey: geminiKey });
 
 // Connect to MongoDB Atlas with error handling
 const uri = process.env.MONGODB_URI;
@@ -105,80 +115,55 @@ app.delete("/food-items/:id", async (req, res) => {
   }
 });
 
-// Proxy route to call Google Generative Language (Gemini) API securely from server
+// ✅ SDK-Powered secure proxy route supporting new AQ API keys
 app.post('/api/generate', async (req, res) => {
-  const geminiKey = process.env.GEMINI_API_KEY || process.env.GENERATIVE_API_KEY || process.env.GOOGLE_API_KEY;
-  if (!geminiKey) {
-    return res.status(500).json({ error: 'Server missing GEMINI_API_KEY environment variable' });
-  }
-
   const clientPayload = req.body && req.body.payload ? req.body.payload : null;
   if (!clientPayload) {
     return res.status(400).json({ error: 'Missing payload in request body' });
   }
 
-  const apiEndpoints = [
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`
-  ];
-
-  let useStructuredOutput = req.body.useStructuredOutput !== undefined ? Boolean(req.body.useStructuredOutput) : true;
-  let lastError = null;
-
-  for (let i = 0; i < apiEndpoints.length; i++) {
-    const url = apiEndpoints[i];
-
-    // Build payload depending on structured flag
-    const currentPayload = useStructuredOutput
-      ? clientPayload
-      : {
-          contents: clientPayload.contents,
-          generationConfig: {
-            temperature: 0,
-            topP: 0.1,
-            responseMimeType: 'application/json'
-          }
-        };
-
-    try {
-      const upstream = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(currentPayload)
-      });
-
-      // Read body text for logging and forwarding
-      const bodyText = await upstream.text().catch(() => '');
-
-      // If structured output unsupported, adjust and retry same endpoint
-      if (upstream.status === 400 && useStructuredOutput) {
-        if (bodyText.includes('responseSchema') || bodyText.includes('responseMimeType') || bodyText.includes('generation_config') || bodyText.includes('unknown field')) {
-          console.warn('Structured output unsupported by upstream endpoint, retrying without responseSchema...');
-          useStructuredOutput = false;
-          i--; // retry same endpoint with non-structured payload
-          continue;
-        }
-      }
-
-      // If 404 try the next endpoint (may indicate model name or key issue)
-      if (upstream.status === 404 && i < apiEndpoints.length - 1) {
-        console.error('Upstream endpoint returned 404; trying next endpoint. Endpoint:', url.replace(geminiKey, 'API_KEY_HIDDEN'));
-        console.error('Upstream 404 response body:', bodyText || '<empty>');
-        continue; // try next endpoint
-      }
-
-      // Forward the upstream response (status and body) back to client
-      const contentType = upstream.headers.get('content-type') || 'application/json';
-      res.setHeader('Content-Type', contentType);
-      return res.status(upstream.status).send(bodyText);
-    } catch (err) {
-      lastError = err;
-      // try next endpoint if available
-      if (i < apiEndpoints.length - 1) continue;
-      return res.status(502).json({ error: 'Failed to reach upstream API', details: String(err) });
+  // Extract text prompt from your existing frontend client structure
+  let userPrompt = "";
+  try {
+    if (clientPayload.contents && clientPayload.contents[0] && clientPayload.contents[0].parts) {
+      userPrompt = clientPayload.contents[0].parts[0].text;
+    } else {
+      userPrompt = JSON.stringify(clientPayload);
     }
+  } catch (e) {
+    return res.status(400).json({ error: 'Invalid payload structure' });
   }
-  // If we reach here nothing worked
-  return res.status(502).json({ error: 'All upstream endpoints failed', details: String(lastError) });
+
+  try {
+    // Generate text directly using the official client architecture
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: userPrompt,
+      generationConfig: {
+        responseMimeType: req.body.useStructuredOutput !== false ? "application/json" : "text/plain"
+      }
+    });
+
+    // Mirror the format expected by your existing frontend parsing logic
+    const structuredResponse = {
+      candidates: [
+        {
+          content: {
+            parts: [
+              { text: response.text }
+            ]
+          }
+        }
+      ]
+    };
+
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(200).json(structuredResponse);
+
+  } catch (err) {
+    console.error("Gemini SDK Generation Error:", err);
+    return res.status(502).json({ error: 'Failed to complete generation upstream', details: String(err) });
+  }
 });
 
 // ✅ Render-friendly port binding
